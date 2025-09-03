@@ -137,6 +137,10 @@
     border-bottom: 2px solid #e5e7eb;
   }
   
+  .header__inline-menu .mega-menu__title:hover {
+    color: rgba(0, 0, 0, 0.9);
+  }
+  
   .header__inline-menu .mega-menu__list {
     list-style: none;
     margin: 0;
@@ -294,9 +298,9 @@
                 <!-- Menu Labels Row -->
                 <div class="mega-menu__labels" style="display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;border-bottom:2px solid #f0f0f0;">
                   {%- for childlink in link.links -%}
-                    <h3 class="mega-menu__title" style="font-size:16px;font-weight:700;color:rgba(0,0,0,0.7);margin:0;flex:1;text-align:center;text-transform:uppercase;{% unless forloop.last %}padding-right:20px;margin-right:20px;{% endunless %}">
+                    <a href="{{ childlink.url }}" class="mega-menu__title" style="font-size:16px;font-weight:700;color:rgba(0,0,0,0.7);margin:0;flex:1;text-align:center;text-transform:uppercase;text-decoration:none;transition:color 0.2s ease;{% unless forloop.last %}padding-right:20px;margin-right:20px;{% endunless %}" onmouseover="this.style.color='rgba(0,0,0,0.9)'" onmouseout="this.style.color='rgba(0,0,0,0.7)'">
                       {{ childlink.title | escape }}
-                    </h3>
+                    </a>
                   {%- endfor -%}
                 </div>
                 
