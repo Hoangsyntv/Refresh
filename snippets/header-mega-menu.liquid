@@ -30,10 +30,42 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   }
   
+  /* Center content when sticky */
+  .header__inline-menu.is-sticky .header__nav-container {
+    justify-content: center !important;
+  }
+  
   /* Navigation container styling */
   .header__nav-container {
     max-width: 100% !important;
     width: 100% !important;
+  }
+  
+  /* Make menu text lowercase */
+  .primary-nav__text {
+    text-transform: lowercase;
+  }
+  
+  /* Hide right icons by default, show only when sticky */
+  .header__nav-icons {
+    display: none !important;
+  }
+  
+  .header__inline-menu.is-sticky .header__nav-icons {
+    display: flex !important;
+  }
+  
+  /* Adjust H1 title size */
+  h1, .h1 {
+    font-size: 1.75rem !important; /* Reduced from default size */
+    line-height: 1.2 !important;
+  }
+  
+  @media (min-width: 768px) {
+    h1, .h1 {
+      font-size: 2rem !important; /* Slightly larger on desktop but still reduced */
+      line-height: 1.3 !important;
+    }
   }
   
   /* Placeholder to prevent content jump when menu becomes fixed */

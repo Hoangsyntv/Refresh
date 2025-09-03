@@ -31,6 +31,19 @@ h1, h2, h3, h4, h5, h6,
   text-rendering: optimizeLegibility;
 }
 
+/* Adjust H1 size for better balance */
+h1,
+.h1 {
+  font-size: calc(var(--font-heading-scale) * 2.25rem) !important;
+}
+
+@media only screen and (min-width: 750px) {
+  h1,
+  .h1 {
+    font-size: calc(var(--font-heading-scale) * 2.75rem) !important;
+  }
+}
+
 /* Navigation and menu text */
 .header__menu,
 .nav,
