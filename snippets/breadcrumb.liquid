@@ -1,0 +1,158 @@
+{% comment %}
+  Renders breadcrumb navigation
+
+  Usage:
+  {% render 'breadcrumb' %}
+{% endcomment %}
+
+<style>
+  .breadcrumb {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 12px 0;
+    font-size: 14px;
+  }
+  
+  .breadcrumb__list {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  
+  .breadcrumb__item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .breadcrumb__link {
+    color: rgba(0, 0, 0, 0.6);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  
+  .breadcrumb__link:hover {
+    color: rgba(0, 0, 0, 0.8);
+  }
+  
+  .breadcrumb__current {
+    color: rgba(0, 0, 0, 0.8);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 13px;
+  }
+  
+  .breadcrumb__separator {
+    margin: 0 12px;
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 12px;
+  }
+  
+  @media (max-width: 768px) {
+    .breadcrumb__list {
+      padding: 0 16px;
+    }
+    
+    .breadcrumb__link,
+    .breadcrumb__current {
+      font-size: 12px;
+    }
+    
+    .breadcrumb__separator {
+      margin: 0 8px;
+    }
+  }
+</style>
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol class="breadcrumb__list">
+    <!-- Home -->
+    <li class="breadcrumb__item">
+      <a href="{{ routes.root_url }}" class="breadcrumb__link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="margin-right: 4px;">
+          <path d="M3 12L5 10M5 10L12 3L19 10M5 10V20A1 1 0 006 21H9M19 10L21 12M19 10V20A1 1 0 0018 21H15M9 21V16A1 1 0 0110 15H14A1 1 0 0115 16V21M9 21H15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Trang chủ
+      </a>
+    </li>
+
+    {%- unless request.page_type == 'index' -%}
+      <li class="breadcrumb__separator" aria-hidden="true">/</li>
+      
+      {%- case request.page_type -%}
+        {%- when 'collection' -%}
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__current">{{ collection.title | escape }}</span>
+          </li>
+          
+        {%- when 'product' -%}
+          {%- if collection -%}
+            <li class="breadcrumb__item">
+              <a href="{{ collection.url }}" class="breadcrumb__link">{{ collection.title | escape }}</a>
+            </li>
+            <li class="breadcrumb__separator" aria-hidden="true">/</li>
+          {%- endif -%}
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__current">{{ product.title | escape }}</span>
+          </li>
+          
+        {%- when 'blog' -%}
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__current">{{ blog.title | escape }}</span>
+          </li>
+          
+        {%- when 'article' -%}
+          <li class="breadcrumb__item">
+            <a href="{{ blog.url }}" class="breadcrumb__link">{{ blog.title | escape }}</a>
+          </li>
+          <li class="breadcrumb__separator" aria-hidden="true">/</li>
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__current">{{ article.title | escape }}</span>
+          </li>
+          
+        {%- when 'page' -%}
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__current">{{ page.title | escape }}</span>
+          </li>
+          
+        {%- when 'cart' -%}
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__current">Giỏ hàng</span>
+          </li>
+          
+        {%- when 'search' -%}
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__current">
+              {%- if search.performed -%}
+                Kết quả tìm kiếm cho "{{ search.terms | escape }}"
+              {%- else -%}
+                Tìm kiếm
+              {%- endif -%}
+            </span>
+          </li>
+          
+        {%- when 'list-collections' -%}
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__current">Tất cả danh mục</span>
+          </li>
+          
+        {%- when '404' -%}
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__current">Không tìm thấy trang</span>
+          </li>
+          
+        {%- else -%}
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__current">{{ page_title | escape }}</span>
+          </li>
+      {%- endcase -%}
+    {%- endunless -%}
+  </ol>
+</nav>
