@@ -6,16 +6,14 @@
 {% endcomment %}
 
 {%- liquid
-  comment
-    Function to find menu path for current collection/product
-    Returns array of menu items leading to current page
-  endcomment
+  # Function to find menu path for current collection/product
+  # Returns array of menu items leading to current page
   
   assign menu_path = blank
-  comment First try to get menu from header section configuration endcomment
+  # First try to get menu from header section configuration
   assign main_menu = blank
   
-  comment Try common menu handles endcomment
+  # Try common menu handles
   if linklists['main-menu'] != blank
     assign main_menu = linklists['main-menu']
   elsif linklists['header'] != blank  
@@ -38,14 +36,14 @@
             if menu_path != blank
               break
             endif
-            comment Check if product belongs to this collection endcomment
+            # Check if product belongs to this collection
             assign collection_handle = childlink.url | split: '/collections/' | last | split: '/' | first
             if product.collections contains collections[collection_handle]
               assign menu_path = link.title | append: '|' | append: childlink.title
               break
             endif
           else
-            comment Check single level childlink endcomment
+            # Check single level childlink
             assign collection_handle = childlink.url | split: '/collections/' | last | split: '/' | first
             if product.collections contains collections[collection_handle]
               assign menu_path = link.title | append: '|' | append: childlink.title
