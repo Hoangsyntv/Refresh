@@ -645,13 +645,32 @@ document.addEventListener('DOMContentLoaded', function() {
 // Function to handle search icon click
 function openSearchModal(event) {
   event.preventDefault();
+  console.log('Search icon clicked!'); // Debug log
   
-  // Try to find and trigger existing search functionality
-  const searchButton = document.querySelector('.header__search details summary, details-modal.header__search summary, .header__icon--search');
+  // Try multiple selectors to find the search button
+  const selectors = [
+    '.header__search details summary',
+    'details-modal.header__search summary', 
+    '.header__icon--search',
+    '.header__search summary',
+    'details.header__search summary',
+    '[aria-label*="Search"]',
+    '[aria-label*="search"]'
+  ];
+  
+  let searchButton = null;
+  for (const selector of selectors) {
+    searchButton = document.querySelector(selector);
+    if (searchButton) {
+      console.log('Found search button with selector:', selector); // Debug log
+      break;
+    }
+  }
   
   if (searchButton) {
     // Found the search button, click it to open modal
     searchButton.click();
+    console.log('Search button clicked'); // Debug log
     
     // Ensure the modal appears above navbar
     setTimeout(() => {
@@ -659,9 +678,11 @@ function openSearchModal(event) {
       if (searchModal) {
         searchModal.style.zIndex = '99999';
         searchModal.style.position = 'fixed';
+        console.log('Search modal z-index updated'); // Debug log
       }
     }, 10);
   } else {
+    console.log('No search button found, redirecting to search page'); // Debug log
     // Fallback: redirect to search page
     window.location.href = '/search';
   }
@@ -674,11 +695,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const navIcon = e.target.closest('.header__nav-icon');
     if (!navIcon) return;
     
-    // Ensure the click actually works by preventing any interference
+    // Handle search trigger specifically
+    if (navIcon.classList.contains('header__search-trigger')) {
+      e.preventDefault();
+      openSearchModal(e);
+      return;
+    }
+    
+    // Ensure other links work properly
     if (navIcon.href && navIcon.href !== '#') {
       // Let normal navigation happen
       return true;
     }
+  });
+  
+  // Additional search icon click handler as backup
+  const searchTriggers = document.querySelectorAll('.header__search-trigger');
+  searchTriggers.forEach(trigger => {
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log('Search trigger clicked via event listener');
+      openSearchModal(e);
+    });
   });
 });
 </script>
