@@ -31,12 +31,15 @@
                   {% if col_count > 9 %}
                     {% assign col_count = 9 %}
                   {% endif %}
+                  {% assign split = false %}
+                  {% if col_count > 10 %}
+                    {% assign split = true %}
+                  {% endif %}
                   <ul
                     class="mega-menu__columns"
                     style="display:grid;grid-template-columns:repeat({{ col_count }},1fr);gap:24px;border-bottom:1px solid #eee;"
                     role="list"
                   >
-                    {%- assign split = col_count > 10 -%}
                     {%- for childlink in link.links -%}
                       <li class="mega-menu__column" style="border-right:1px solid #eee;padding:0 12px;">
                         <div class="mega-menu__column-title"><strong>{{ childlink.title | escape }}</strong></div>
