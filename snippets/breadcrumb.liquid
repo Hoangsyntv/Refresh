@@ -1,0 +1,105 @@
+{% comment %}
+  Simple breadcrumb for debugging
+
+  Usage:
+  {% render 'breadcrumb' %}
+{% endcomment %}
+
+<style>
+  .breadcrumb {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 12px 0;
+    font-size: 14px;
+  }
+  
+  .breadcrumb__list {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  
+  .breadcrumb__item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .breadcrumb__link {
+    color: rgba(0, 0, 0, 0.6);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    text-transform: none;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  
+  .breadcrumb__link:hover {
+    color: rgba(0, 0, 0, 0.8);
+  }
+  
+  .breadcrumb__current {
+    color: rgba(0, 0, 0, 0.8);
+    font-weight: 600;
+    text-transform: none;
+    font-size: 13px;
+  }
+  
+  .breadcrumb__separator {
+    margin: 0 12px;
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 12px;
+  }
+</style>
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol class="breadcrumb__list">
+    <!-- Home -->
+    <li class="breadcrumb__item">
+      <a href="{{ routes.root_url }}" class="breadcrumb__link">
+        🏠 Trang chủ
+      </a>
+    </li>
+
+    {%- if request.page_type != 'index' -%}
+      <li class="breadcrumb__separator" aria-hidden="true">></li>
+      
+      {%- case request.page_type -%}
+        {%- when 'collection' -%}
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__current">{{ collection.title | escape }}</span>
+          </li>
+          
+        {%- when 'product' -%}
+          {%- if collection -%}
+            <li class="breadcrumb__item">
+              <a href="{{ collection.url }}" class="breadcrumb__link">{{ collection.title | escape }}</a>
+            </li>
+          {%- else -%}
+            <li class="breadcrumb__item">
+              <span class="breadcrumb__current">Sản phẩm</span>
+            </li>
+          {%- endif -%}
+          
+        {%- when 'page' -%}
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__current">{{ page.title | escape }}</span>
+          </li>
+          
+        {%- when 'cart' -%}
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__current">Giỏ hàng</span>
+          </li>
+          
+        {%- else -%}
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__current">{{ page_title | escape }}</span>
+          </li>
+      {%- endcase -%}
+    {%- endif -%}
+  </ol>
+</nav>
