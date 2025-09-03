@@ -598,7 +598,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (!headerMenu || !placeholder) return;
   
   // Get initial menu position
-  let menuOffsetTop = headerMenu.offsetTop;
+  let initialMenuOffsetTop = headerMenu.offsetTop;
+  let menuOffsetTop = initialMenuOffsetTop;
   let isSticky = false;
   
   // Function to update sticky position
@@ -606,9 +607,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const headerHeight = headerContainer ? headerContainer.offsetHeight : 0;
     const megaMenuPanels = document.querySelectorAll('.mega-menu__panel');
     
-    // Update menu offset top when window resizes
+    // Update menu offset top when window resizes and not sticky
     if (!isSticky) {
       menuOffsetTop = headerMenu.offsetTop;
+      initialMenuOffsetTop = menuOffsetTop;
     }
     
     megaMenuPanels.forEach(panel => {
@@ -620,7 +622,10 @@ document.addEventListener('DOMContentLoaded', function() {
   function handleScroll() {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     
-    if (scrollTop >= menuOffsetTop && !isSticky) {
+    // Use a small threshold to prevent flickering
+    const threshold = 5;
+    
+    if (scrollTop >= (initialMenuOffsetTop - threshold) && !isSticky) {
       // Make sticky
       isSticky = true;
       headerMenu.classList.add('is-sticky');
@@ -641,11 +646,26 @@ document.addEventListener('DOMContentLoaded', function() {
         menu.removeAttribute('open');
       });
       
-    } else if (scrollTop < menuOffsetTop && isSticky) {
-      // Remove sticky
+    } else if (scrollTop < (initialMenuOffsetTop - threshold) && isSticky) {
+      // Remove sticky - reset to original position
       isSticky = false;
       headerMenu.classList.remove('is-sticky');
       placeholder.classList.remove('active');
+      
+      // Reset navbar styles to original state
+      headerMenu.style.position = '';
+      headerMenu.style.top = '';
+      headerMenu.style.left = '';
+      headerMenu.style.right = '';
+      headerMenu.style.width = '';
+      headerMenu.style.margin = '';
+      headerMenu.style.transform = '';
+      
+      // Recalculate position after reset
+      setTimeout(() => {
+        menuOffsetTop = headerMenu.offsetTop;
+        initialMenuOffsetTop = menuOffsetTop;
+      }, 10);
     }
     
     updateStickyPosition();
