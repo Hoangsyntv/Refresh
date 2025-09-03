@@ -6,15 +6,35 @@
 {% endcomment %}
 
 <style>
-  /* Sticky navigation container */
+  /* Navigation container - will be made sticky via JavaScript */
   .header__inline-menu {
-    position: sticky;
-    top: 0;
+    position: relative;
     z-index: 9999;
     background: #fff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  /* When sticky is active */
+  .header__inline-menu.is-sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Placeholder to prevent content jump when menu becomes fixed */
+  .header__inline-menu-placeholder {
+    height: 60px;
+    display: none;
+  }
+  
+  .header__inline-menu-placeholder.active {
+    display: block;
   }
   
   .header__inline-menu .mega-menu {
@@ -23,7 +43,7 @@
   
   .header__inline-menu .mega-menu__panel {
     position: fixed;
-    top: 60px; /* Height of menu bar */
+    top: 60px; /* Default height of menu bar */
     left: 50%;
     transform: translateX(-50%);
     z-index: 99999; /* Very high z-index to stay above breadcrumb */
@@ -40,6 +60,11 @@
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     transition: all 0.3s ease;
+  }
+  
+  /* When menu is sticky, adjust panel position */
+  .header__inline-menu.is-sticky .mega-menu__panel {
+    top: 60px; /* Fixed position when sticky */
   }
   
   /* Overlay for mega menu */
@@ -306,7 +331,10 @@
   }
 </style>
 
-<nav class="header__inline-menu">
+<!-- Placeholder for sticky menu -->
+<div class="header__inline-menu-placeholder"></div>
+
+<nav class="header__inline-menu" id="mega-menu-nav">
   <ul class="primary-nav" role="menubar" style="height:60px;border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0;background:#FFFFFF;display:flex;align-items:stretch;margin:0;padding:0;list-style:none;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
     {%- for link in section.settings.menu.links -%}
       <li class="primary-nav__item" style="font-size:15px;position:relative;display:flex;align-items:stretch;">
@@ -407,23 +435,68 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const headerMenu = document.querySelector('.header__inline-menu');
+  const placeholder = document.querySelector('.header__inline-menu-placeholder');
   const headerContainer = document.querySelector('.header-wrapper, .shopify-section-header');
   
-  if (!headerMenu) return;
+  if (!headerMenu || !placeholder) return;
+  
+  // Get initial menu position
+  let menuOffsetTop = headerMenu.offsetTop;
+  let isSticky = false;
   
   // Function to update sticky position
   function updateStickyPosition() {
     const headerHeight = headerContainer ? headerContainer.offsetHeight : 0;
     const megaMenuPanels = document.querySelectorAll('.mega-menu__panel');
     
+    // Update menu offset top when window resizes
+    if (!isSticky) {
+      menuOffsetTop = headerMenu.offsetTop;
+    }
+    
     megaMenuPanels.forEach(panel => {
-      panel.style.top = headerHeight + 'px';
+      panel.style.top = (isSticky ? 60 : headerHeight) + 'px';
     });
+  }
+  
+  // Sticky scroll handler
+  function handleScroll() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
+    if (scrollTop >= menuOffsetTop && !isSticky) {
+      // Make sticky
+      isSticky = true;
+      headerMenu.classList.add('is-sticky');
+      placeholder.classList.add('active');
+      
+      // Close any open mega menus when becoming sticky
+      const openMenus = document.querySelectorAll('.mega-menu[open]');
+      openMenus.forEach(menu => {
+        menu.removeAttribute('open');
+      });
+      
+    } else if (scrollTop < menuOffsetTop && isSticky) {
+      // Remove sticky
+      isSticky = false;
+      headerMenu.classList.remove('is-sticky');
+      placeholder.classList.remove('active');
+    }
+    
+    updateStickyPosition();
   }
   
   // Update on load and resize
   updateStickyPosition();
-  window.addEventListener('resize', updateStickyPosition);
+  window.addEventListener('resize', function() {
+    updateStickyPosition();
+    // Recalculate menu position when not sticky
+    if (!isSticky) {
+      menuOffsetTop = headerMenu.offsetTop;
+    }
+  });
+  
+  // Handle scroll for sticky behavior
+  window.addEventListener('scroll', handleScroll);
   
   // Handle mega menu centering
   const megaMenus = document.querySelectorAll('.mega-menu');
@@ -453,23 +526,6 @@ document.addEventListener('DOMContentLoaded', function() {
         menu.removeAttribute('open');
       });
     }
-  });
-  
-  // Handle scroll behavior for better sticky effect
-  let lastScrollY = window.scrollY;
-  
-  window.addEventListener('scroll', function() {
-    const currentScrollY = window.scrollY;
-    
-    if (currentScrollY > lastScrollY && currentScrollY > 100) {
-      // Scrolling down - add shadow for better visibility
-      headerMenu.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
-    } else {
-      // Scrolling up or at top
-      headerMenu.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
-    }
-    
-    lastScrollY = currentScrollY;
   });
 });
 </script>
