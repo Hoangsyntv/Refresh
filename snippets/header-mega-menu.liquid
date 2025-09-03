@@ -77,6 +77,22 @@
     cursor: pointer !important;
   }
   
+  /* Fix search modal z-index to appear above sticky navbar */
+  .header__search details[open] > .search-modal,
+  .search-modal {
+    z-index: 99999 !important;
+  }
+  
+  .header__search details[open] {
+    z-index: 99999 !important;
+  }
+  
+  /* Ensure search modal content is properly positioned */
+  .search-modal__content {
+    z-index: 99999 !important;
+    position: relative !important;
+  }
+  
   /* Placeholder to prevent content jump when menu becomes fixed */
   .header__inline-menu-placeholder {
     height: 60px;
@@ -631,13 +647,20 @@ function openSearchModal(event) {
   event.preventDefault();
   
   // Try to find and trigger existing search functionality
-  const searchButton = document.querySelector('details[aria-label*="tìm kiếm"], details[aria-label*="Search"], .header__search, .search-modal__toggle, [data-search-toggle]');
+  const searchButton = document.querySelector('.header__search details summary, details-modal.header__search summary, .header__icon--search');
+  
   if (searchButton) {
-    if (searchButton.tagName === 'DETAILS') {
-      searchButton.open = true;
-    } else {
-      searchButton.click();
-    }
+    // Found the search button, click it to open modal
+    searchButton.click();
+    
+    // Ensure the modal appears above navbar
+    setTimeout(() => {
+      const searchModal = document.querySelector('.search-modal, details[open] > .search-modal');
+      if (searchModal) {
+        searchModal.style.zIndex = '99999';
+        searchModal.style.position = 'fixed';
+      }
+    }, 10);
   } else {
     // Fallback: redirect to search page
     window.location.href = '/search';
