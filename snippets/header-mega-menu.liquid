@@ -157,12 +157,17 @@
   }
   
   .header__inline-menu .mega-menu__title {
-    font-size: 16px;
-    font-weight: 700;
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
     color: #1f2937;
-    margin-bottom: 16px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 12px;
+    padding: 8px 0;
+    text-decoration: none;
+    text-transform: none;
+    transition: color 0.2s ease;
+    border-bottom: none;
+    font-family: 'Inter', 'Roboto', 'Noto Sans', var(--font-body-family), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   }
   
   .header__inline-menu .mega-menu__title:hover {
@@ -180,9 +185,11 @@
     padding: 8px 0;
     color: #6b7280;
     font-size: 14px;
+    font-weight: 400;
     line-height: 1.5;
     text-decoration: none;
     transition: color 0.2s ease;
+    font-family: 'Inter', 'Roboto', 'Noto Sans', var(--font-body-family), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   }
   
   .header__inline-menu .mega-menu__link:hover,
@@ -253,20 +260,6 @@
       width: 95vw;
     }
     
-    .header__inline-menu .mega-menu__labels {
-      flex-direction: column;
-      gap: 12px;
-      align-items: stretch;
-    }
-    
-    .header__inline-menu .mega-menu__labels .mega-menu__title {
-      text-align: left;
-      border-right: none !important;
-      border-bottom: 1px solid #f0f0f0;
-      padding-bottom: 8px;
-      margin: 0;
-    }
-    
     .header__inline-menu .mega-menu__content {
       flex-direction: column;
       gap: 20px;
@@ -293,8 +286,12 @@
       max-width: 98vw;
     }
     
-    .header__inline-menu .mega-menu__labels .mega-menu__title {
-      font-size: 14px;
+    .header__inline-menu .mega-menu__title {
+      font-size: 13px;
+    }
+    
+    .header__inline-menu .mega-menu__link {
+      font-size: 13px;
     }
   }
   
@@ -337,21 +334,17 @@
                 tabindex="-1"
                 role="menu"
                 aria-labelledby="HeaderMenu-{{ link.handle }}"
-                style="display:flex;flex-direction:column;gap:24px;"
+                style="display:flex;gap:24px;"
               >
-                <!-- Menu Labels Row -->
-                <div class="mega-menu__labels" style="display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;border-bottom:2px solid #f0f0f0;">
-                  {%- for childlink in link.links -%}
-                    <a href="{{ childlink.url }}" class="mega-menu__title" style="font-size:16px;font-weight:700;color:rgba(0,0,0,0.7);margin:0;flex:1;text-align:center;text-transform:uppercase;text-decoration:none;transition:color 0.2s ease;{% unless forloop.last %}padding-right:20px;margin-right:20px;{% endunless %}" onmouseover="this.style.color='rgba(0,0,0,0.9)'" onmouseout="this.style.color='rgba(0,0,0,0.7)'">
-                      {{ childlink.title | escape }}
-                    </a>
-                  {%- endfor -%}
-                </div>
-                
-                <!-- Menu Content Row -->
-                <div class="mega-menu__content" style="display:flex;gap:24px;">
+                <!-- Menu Content with Category Titles -->
+                <div class="mega-menu__content" style="display:flex;gap:24px;width:100%;">
                   {%- for childlink in link.links -%}
                     <div class="mega-menu__column" role="group" aria-labelledby="menu-category-{{ forloop.index }}" style="flex:1;min-width:180px;">
+                      <!-- Category Title as first item -->
+                      <a href="{{ childlink.url }}" class="mega-menu__title" style="text-decoration:none;">
+                        {{ childlink.title | escape }}
+                      </a>
+                      
                       <ul class="mega-menu__list" role="list" style="margin:0;padding:0;list-style:none;">
                         {%- for grandchildlink in childlink.links -%}
                           <li role="none">
@@ -360,7 +353,7 @@
                               class="mega-menu__link"
                               role="menuitem"
                               tabindex="-1"
-                              style="display:block;padding:8px 0;color:#666;font-size:14px;line-height:1.5;text-decoration:none;transition:color 0.2s ease;"
+                              style="display:block;padding:6px 0;color:#666;font-size:14px;line-height:1.5;text-decoration:none;transition:color 0.2s ease;"
                               onmouseover="this.style.color='#000'"
                               onmouseout="this.style.color='#666'"
                             >
