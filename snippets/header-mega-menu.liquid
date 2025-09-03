@@ -383,131 +383,111 @@
                       </svg>
                     </span>
                   </summary>
-    {%- for link in menu.links -%}
-      <li class="primary-nav__item" style="font-size:15px;position:relative;display:flex;align-items:stretch;">
-        {%- if link.links != blank -%}
-          <header-menu>
-            <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu" aria-haspopup="true" aria-expanded="false" style="height:100%;display:flex;">
-              <summary
-                id="HeaderMenu-{{ link.handle }}"
-                class="primary-nav__trigger"
-                aria-controls="MegaMenu-Content-{{ forloop.index }}"
-                aria-label="Mở menu {{ link.title }}"
-                tabindex="0"
-                style="display:flex;align-items:center;gap:8px;list-style:none;height:100%;"
-              >
-                <span class="primary-nav__text">{{- link.title | escape -}}</span>
-                <span class="primary-nav__icon" aria-hidden="true">
-                  <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 1L6 7L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </span>
-              </summary>
-              <div
-                id="MegaMenu-Content-{{ forloop.index }}"
-                class="mega-menu__panel"
-                tabindex="-1"
-                role="menu"
-                aria-labelledby="HeaderMenu-{{ link.handle }}"
-              >
-                <div class="mega-menu__container" style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;gap:40px;">
-                  <!-- Left Icons Section -->
-                  <div class="mega-menu__icons" style="flex:0 0 120px;display:flex;flex-direction:column;gap:16px;">
-                    <div class="mega-menu__icon-item" style="display:flex;align-items:center;gap:12px;padding:8px 0;">
-                      <div style="width:24px;height:24px;background:#f0f0f0;border-radius:50%;display:flex;align-items:center;justify-content:center;">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                        </svg>
+                  <div
+                    id="MegaMenu-Content-{{ forloop.index }}"
+                    class="mega-menu__panel"
+                    tabindex="-1"
+                    role="menu"
+                    aria-labelledby="HeaderMenu-{{ link.handle }}"
+                  >
+                    <div class="mega-menu__container" style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;gap:40px;">
+                      <!-- Left Icons Section -->
+                      <div class="mega-menu__icons" style="flex:0 0 120px;display:flex;flex-direction:column;gap:16px;">
+                        <div class="mega-menu__icon-item" style="display:flex;align-items:center;gap:12px;padding:8px 0;">
+                          <div style="width:24px;height:24px;background:#f0f0f0;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                            </svg>
+                          </div>
+                          <span style="font-size:12px;color:#666;">Trang chủ</span>
+                        </div>
+                        <div class="mega-menu__icon-item" style="display:flex;align-items:center;gap:12px;padding:8px 0;">
+                          <div style="width:24px;height:24px;background:#f0f0f0;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <circle cx="9" cy="21" r="1"/>
+                              <circle cx="20" cy="21" r="1"/>
+                              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                            </svg>
+                          </div>
+                          <span style="font-size:12px;color:#666;">Giỏ hàng</span>
+                        </div>
+                        <div class="mega-menu__icon-item" style="display:flex;align-items:center;gap:12px;padding:8px 0;">
+                          <div style="width:24px;height:24px;background:#f0f0f0;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                              <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                          </div>
+                          <span style="font-size:12px;color:#666;">Tài khoản</span>
+                        </div>
                       </div>
-                      <span style="font-size:12px;color:#666;">Trang chủ</span>
-                    </div>
-                    <div class="mega-menu__icon-item" style="display:flex;align-items:center;gap:12px;padding:8px 0;">
-                      <div style="width:24px;height:24px;background:#f0f0f0;border-radius:50%;display:flex;align-items:center;justify-content:center;">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                          <circle cx="9" cy="21" r="1"/>
-                          <circle cx="20" cy="21" r="1"/>
-                          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-                        </svg>
-                      </div>
-                      <span style="font-size:12px;color:#666;">Giỏ hàng</span>
-                    </div>
-                    <div class="mega-menu__icon-item" style="display:flex;align-items:center;gap:12px;padding:8px 0;">
-                      <div style="width:24px;height:24px;background:#f0f0f0;border-radius:50%;display:flex;align-items:center;justify-content:center;">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                          <circle cx="12" cy="7" r="4"/>
-                        </svg>
-                      </div>
-                      <span style="font-size:12px;color:#666;">Tài khoản</span>
-                    </div>
-                  </div>
-                  
-                  <!-- Menu Content with Category Titles -->
-                  <div class="mega-menu__content" style="display:flex;gap:32px;flex:1;">
-                    {%- for childlink in link.links -%}
-                      <div class="mega-menu__column" role="group" aria-labelledby="menu-category-{{ forloop.index }}" style="flex:1;min-width:180px;">
-                        <!-- Category Title as first item -->
-                        <a href="{{ childlink.url }}" class="mega-menu__title" style="text-decoration:none;">
-                          {{ childlink.title | escape }}
-                        </a>
+                      
+                      <!-- Menu Content with Category Titles -->
+                      <div class="mega-menu__content" style="display:flex;gap:32px;flex:1;">
+                        {%- for childlink in link.links -%}
+                          <div class="mega-menu__column" role="group" aria-labelledby="menu-category-{{ forloop.index }}" style="flex:1;min-width:180px;">
+                            <!-- Category Title as first item -->
+                            <a href="{{ childlink.url }}" class="mega-menu__title" style="text-decoration:none;">
+                              {{ childlink.title | escape }}
+                            </a>
+                            
+                            <ul class="mega-menu__list" role="list" style="margin:0;padding:0;list-style:none;">
+                              {%- for grandchildlink in childlink.links -%}
+                                <li role="none">
+                                  <a
+                                    href="{{ grandchildlink.url }}"
+                                    class="mega-menu__link"
+                                    role="menuitem"
+                                    tabindex="-1"
+                                    style="display:block;padding:6px 0;color:#666;font-size:14px;line-height:1.5;text-decoration:none;transition:color 0.2s ease;"
+                                    onmouseover="this.style.color='#000'"
+                                    onmouseout="this.style.color='#666'"
+                                  >
+                                    {{ grandchildlink.title | escape }}
+                                  </a>
+                                </li>
+                              {%- endfor -%}
+                            </ul>
+                          </div>
+                        {%- endfor -%}
                         
-                        <ul class="mega-menu__list" role="list" style="margin:0;padding:0;list-style:none;">
-                          {%- for grandchildlink in childlink.links -%}
-                            <li role="none">
-                              <a
-                                href="{{ grandchildlink.url }}"
-                                class="mega-menu__link"
-                                role="menuitem"
-                                tabindex="-1"
-                                style="display:block;padding:6px 0;color:#666;font-size:14px;line-height:1.5;text-decoration:none;transition:color 0.2s ease;"
-                                onmouseover="this.style.color='#000'"
-                                onmouseout="this.style.color='#666'"
-                              >
-                                {{ grandchildlink.title | escape }}
+                        <!-- Promo Banner Column -->
+                        <div class="mega-menu__column mega-menu__column--banner" role="group" aria-label="Khuyến mãi đặc biệt" style="flex:0 0 250px;padding-left:32px;border-left:2px solid #f0f0f0;">
+                          <div class="mega-menu__banner">
+                            <img 
+                              src="https://img.freepik.com/free-psd/banner-template-fashion-sale-special-discount_23-2149436197.jpg" 
+                              alt="Banner khuyến mãi nội thất văn phòng" 
+                              loading="lazy"
+                            >
+                            <div class="mega-menu__banner-content">
+                              <h4 class="mega-menu__banner-title">🎉 Ưu đãi đặc biệt</h4>
+                              <a href="/collections/sale" class="mega-menu__cta" role="button">
+                                🛒 Xem ngay
                               </a>
-                            </li>
-                          {%- endfor -%}
-                        </ul>
-                      </div>
-                    {%- endfor -%}
-                    
-                    <!-- Promo Banner Column -->
-                    <div class="mega-menu__column mega-menu__column--banner" role="group" aria-label="Khuyến mãi đặc biệt" style="flex:0 0 250px;padding-left:32px;border-left:2px solid #f0f0f0;">
-                      <div class="mega-menu__banner">
-                        <img 
-                          src="https://img.freepik.com/free-psd/banner-template-fashion-sale-special-discount_23-2149436197.jpg" 
-                          alt="Banner khuyến mãi nội thất văn phòng" 
-                          loading="lazy"
-                        >
-                        <div class="mega-menu__banner-content">
-                          <h4 class="mega-menu__banner-title">🎉 Ưu đãi đặc biệt</h4>
-                          <a href="/collections/sale" class="mega-menu__cta" role="button">
-                            🛒 Xem ngay
-                          </a>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </details>
-          </header-menu>
-        {%- else -%}
-          <a
-            id="HeaderMenu-{{ link.handle }}"
-            href="{{ link.url }}"
-            class="primary-nav__link"
-            {% if link.current %} aria-current="page"{% endif %}
-            style="display:flex;align-items:center;height:100%;"
-          >
-            <span class="primary-nav__text">{{- link.title | escape -}}</span>
-          </a>
-        {%- endif -%}
-        {%- if link.current %}
-          <span class="primary-nav__active" style="position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(0,0,0,0.8);"></span>
-        {%- endif -%}
-      </li>
-    {%- endfor -%}
+                </details>
+              </header-menu>
+            {%- else -%}
+              <a
+                id="HeaderMenu-{{ link.handle }}"
+                href="{{ link.url }}"
+                class="primary-nav__link"
+                {% if link.current %} aria-current="page"{% endif %}
+                style="display:flex;align-items:center;height:100%;"
+              >
+                <span class="primary-nav__text">{{- link.title | escape -}}</span>
+              </a>
+            {%- endif -%}
+            {%- if link.current %}
+              <span class="primary-nav__active" style="position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(0,0,0,0.8);"></span>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
       </ul>
     </div>
     
