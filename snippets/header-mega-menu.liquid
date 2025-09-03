@@ -44,18 +44,19 @@
   .header__inline-menu .mega-menu__panel {
     position: fixed;
     top: 60px; /* Default height of menu bar */
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
+    right: 0;
+    transform: none;
     z-index: 99999; /* Very high z-index to stay above breadcrumb */
     background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-    padding: 32px;
-    margin-top: 8px;
-    max-width: min(1200px, 90vw);
-    width: max-content;
-    min-width: min(800px, 85vw);
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+    border-radius: 0;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+    padding: 40px 0;
+    margin-top: 0;
+    width: 100vw;
     display: none;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -277,12 +278,20 @@
   /* Responsive */
   @media (max-width: 1024px) {
     .header__inline-menu .mega-menu__panel {
-      max-width: 95vw;
-      min-width: auto;
-      padding: 24px;
-      left: 2.5vw;
-      transform: none;
-      width: 95vw;
+      padding: 24px 0;
+    }
+    
+    .header__inline-menu .mega-menu__container {
+      padding: 0 16px;
+      flex-direction: column;
+      gap: 24px;
+    }
+    
+    .header__inline-menu .mega-menu__icons {
+      flex-direction: row;
+      justify-content: center;
+      flex: none;
+      width: 100%;
     }
     
     .header__inline-menu .mega-menu__content {
@@ -305,10 +314,11 @@
   
   @media (max-width: 768px) {
     .header__inline-menu .mega-menu__panel {
-      padding: 20px;
-      left: 1vw;
-      width: 98vw;
-      max-width: 98vw;
+      padding: 20px 0;
+    }
+    
+    .header__inline-menu .mega-menu__container {
+      padding: 0 12px;
     }
     
     .header__inline-menu .mega-menu__title {
@@ -317,6 +327,10 @@
     
     .header__inline-menu .mega-menu__link {
       font-size: 13px;
+    }
+    
+    .header__inline-menu .mega-menu__icon-item span {
+      font-size: 11px;
     }
   }
   
@@ -362,50 +376,82 @@
                 tabindex="-1"
                 role="menu"
                 aria-labelledby="HeaderMenu-{{ link.handle }}"
-                style="display:flex;gap:24px;"
               >
-                <!-- Menu Content with Category Titles -->
-                <div class="mega-menu__content" style="display:flex;gap:24px;width:100%;">
-                  {%- for childlink in link.links -%}
-                    <div class="mega-menu__column" role="group" aria-labelledby="menu-category-{{ forloop.index }}" style="flex:1;min-width:180px;">
-                      <!-- Category Title as first item -->
-                      <a href="{{ childlink.url }}" class="mega-menu__title" style="text-decoration:none;">
-                        {{ childlink.title | escape }}
-                      </a>
-                      
-                      <ul class="mega-menu__list" role="list" style="margin:0;padding:0;list-style:none;">
-                        {%- for grandchildlink in childlink.links -%}
-                          <li role="none">
-                            <a
-                              href="{{ grandchildlink.url }}"
-                              class="mega-menu__link"
-                              role="menuitem"
-                              tabindex="-1"
-                              style="display:block;padding:6px 0;color:#666;font-size:14px;line-height:1.5;text-decoration:none;transition:color 0.2s ease;"
-                              onmouseover="this.style.color='#000'"
-                              onmouseout="this.style.color='#666'"
-                            >
-                              {{ grandchildlink.title | escape }}
-                            </a>
-                          </li>
-                        {%- endfor -%}
-                      </ul>
+                <div class="mega-menu__container" style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;gap:40px;">
+                  <!-- Left Icons Section -->
+                  <div class="mega-menu__icons" style="flex:0 0 120px;display:flex;flex-direction:column;gap:16px;">
+                    <div class="mega-menu__icon-item" style="display:flex;align-items:center;gap:12px;padding:8px 0;">
+                      <div style="width:24px;height:24px;background:#f0f0f0;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        </svg>
+                      </div>
+                      <span style="font-size:12px;color:#666;">Trang chủ</span>
                     </div>
-                  {%- endfor -%}
+                    <div class="mega-menu__icon-item" style="display:flex;align-items:center;gap:12px;padding:8px 0;">
+                      <div style="width:24px;height:24px;background:#f0f0f0;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="9" cy="21" r="1"/>
+                          <circle cx="20" cy="21" r="1"/>
+                          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                        </svg>
+                      </div>
+                      <span style="font-size:12px;color:#666;">Giỏ hàng</span>
+                    </div>
+                    <div class="mega-menu__icon-item" style="display:flex;align-items:center;gap:12px;padding:8px 0;">
+                      <div style="width:24px;height:24px;background:#f0f0f0;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                          <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                      </div>
+                      <span style="font-size:12px;color:#666;">Tài khoản</span>
+                    </div>
+                  </div>
                   
-                  <!-- Promo Banner Column -->
-                  <div class="mega-menu__column mega-menu__column--banner" role="group" aria-label="Khuyến mãi đặc biệt" style="flex:0 0 220px;padding-left:24px;border-left:2px solid #f0f0f0;">
-                    <div class="mega-menu__banner">
-                      <img 
-                        src="https://img.freepik.com/free-psd/banner-template-fashion-sale-special-discount_23-2149436197.jpg" 
-                        alt="Banner khuyến mãi nội thất văn phòng" 
-                        loading="lazy"
-                      >
-                      <div class="mega-menu__banner-content">
-                        <h4 class="mega-menu__banner-title">🎉 Ưu đãi đặc biệt</h4>
-                        <a href="/collections/sale" class="mega-menu__cta" role="button">
-                          🛒 Xem ngay
+                  <!-- Menu Content with Category Titles -->
+                  <div class="mega-menu__content" style="display:flex;gap:32px;flex:1;">
+                    {%- for childlink in link.links -%}
+                      <div class="mega-menu__column" role="group" aria-labelledby="menu-category-{{ forloop.index }}" style="flex:1;min-width:180px;">
+                        <!-- Category Title as first item -->
+                        <a href="{{ childlink.url }}" class="mega-menu__title" style="text-decoration:none;">
+                          {{ childlink.title | escape }}
                         </a>
+                        
+                        <ul class="mega-menu__list" role="list" style="margin:0;padding:0;list-style:none;">
+                          {%- for grandchildlink in childlink.links -%}
+                            <li role="none">
+                              <a
+                                href="{{ grandchildlink.url }}"
+                                class="mega-menu__link"
+                                role="menuitem"
+                                tabindex="-1"
+                                style="display:block;padding:6px 0;color:#666;font-size:14px;line-height:1.5;text-decoration:none;transition:color 0.2s ease;"
+                                onmouseover="this.style.color='#000'"
+                                onmouseout="this.style.color='#666'"
+                              >
+                                {{ grandchildlink.title | escape }}
+                              </a>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      </div>
+                    {%- endfor -%}
+                    
+                    <!-- Promo Banner Column -->
+                    <div class="mega-menu__column mega-menu__column--banner" role="group" aria-label="Khuyến mãi đặc biệt" style="flex:0 0 250px;padding-left:32px;border-left:2px solid #f0f0f0;">
+                      <div class="mega-menu__banner">
+                        <img 
+                          src="https://img.freepik.com/free-psd/banner-template-fashion-sale-special-discount_23-2149436197.jpg" 
+                          alt="Banner khuyến mãi nội thất văn phòng" 
+                          loading="lazy"
+                        >
+                        <div class="mega-menu__banner-content">
+                          <h4 class="mega-menu__banner-title">🎉 Ưu đãi đặc biệt</h4>
+                          <a href="/collections/sale" class="mega-menu__cta" role="button">
+                            🛒 Xem ngay
+                          </a>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -507,12 +553,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (trigger && panel) {
       trigger.addEventListener('click', function() {
-        // Ensure proper centering when menu opens
+        // No need for centering calculation since panel is full width
+        // Just ensure it's positioned correctly
         setTimeout(() => {
-          if (window.innerWidth >= 1025) {
-            panel.style.left = '50%';
-            panel.style.transform = 'translateX(-50%)';
-          }
+          updateStickyPosition();
         }, 10);
       });
     }
