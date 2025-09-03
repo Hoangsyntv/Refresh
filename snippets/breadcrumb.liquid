@@ -1,9 +1,92 @@
 {% comment %}
-  Renders breadcrumb navigation
+  Renders hierarchical breadcrumb navigation with full menu path
 
   Usage:
   {% render 'breadcrumb' %}
 {% endcomment %}
+
+{%- liquid
+  comment
+    Function to find menu path for current collection/product
+    Returns array of menu items leading to current page
+  endcomment
+  
+  assign menu_path = blank
+  comment First try to get menu from header section configuration endcomment
+  assign main_menu = blank
+  
+  comment Try common menu handles endcomment
+  if linklists['main-menu'] != blank
+    assign main_menu = linklists['main-menu']
+  elsif linklists['header'] != blank  
+    assign main_menu = linklists['header']
+  elsif linklists['primary'] != blank
+    assign main_menu = linklists['primary']
+  endif
+  
+  if request.page_type == 'product' and product and main_menu != blank
+    for link in main_menu.links
+      if link.links != blank
+        for childlink in link.links
+          if childlink.links != blank
+            for grandchildlink in childlink.links
+              if grandchildlink.url == product.url or (collection and grandchildlink.url == collection.url)
+                assign menu_path = link.title | append: '|' | append: childlink.title | append: '|' | append: grandchildlink.title
+                break
+              endif
+            endfor
+            if menu_path != blank
+              break
+            endif
+            comment Check if product belongs to this collection endcomment
+            assign collection_handle = childlink.url | split: '/collections/' | last | split: '/' | first
+            if product.collections contains collections[collection_handle]
+              assign menu_path = link.title | append: '|' | append: childlink.title
+              break
+            endif
+          else
+            comment Check single level childlink endcomment
+            assign collection_handle = childlink.url | split: '/collections/' | last | split: '/' | first
+            if product.collections contains collections[collection_handle]
+              assign menu_path = link.title | append: '|' | append: childlink.title
+              break
+            endif
+          endif
+        endfor
+        if menu_path != blank
+          break
+        endif
+      endif
+    endfor
+  elsif request.page_type == 'collection' and collection and main_menu != blank
+    for link in main_menu.links
+      if link.links != blank
+        for childlink in link.links
+          if childlink.url == collection.url
+            assign menu_path = link.title | append: '|' | append: childlink.title
+            break
+          endif
+          if childlink.links != blank
+            for grandchildlink in childlink.links
+              if grandchildlink.url == collection.url
+                assign menu_path = link.title | append: '|' | append: childlink.title | append: '|' | append: grandchildlink.title
+                break
+              endif
+            endfor
+            if menu_path != blank
+              break
+            endif
+          endif
+        endfor
+        if menu_path != blank
+          break
+        endif
+      endif
+    endfor
+  endif
+  
+  assign menu_levels = menu_path | split: '|'
+-%}
 
 <style>
   .breadcrumb {
@@ -86,6 +169,42 @@
     {%- unless request.page_type == 'index' -%}
       <li class="breadcrumb__separator" aria-hidden="true">></li>
       
+      {%- comment -%} Display hierarchical menu path {%- endcomment -%}
+      {%- if menu_path != blank and menu_levels.size > 0 -%}
+        {%- for level in menu_levels -%}
+          {%- unless forloop.last -%}
+            <li class="breadcrumb__item">
+              {%- comment -%} Try to find the URL for this menu level {%- endcomment -%}
+              {%- assign level_url = blank -%}
+              {%- for link in main_menu.links -%}
+                {%- if link.title == level -%}
+                  {%- assign level_url = link.url -%}
+                  {%- break -%}
+                {%- endif -%}
+                {%- if link.links != blank -%}
+                  {%- for childlink in link.links -%}
+                    {%- if childlink.title == level -%}
+                      {%- assign level_url = childlink.url -%}
+                      {%- break -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endif -%}
+                {%- if level_url != blank -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+              
+              {%- if level_url != blank -%}
+                <a href="{{ level_url }}" class="breadcrumb__link">{{ level | escape }}</a>
+              {%- else -%}
+                <span class="breadcrumb__link">{{ level | escape }}</span>
+              {%- endif -%}
+            </li>
+            <li class="breadcrumb__separator" aria-hidden="true">></li>
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- endif -%}
+      
       {%- case request.page_type -%}
         {%- when 'collection' -%}
           <li class="breadcrumb__item">
@@ -93,7 +212,8 @@
           </li>
           
         {%- when 'product' -%}
-          {%- if collection -%}
+          {%- comment -%} Show collection only if not already in menu path {%- endcomment -%}
+          {%- if collection and menu_path == blank -%}
             <li class="breadcrumb__item">
               <a href="{{ collection.url }}" class="breadcrumb__link">{{ collection.title | escape }}</a>
             </li>
