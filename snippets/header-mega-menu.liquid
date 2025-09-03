@@ -35,11 +35,24 @@
     justify-content: center !important;
     max-width: 1200px !important;
     margin: 0 auto !important;
+    position: relative !important;
   }
   
-  /* Hide right icons when sticky for centered layout */
+  /* Center the menu when sticky while keeping space for icons */
+  .header__inline-menu.is-sticky .header__nav-menu {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+  
+  /* Show right icons when sticky - positioned absolutely to not affect centering */
   .header__inline-menu.is-sticky .header__nav-icons {
-    display: none !important;
+    display: flex !important;
+    position: absolute !important;
+    right: 24px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 10000 !important;
   }
   
   /* Navigation container styling */
@@ -58,8 +71,10 @@
     display: none !important;
   }
   
-  .header__inline-menu.is-sticky .header__nav-icons {
-    display: flex !important;
+  /* Ensure icons are clickable when sticky */
+  .header__inline-menu.is-sticky .header__nav-icon {
+    pointer-events: auto !important;
+    cursor: pointer !important;
   }
   
   /* Placeholder to prevent content jump when menu becomes fixed */
@@ -490,7 +505,7 @@
         </div>
       </a>
       
-      <a href="#" class="header__nav-icon" style="display:flex;align-items:center;gap:8px;color:#666;text-decoration:none;font-size:13px;padding:8px 12px;border-radius:6px;transition:all 0.2s ease;" title="Tìm kiếm" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='transparent'">
+      <a href="#" class="header__nav-icon header__search-trigger" style="display:flex;align-items:center;gap:8px;color:#666;text-decoration:none;font-size:13px;padding:8px 12px;border-radius:6px;transition:all 0.2s ease;" title="Tìm kiếm" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='transparent'" onclick="openSearchModal(event)">
         <div style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="8"/>
@@ -607,6 +622,39 @@ document.addEventListener('DOMContentLoaded', function() {
       openMenus.forEach(menu => {
         menu.removeAttribute('open');
       });
+    }
+  });
+});
+
+// Function to handle search icon click
+function openSearchModal(event) {
+  event.preventDefault();
+  
+  // Try to find and trigger existing search functionality
+  const searchButton = document.querySelector('details[aria-label*="tìm kiếm"], details[aria-label*="Search"], .header__search, .search-modal__toggle, [data-search-toggle]');
+  if (searchButton) {
+    if (searchButton.tagName === 'DETAILS') {
+      searchButton.open = true;
+    } else {
+      searchButton.click();
+    }
+  } else {
+    // Fallback: redirect to search page
+    window.location.href = '/search';
+  }
+}
+
+// Ensure icons are properly clickable when sticky
+document.addEventListener('DOMContentLoaded', function() {
+  // Add click handlers for nav icons to ensure they work
+  document.addEventListener('click', function(e) {
+    const navIcon = e.target.closest('.header__nav-icon');
+    if (!navIcon) return;
+    
+    // Ensure the click actually works by preventing any interference
+    if (navIcon.href && navIcon.href !== '#') {
+      // Let normal navigation happen
+      return true;
     }
   });
 });
