@@ -4,6 +4,7 @@
 }
 
 
+/* Nền pastel cho mega menu */
 .mega-menu__content {
   background: linear-gradient(135deg, #e3f0ff 0%, #f8fbff 100%);
   border-radius: 0 0 16px 16px;
@@ -40,11 +41,16 @@
   border-right: none;
 }
 
+/* Tiêu đề cột: màu pastel đậm hơn, đồng bộ header */
 .mega-menu__column-title {
   font-weight: bold;
   font-size: 16px;
   margin-bottom: 8px;
-  color: #2a3a4d;
+  color: #2563eb;
+  background: linear-gradient(90deg, #e3f0ff 60%, #dbeafe 100%);
+  padding: 4px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
 }
 
 .mega-menu__column-list {
@@ -56,6 +62,7 @@
   line-height: 1.7;
   margin-bottom: 4px;
 }
+/* Link menu con: màu dịu, hover pastel xanh */
 .mega-menu__link {
   color: #3d4e5c;
   display: block;
@@ -63,9 +70,33 @@
   font-weight: 400;
   padding: 8px 0;
   text-decoration: none;
-  transition: color 0.15s, text-decoration 0.15s;
+  transition: color 0.15s, text-decoration 0.15s, background 0.15s;
   word-wrap: break-word;
   min-height: 44px;
+  border-radius: 4px;
+}
+.mega-menu__link:hover,
+.mega-menu__link--active {
+  color: #2563eb;
+  background: linear-gradient(90deg, #e0e7ff 0%, #f8fbff 100%);
+  text-decoration: underline;
+/* Menu cha ở header: nổi bật, cùng tông pastel */
+.header__menu-item.list-menu__item.link {
+  color: #2563eb;
+  background: linear-gradient(90deg, #e3f0ff 60%, #dbeafe 100%);
+  font-weight: 600;
+  font-size: 17px;
+  border-radius: 8px;
+  padding: 6px 16px;
+  margin: 0 4px;
+  letter-spacing: 0.03em;
+  transition: background 0.15s, color 0.15s;
+}
+.header__menu-item.list-menu__item.link:hover,
+.header__menu-item.list-menu__item.link.header__active-menu-item {
+  color: #fff;
+  background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
+}
 }
 .mega-menu__link:hover,
 .mega-menu__link--active {
