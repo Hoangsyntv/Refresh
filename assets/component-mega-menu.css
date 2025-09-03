@@ -1,13 +1,39 @@
+/* Design Tokens */
+:root {
+  --color-header-bg: #fff;
+  --color-header-fg: #1a1a1a;
+  --color-mega-bg: #f8fbff;
+  --color-accent: #2563eb;
+  --color-border: #e5e7eb;
+  --shadow-elevation-2: 0 8px 24px rgba(0,0,0,0.08);
+  --radius-8: 8px;
+  --space-8: 8px;
+  --font-family: 'Inter', 'Roboto', 'Arial', 'Helvetica Neue', 'Segoe UI', 'sans-serif';
+/* Xóa dấu đóng ngoặc thừa */
 
+/* Header + Mega Menu font, spacing, shadow */
 .mega-menu {
   position: static;
-}
+  font-family: var(--font-family);
+/* Xóa dấu đóng ngoặc thừa */
+/* Xóa dấu đóng ngoặc thừa */
 
 
 /* Nền pastel cho mega menu */
 /* Nền pastel dịu cho mega menu */
+/* Mega menu panel: nền sáng, shadow, bo góc */
 .mega-menu__content {
-  background: linear-gradient(135deg, #e0e7ff 0%, #f8fbff 100%);
+  background: var(--color-mega-bg);
+  border-radius: 0 0 var(--radius-8) var(--radius-8);
+  box-shadow: var(--shadow-elevation-2);
+  left: 0;
+  overflow-y: auto;
+  padding: 32px 24px 24px 24px;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1000;
+/* Xóa dấu đóng ngoặc thừa */
   border-radius: 0 0 16px 16px;
   left: 0;
   overflow-y: auto;
@@ -17,26 +43,30 @@
   top: 100%;
   box-shadow: 0 8px 32px rgba(0,0,0,0.06);
   z-index: 1000;
-}
+/* Xóa dấu đóng ngoặc thừa */
 
 .mega-menu__columns-wrapper {
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
-}
+/* Xóa dấu đóng ngoặc thừa */
 
+/* Cột mega menu: 6–9 cột, gutter 24px, divider nhạt */
 .mega-menu__columns {
   display: grid;
   gap: 24px;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  border-bottom: 1px solid #eee;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  border-bottom: 1px solid var(--color-border);
   list-style: none;
+/* Xóa dấu đóng ngoặc thừa */
 }
 
+/* Cột: min-width, divider nhạt */
 .mega-menu__column {
-  min-width: 120px;
+  min-width: 180px;
   padding: 0 12px;
-  border-right: 1px solid #eee;
+  border-right: 1px solid var(--color-border);
+}
 }
 .mega-menu__column:last-child {
   border-right: none;
@@ -44,15 +74,18 @@
 
 /* Tiêu đề cột: màu pastel đậm hơn, đồng bộ header */
 /* Tiêu đề cột: màu xanh dịu, nền nhạt, chữ đậm vừa phải */
+/* Tiêu đề cột: semibold, màu brand, nền sáng, padding 8pt */
 .mega-menu__column-title {
   font-weight: 600;
-  font-size: 16px;
+  font-size: 15px;
   margin-bottom: 8px;
-  color: #1e293b;
-  background: linear-gradient(90deg, #e0e7ff 60%, #f8fbff 100%);
-  padding: 4px 8px;
+  color: var(--color-accent);
+  background: #e0e7ff;
+  padding: 8px 12px;
   border-radius: 6px;
   letter-spacing: 0.01em;
+  line-height: 1.4;
+}
 }
 
 .mega-menu__column-list {
@@ -66,48 +99,69 @@
 }
 /* Link menu con: màu dịu, hover pastel xanh */
 /* Link menu con: màu xám xanh, hover xanh pastel, chữ đậm hơn khi active */
+/* Link menu con: regular, màu neutral, hover/active rõ ràng, tap target ≥44px */
 .mega-menu__link {
-  color: #334155;
+  color: #1a1a1a;
   display: block;
-  font-size: 15px;
-  font-weight: 500;
-  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 12px 0;
   text-decoration: none;
   transition: color 0.18s, text-decoration 0.18s, background 0.18s;
   word-wrap: break-word;
   min-height: 44px;
   border-radius: 4px;
+  line-height: 1.5;
 }
 .mega-menu__link:hover {
-  color: #2563eb;
-  background: linear-gradient(90deg, #e0e7ff 0%, #f8fbff 100%);
+  color: var(--color-accent);
+  background: #e0e7ff;
   text-decoration: underline;
+  text-underline-offset: 2px;
 }
 .mega-menu__link--active {
-  color: #1e293b;
-  background: linear-gradient(90deg, #dbeafe 0%, #e0e7ff 100%);
-  font-weight: 700;
+  color: var(--color-accent);
+  background: #dbeafe;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 }
 /* Menu cha ở header: nổi bật, cùng tông pastel */
 /* Menu cha ở header: màu xanh dịu, nền pastel, hover xanh đậm, active nền xanh nhạt */
+/* Menu cha ở header: semibold, spacing, màu brand, hiệu ứng rõ ràng, font đẹp */
 .header__menu-item.list-menu__item.link {
-  color: #2563eb;
-  background: linear-gradient(90deg, #e0e7ff 60%, #f8fbff 100%);
+  color: var(--color-accent);
+  background: var(--color-header-bg);
+  font-family: var(--font-family);
   font-weight: 600;
-  font-size: 17px;
-  border-radius: 8px;
-  padding: 6px 16px;
-  margin: 0 4px;
-  letter-spacing: 0.02em;
+  font-size: 16px;
+  border-radius: var(--radius-8);
+  padding: 8px 24px;
+  margin: 0 8px;
+  letter-spacing: 0.01em;
   transition: background 0.18s, color 0.18s;
+  line-height: 1.4;
 }
 .header__menu-item.list-menu__item.link:hover {
   color: #fff;
-  background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
+  background: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 .header__menu-item.list-menu__item.link.header__active-menu-item {
-  color: #1e293b;
-  background: linear-gradient(90deg, #dbeafe 0%, #e0e7ff 100%);
+  color: var(--color-accent);
+  background: #dbeafe;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+/* Focus ring cho accessibility */
+.header__menu-item.list-menu__item.link:focus-visible,
+.mega-menu__link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+/* Divider, shadow, banner, responsive giữ nguyên */
 }
 .mega-menu__link:hover,
 .mega-menu__link--active {
