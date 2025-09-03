@@ -127,6 +127,7 @@
     text-transform: none !important;
     font-size: 13px !important;
     font-weight: 500 !important;
+    font-family: 'Inter', 'Roboto', 'Noto Sans', var(--font-body-family), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif !important;
   }
   
   .breadcrumb__link:hover {
@@ -138,6 +139,7 @@
     font-weight: 600 !important;
     text-transform: none !important;
     font-size: 13px !important;
+    font-family: 'Inter', 'Roboto', 'Noto Sans', var(--font-body-family), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif !important;
   }
   
   .breadcrumb__separator {
@@ -159,36 +161,8 @@
     {%- if request.page_type != 'index' -%}
       <li class="breadcrumb__separator" aria-hidden="true">></li>
       
-      {%- comment -%} Debug info - temporary {%- endcomment -%}
-      {%- if main_menu != blank -%}
-        <li class="breadcrumb__item">
-          <span style="font-size:10px; color:red;">DEBUG: Menu found ({{ main_menu.handle }})</span>
-        </li>
-        <li class="breadcrumb__separator" aria-hidden="true">></li>
-      {%- else -%}
-        <li class="breadcrumb__item">
-          <span style="font-size:10px; color:red;">DEBUG: No menu found</span>
-        </li>
-        <li class="breadcrumb__separator" aria-hidden="true">></li>
-      {%- endif -%}
-      
-      {%- if request.page_type == 'product' and product -%}
-        <li class="breadcrumb__item">
-          <span style="font-size:10px; color:blue;">PRODUCT COLLECTIONS: 
-            {%- for prod_collection in product.collections -%}
-              {{ prod_collection.handle }}{% unless forloop.last %}, {% endunless %}
-            {%- endfor -%}
-          </span>
-        </li>
-        <li class="breadcrumb__separator" aria-hidden="true">></li>
-      {%- endif -%}
-      
       {%- comment -%} Display hierarchical menu path {%- endcomment -%}
       {%- if menu_path != blank and menu_levels.size > 0 -%}
-        <li class="breadcrumb__item">
-          <span style="font-size:10px; color:green;">MENU PATH: {{ menu_path }}</span>
-        </li>
-        <li class="breadcrumb__separator" aria-hidden="true">></li>
         
         {%- for level in menu_levels -%}
           <li class="breadcrumb__item">

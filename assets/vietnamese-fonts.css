@@ -1,0 +1,115 @@
+/* Vietnamese Font Enhancement */
+
+/* Override font families for better Vietnamese support */
+:root {
+  --font-vietnamese-body: 'Inter', 'Roboto', 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-vietnamese-heading: 'Inter', 'Roboto', 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Body text enhancements */
+body,
+.body-text,
+p,
+span,
+div,
+li,
+td,
+th {
+  font-family: var(--font-vietnamese-body) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Heading enhancements */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+.heading {
+  font-family: var(--font-vietnamese-heading) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Navigation and menu text */
+.header__menu,
+.nav,
+.navigation,
+.menu,
+.header-link,
+.site-nav__link {
+  font-family: var(--font-vietnamese-body) !important;
+}
+
+/* Product text */
+.product__title,
+.product-card__title,
+.card__heading,
+.product__price,
+.price {
+  font-family: var(--font-vietnamese-body) !important;
+}
+
+/* Button text */
+.btn,
+.button,
+input[type="submit"],
+input[type="button"],
+button {
+  font-family: var(--font-vietnamese-body) !important;
+}
+
+/* Form inputs */
+input,
+textarea,
+select {
+  font-family: var(--font-vietnamese-body) !important;
+}
+
+/* Specific Vietnamese character support */
+.vietnamese-text {
+  font-feature-settings: "kern" 1, "liga" 1;
+  font-variant-ligatures: common-ligatures;
+}
+
+/* Better line height for Vietnamese text */
+.product__title,
+.product-card__title,
+.card__heading {
+  line-height: 1.4 !important;
+}
+
+/* Footer text */
+.footer,
+.footer__content,
+.footer__list-social {
+  font-family: var(--font-vietnamese-body) !important;
+}
+
+/* Cart and checkout */
+.cart-item__name,
+.cart-item__details,
+.cart__ctas,
+.checkout-button {
+  font-family: var(--font-vietnamese-body) !important;
+}
+
+/* Collection and search */
+.collection-title,
+.search-results,
+.facet-filters,
+.collection-product-count {
+  font-family: var(--font-vietnamese-body) !important;
+}
+
+/* Announcement bar */
+.announcement-bar {
+  font-family: var(--font-vietnamese-body) !important;
+}
+
+/* Ensure consistent character spacing for Vietnamese diacritics */
+*[lang="vi"],
+.lang-vietnamese {
+  letter-spacing: 0.01em;
+  word-spacing: 0.02em;
+}
