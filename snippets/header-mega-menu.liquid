@@ -21,13 +21,29 @@
   /* When sticky is active */
   .header__inline-menu.is-sticky {
     position: fixed;
-    top: 0;
+    top: 0 !important;
     left: 0;
     right: 0;
     z-index: 9999; /* High z-index when sticky */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    margin: 0 !important;
+    padding: 0 !important;
+    margin-top: 0 !important;
+    transform: translateY(0) !important;
+  }
+  
+  /* Ensure no gaps from body/html when sticky */
+  body:has(.header__inline-menu.is-sticky) {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
+  /* Reset any potential offsets */
+  .header__inline-menu.is-sticky,
+  .header__inline-menu.is-sticky * {
+    box-sizing: border-box;
   }
   
   /* Center content when sticky */
@@ -609,6 +625,15 @@ document.addEventListener('DOMContentLoaded', function() {
       isSticky = true;
       headerMenu.classList.add('is-sticky');
       placeholder.classList.add('active');
+      
+      // Ensure navbar is positioned at the very top
+      headerMenu.style.position = 'fixed';
+      headerMenu.style.top = '0px';
+      headerMenu.style.left = '0';
+      headerMenu.style.right = '0';
+      headerMenu.style.width = '100%';
+      headerMenu.style.margin = '0';
+      headerMenu.style.transform = 'translateY(0)';
       
       // Close any open mega menus when becoming sticky
       const openMenus = document.querySelectorAll('.mega-menu[open]');
