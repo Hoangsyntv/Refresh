@@ -33,7 +33,7 @@
     color: rgba(0, 0, 0, 0.6);
     text-decoration: none;
     transition: color 0.2s ease;
-    text-transform: uppercase;
+    text-transform: none;
     font-size: 13px;
     font-weight: 500;
   }
@@ -45,7 +45,7 @@
   .breadcrumb__current {
     color: rgba(0, 0, 0, 0.8);
     font-weight: 600;
-    text-transform: uppercase;
+    text-transform: none;
     font-size: 13px;
   }
   
@@ -84,7 +84,7 @@
     </li>
 
     {%- unless request.page_type == 'index' -%}
-      <li class="breadcrumb__separator" aria-hidden="true">/</li>
+      <li class="breadcrumb__separator" aria-hidden="true">></li>
       
       {%- case request.page_type -%}
         {%- when 'collection' -%}
@@ -97,7 +97,7 @@
             <li class="breadcrumb__item">
               <a href="{{ collection.url }}" class="breadcrumb__link">{{ collection.title | escape }}</a>
             </li>
-            <li class="breadcrumb__separator" aria-hidden="true">/</li>
+            <li class="breadcrumb__separator" aria-hidden="true">></li>
           {%- endif -%}
           <li class="breadcrumb__item">
             <span class="breadcrumb__current">{{ product.title | escape }}</span>
@@ -112,7 +112,7 @@
           <li class="breadcrumb__item">
             <a href="{{ blog.url }}" class="breadcrumb__link">{{ blog.title | escape }}</a>
           </li>
-          <li class="breadcrumb__separator" aria-hidden="true">/</li>
+          <li class="breadcrumb__separator" aria-hidden="true">></li>
           <li class="breadcrumb__item">
             <span class="breadcrumb__current">{{ article.title | escape }}</span>
           </li>
