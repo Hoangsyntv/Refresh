@@ -28,7 +28,9 @@
         for childlink in link.links
           if childlink.links != blank
             for grandchildlink in childlink.links
-              if grandchildlink.url == product.url or (collection and grandchildlink.url == collection.url)
+              # Check if this grandchild collection contains the product
+              assign grandchild_collection_handle = grandchildlink.url | split: '/collections/' | last | split: '/' | first
+              if product.collections contains collections[grandchild_collection_handle]
                 assign menu_path = link.title | append: '|' | append: childlink.title | append: '|' | append: grandchildlink.title
                 break
               endif
@@ -36,22 +38,29 @@
             if menu_path != blank
               break
             endif
-            # Check if product belongs to this collection
-            assign collection_handle = childlink.url | split: '/collections/' | last | split: '/' | first
-            if product.collections contains collections[collection_handle]
+            # Check if this child collection contains the product
+            assign child_collection_handle = childlink.url | split: '/collections/' | last | split: '/' | first
+            if product.collections contains collections[child_collection_handle]
               assign menu_path = link.title | append: '|' | append: childlink.title
               break
             endif
           else
-            # Check single level childlink
-            assign collection_handle = childlink.url | split: '/collections/' | last | split: '/' | first
-            if product.collections contains collections[collection_handle]
+            # Check if this child collection contains the product (no grandchildren)
+            assign child_collection_handle = childlink.url | split: '/collections/' | last | split: '/' | first
+            if product.collections contains collections[child_collection_handle]
               assign menu_path = link.title | append: '|' | append: childlink.title
               break
             endif
           endif
         endfor
         if menu_path != blank
+          break
+        endif
+      else
+        # Check if this main link collection contains the product (no children)
+        assign main_collection_handle = link.url | split: '/collections/' | last | split: '/' | first
+        if product.collections contains collections[main_collection_handle]
+          assign menu_path = link.title
           break
         endif
       endif
@@ -159,6 +168,17 @@
       {%- else -%}
         <li class="breadcrumb__item">
           <span style="font-size:10px; color:red;">DEBUG: No menu found</span>
+        </li>
+        <li class="breadcrumb__separator" aria-hidden="true">></li>
+      {%- endif -%}
+      
+      {%- if request.page_type == 'product' and product -%}
+        <li class="breadcrumb__item">
+          <span style="font-size:10px; color:blue;">PRODUCT COLLECTIONS: 
+            {%- for prod_collection in product.collections -%}
+              {{ prod_collection.handle }}{% unless forloop.last %}, {% endunless %}
+            {%- endfor -%}
+          </span>
         </li>
         <li class="breadcrumb__separator" aria-hidden="true">></li>
       {%- endif -%}
