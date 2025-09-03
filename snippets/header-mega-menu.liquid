@@ -2,7 +2,7 @@
   Renders a megamenu for the header.
 
   Usage:
-  {% render 'header-mega-menu' %}
+  {% render 'header-mega-menu', menu: section.settings.menu %}
 {% endcomment %}
 
 <style>
@@ -350,7 +350,7 @@
 
 <nav class="header__inline-menu" id="mega-menu-nav">
   <ul class="primary-nav" role="menubar" style="height:60px;border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0;background:#FFFFFF;display:flex;align-items:stretch;margin:0;padding:0;list-style:none;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    {%- for link in section.settings.menu.links -%}
+    {%- for link in menu.links -%}
       <li class="primary-nav__item" style="font-size:15px;position:relative;display:flex;align-items:stretch;">
         {%- if link.links != blank -%}
           <header-menu>
