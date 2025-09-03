@@ -93,6 +93,25 @@
     position: relative !important;
   }
   
+  /* Fix predictive search results z-index */
+  .predictive-search,
+  predictive-search[open] .predictive-search,
+  predictive-search[loading] .predictive-search,
+  .predictive-search--search-template,
+  .predictive-search__results-groups-wrapper {
+    z-index: 99999 !important;
+  }
+  
+  /* Ensure all search-related elements are above navbar */
+  details-modal.header__search,
+  details-modal.header__search[open],
+  details-modal.header__search .search-modal,
+  details-modal.header__search .search-modal__content,
+  details-modal.header__search predictive-search,
+  details-modal.header__search .predictive-search {
+    z-index: 99999 !important;
+  }
+  
   /* Placeholder to prevent content jump when menu becomes fixed */
   .header__inline-menu-placeholder {
     height: 60px;
@@ -675,10 +694,36 @@ function openSearchModal(event) {
     // Ensure the modal appears above navbar
     setTimeout(() => {
       const searchModal = document.querySelector('.search-modal, details[open] > .search-modal');
+      const predictiveSearch = document.querySelector('.predictive-search, predictive-search');
+      const searchContent = document.querySelector('.search-modal__content');
+      
       if (searchModal) {
         searchModal.style.zIndex = '99999';
         searchModal.style.position = 'fixed';
         console.log('Search modal z-index updated'); // Debug log
+      }
+      
+      if (predictiveSearch) {
+        predictiveSearch.style.zIndex = '99999';
+        console.log('Predictive search z-index updated'); // Debug log
+      }
+      
+      if (searchContent) {
+        searchContent.style.zIndex = '99999';
+        console.log('Search content z-index updated'); // Debug log
+      }
+      
+      // Also check for any predictive search results that appear later
+      const observer = new MutationObserver(() => {
+        const allPredictiveElements = document.querySelectorAll('.predictive-search, .predictive-search__results-groups-wrapper');
+        allPredictiveElements.forEach(el => {
+          el.style.zIndex = '99999';
+        });
+      });
+      
+      const searchContainer = document.querySelector('.header__search');
+      if (searchContainer) {
+        observer.observe(searchContainer, { childList: true, subtree: true });
       }
     }, 10);
   } else {
