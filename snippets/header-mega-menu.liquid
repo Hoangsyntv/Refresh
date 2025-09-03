@@ -6,26 +6,54 @@
 {% endcomment %}
 
 <style>
+  /* Sticky navigation container */
+  .header__inline-menu {
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
   .header__inline-menu .mega-menu {
     position: relative;
   }
   
   .header__inline-menu .mega-menu__panel {
-    position: absolute;
-    top: 100%;
+    position: fixed;
+    top: 60px; /* Height of menu bar */
     left: 50%;
     transform: translateX(-50%);
-    z-index: 1000;
+    z-index: 99999; /* Very high z-index to stay above breadcrumb */
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
     padding: 32px;
     margin-top: 8px;
-    max-width: 1200px;
+    max-width: min(1200px, 90vw);
     width: max-content;
-    min-width: 800px;
+    min-width: min(800px, 85vw);
     display: none;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: all 0.3s ease;
+  }
+  
+  /* Overlay for mega menu */
+  .header__inline-menu .mega-menu[open]::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 99998;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
   }
   
   .header__inline-menu .mega-menu[open] .mega-menu__panel {
@@ -220,6 +248,9 @@
       max-width: 95vw;
       min-width: auto;
       padding: 24px;
+      left: 2.5vw;
+      transform: none;
+      width: 95vw;
     }
     
     .header__inline-menu .mega-menu__labels {
@@ -257,10 +288,23 @@
   @media (max-width: 768px) {
     .header__inline-menu .mega-menu__panel {
       padding: 20px;
+      left: 1vw;
+      width: 98vw;
+      max-width: 98vw;
     }
     
     .header__inline-menu .mega-menu__labels .mega-menu__title {
       font-size: 14px;
+    }
+  }
+  
+  /* Ensure mega menu is always centered on larger screens */
+  @media (min-width: 1025px) {
+    .header__inline-menu .mega-menu__panel {
+      left: 50%;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: min(1200px, 90vw);
     }
   }
 </style>
@@ -366,3 +410,73 @@
     {%- endfor -%}
   </ul>
 </nav>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const headerMenu = document.querySelector('.header__inline-menu');
+  const headerContainer = document.querySelector('.header-wrapper, .shopify-section-header');
+  
+  if (!headerMenu) return;
+  
+  // Function to update sticky position
+  function updateStickyPosition() {
+    const headerHeight = headerContainer ? headerContainer.offsetHeight : 0;
+    const megaMenuPanels = document.querySelectorAll('.mega-menu__panel');
+    
+    megaMenuPanels.forEach(panel => {
+      panel.style.top = headerHeight + 'px';
+    });
+  }
+  
+  // Update on load and resize
+  updateStickyPosition();
+  window.addEventListener('resize', updateStickyPosition);
+  
+  // Handle mega menu centering
+  const megaMenus = document.querySelectorAll('.mega-menu');
+  
+  megaMenus.forEach(menu => {
+    const trigger = menu.querySelector('.primary-nav__trigger');
+    const panel = menu.querySelector('.mega-menu__panel');
+    
+    if (trigger && panel) {
+      trigger.addEventListener('click', function() {
+        // Ensure proper centering when menu opens
+        setTimeout(() => {
+          if (window.innerWidth >= 1025) {
+            panel.style.left = '50%';
+            panel.style.transform = 'translateX(-50%)';
+          }
+        }, 10);
+      });
+    }
+  });
+  
+  // Close mega menu when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.mega-menu')) {
+      const openMenus = document.querySelectorAll('.mega-menu[open]');
+      openMenus.forEach(menu => {
+        menu.removeAttribute('open');
+      });
+    }
+  });
+  
+  // Handle scroll behavior for better sticky effect
+  let lastScrollY = window.scrollY;
+  
+  window.addEventListener('scroll', function() {
+    const currentScrollY = window.scrollY;
+    
+    if (currentScrollY > lastScrollY && currentScrollY > 100) {
+      // Scrolling down - add shadow for better visibility
+      headerMenu.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
+    } else {
+      // Scrolling up or at top
+      headerMenu.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+    }
+    
+    lastScrollY = currentScrollY;
+  });
+});
+</script>
