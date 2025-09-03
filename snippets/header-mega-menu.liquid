@@ -10,53 +10,103 @@
     {%- for link in section.settings.menu.links -%}
       <li class="primary-nav__item" style="margin:0 24px;font-size:15px;font-weight:600;position:relative;">
         {%- if link.links != blank -%}
-          <header-menu>
-            <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu" aria-haspopup="true" aria-expanded="false">
-              <summary
-                id="HeaderMenu-{{ link.handle }}"
-                class="primary-nav__trigger"
-                aria-controls="MegaMenu-Content-{{ forloop.index }}"
-                tabindex="0"
-                style="padding:0 8px;display:flex;align-items:center;gap:8px;"
-              >
-                <span class="primary-nav__text">{{- link.title | escape -}}</span>
-                <span class="primary-nav__icon">{{ 'icon-caret.svg' | inline_asset_content }}</span>
-              </summary>
-              <div
-                id="MegaMenu-Content-{{ forloop.index }}"
-                class="mega-menu__panel"
-                tabindex="-1"
-                style="max-width:1440px;width:100vw;box-shadow:0 8px 24px rgba(0,0,0,0.12);border-radius:8px;padding:24px;display:flex;gap:24px;"
-              >
-                {%- assign columns = link.links | size -%}
-                {%- for childlink in link.links -%}
-                  <div class="mega-menu__column" style="min-width:180px;border-right:1px solid #E5E7EB;padding-right:12px;">
-                    <div class="mega-menu__title" style="font-weight:600;margin-bottom:8px;">{{ childlink.title | escape }}</div>
-                    <ul class="mega-menu__list" role="list">
-                      {%- for grandchildlink in childlink.links -%}
-                        <li>
-                          <a
-                            href="{{ grandchildlink.url }}"
-                            class="mega-menu__link"
-                            style="font-size:14px;line-height:1.4;color:#1A1A1A;padding:8px 0;"
-                          >
-                            {{ grandchildlink.title | escape }}
-                          </a>
-                        </li>
-                      {%- endfor -%}
-                    </ul>
-                  </div>
-                {%- endfor -%}
-                <!-- Promo Banner Column -->
-                <div class="mega-menu__column mega-menu__column--banner" style="min-width:200px;padding-left:12px;">
-                  <div class="mega-menu__banner" style="border:2px solid #FFF;border-radius:8px;overflow:hidden;">
-                    <img src="{{ section.settings.promo_banner | default: 'https://via.placeholder.com/200x266.webp' }}" alt="Promo" loading="lazy" style="width:100%;aspect-ratio:3/4;">
-                    <div class="mega-menu__cta" style="font-size:13px;margin-top:8px;">{{ section.settings.promo_cta | default: 'Khuyến mãi đặc biệt!' }}</div>
+          {%- if link.url == '#' -%}
+            <header-menu>
+              <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu" aria-haspopup="true" aria-expanded="false">
+                <summary
+                  id="HeaderMenu-{{ link.handle }}"
+                  class="primary-nav__trigger"
+                  aria-controls="MegaMenu-Content-{{ forloop.index }}"
+                  tabindex="0"
+                  style="padding:0 8px;display:flex;align-items:center;gap:8px;"
+                >
+                  <span class="primary-nav__text">{{- link.title | escape -}}</span>
+                  <span class="primary-nav__icon">{{ 'icon-caret.svg' | inline_asset_content }}</span>
+                </summary>
+                <div
+                  id="MegaMenu-Content-{{ forloop.index }}"
+                  class="mega-menu__panel"
+                  tabindex="-1"
+                  style="max-width:1440px;width:100vw;box-shadow:0 8px 24px rgba(0,0,0,0.12);border-radius:8px;padding:24px;display:flex;gap:24px;"
+                >
+                  {%- assign columns = link.links | size -%}
+                  {%- for childlink in link.links -%}
+                    <div class="mega-menu__column" style="min-width:180px;border-right:1px solid #E5E7EB;padding-right:12px;">
+                      <div class="mega-menu__title" style="font-weight:600;margin-bottom:8px;">{{ childlink.title | escape }}</div>
+                      <ul class="mega-menu__list" role="list">
+                        {%- for grandchildlink in childlink.links -%}
+                          <li>
+                            <a
+                              href="{{ grandchildlink.url }}"
+                              class="mega-menu__link"
+                              style="font-size:14px;line-height:1.4;color:#1A1A1A;padding:8px 0;"
+                            >
+                              {{ grandchildlink.title | escape }}
+                            </a>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                    </div>
+                  {%- endfor -%}
+                  <!-- Promo Banner Column -->
+                  <div class="mega-menu__column mega-menu__column--banner" style="min-width:200px;padding-left:12px;">
+                    <div class="mega-menu__banner" style="border:2px solid #FFF;border-radius:8px;overflow:hidden;">
+                      <img src="{{ section.settings.promo_banner | default: 'https://via.placeholder.com/200x266.webp' }}" alt="Promo" loading="lazy" style="width:100%;aspect-ratio:3/4;">
+                      <div class="mega-menu__cta" style="font-size:13px;margin-top:8px;">{{ section.settings.promo_cta | default: 'Khuyến mãi đặc biệt!' }}</div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </details>
-          </header-menu>
+              </details>
+            </header-menu>
+          {%- else -%}
+            <header-menu>
+              <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu" aria-haspopup="true" aria-expanded="false">
+                <summary
+                  id="HeaderMenu-{{ link.handle }}"
+                  class="primary-nav__trigger"
+                  aria-controls="MegaMenu-Content-{{ forloop.index }}"
+                  tabindex="0"
+                  style="padding:0 8px;display:flex;align-items:center;gap:8px;"
+                >
+                  <span class="primary-nav__text">{{- link.title | escape -}}</span>
+                  <span class="primary-nav__icon">{{ 'icon-caret.svg' | inline_asset_content }}</span>
+                </summary>
+                <div
+                  id="MegaMenu-Content-{{ forloop.index }}"
+                  class="mega-menu__panel"
+                  tabindex="-1"
+                  style="max-width:1440px;width:100vw;box-shadow:0 8px 24px rgba(0,0,0,0.12);border-radius:8px;padding:24px;display:flex;gap:24px;"
+                >
+                  {%- assign columns = link.links | size -%}
+                  {%- for childlink in link.links -%}
+                    <div class="mega-menu__column" style="min-width:180px;border-right:1px solid #E5E7EB;padding-right:12px;">
+                      <div class="mega-menu__title" style="font-weight:600;margin-bottom:8px;">{{ childlink.title | escape }}</div>
+                      <ul class="mega-menu__list" role="list">
+                        {%- for grandchildlink in childlink.links -%}
+                          <li>
+                            <a
+                              href="{{ grandchildlink.url }}"
+                              class="mega-menu__link"
+                              style="font-size:14px;line-height:1.4;color:#1A1A1A;padding:8px 0;"
+                            >
+                              {{ grandchildlink.title | escape }}
+                            </a>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                    </div>
+                  {%- endfor -%}
+                  <!-- Promo Banner Column -->
+                  <div class="mega-menu__column mega-menu__column--banner" style="min-width:200px;padding-left:12px;">
+                    <div class="mega-menu__banner" style="border:2px solid #FFF;border-radius:8px;overflow:hidden;">
+                      <img src="{{ section.settings.promo_banner | default: 'https://via.placeholder.com/200x266.webp' }}" alt="Promo" loading="lazy" style="width:100%;aspect-ratio:3/4;">
+                      <div class="mega-menu__cta" style="font-size:13px;margin-top:8px;">{{ section.settings.promo_cta | default: 'Khuyến mãi đặc biệt!' }}</div>
+                    </div>
+                  </div>
+                </div>
+              </details>
+            </header-menu>
+          {%- endif -%}
         {%- else -%}
           <a
             id="HeaderMenu-{{ link.handle }}"
