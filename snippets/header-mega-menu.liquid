@@ -35,6 +35,7 @@
                   {% if col_count > 10 %}
                     {% assign split = true %}
                   {% endif %}
+                  {% assign split_index = col_count | divided_by: 2 %}
                   <ul
                     class="mega-menu__columns"
                     style="display:grid;grid-template-columns:repeat({{ col_count }},1fr);gap:24px;border-bottom:1px solid #eee;"
@@ -59,8 +60,8 @@
                           {%- endfor -%}
                         </ul>
                       </li>
-                      {%- if split and forloop.index == col_count/2 -%}
-                        </ul><ul class="mega-menu__columns" style="display:grid;grid-template-columns:repeat({{ [col_count/2,9] | min }},1fr);gap:24px;border-bottom:1px solid #eee;">
+                      {%- if split and forloop.index == split_index -%}
+                        </ul><ul class="mega-menu__columns" style="display:grid;grid-template-columns:repeat({{ split_index }},1fr);gap:24px;border-bottom:1px solid #eee;">
                       {%- endif -%}
                     {%- endfor -%}
                   </ul>
