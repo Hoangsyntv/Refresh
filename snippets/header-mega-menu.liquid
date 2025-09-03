@@ -9,7 +9,7 @@
   /* Full width navigation container */
   .header__inline-menu {
     position: relative;
-    z-index: 9999;
+    z-index: 1000; /* Lowered from 9999 to allow search results to appear above */
     background: #fff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
@@ -24,7 +24,7 @@
     top: 0;
     left: 0;
     right: 0;
-    z-index: 9999;
+    z-index: 9999; /* High z-index when sticky */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -77,29 +77,36 @@
     cursor: pointer !important;
   }
   
-  /* Fix search modal z-index to appear above sticky navbar */
+  /* Fix search modal z-index to appear above navbar (both normal and sticky) */
   .header__search details[open] > .search-modal,
   .search-modal {
-    z-index: 99999 !important;
+    z-index: 10000 !important; /* Above normal navbar (1000) and below sticky navbar (9999) when not sticky */
   }
   
   .header__search details[open] {
-    z-index: 99999 !important;
+    z-index: 10000 !important;
   }
   
   /* Ensure search modal content is properly positioned */
   .search-modal__content {
-    z-index: 99999 !important;
+    z-index: 10000 !important;
     position: relative !important;
   }
   
-  /* Fix predictive search results z-index */
+  /* Fix predictive search results z-index - higher than normal navbar */
   .predictive-search,
   predictive-search[open] .predictive-search,
   predictive-search[loading] .predictive-search,
   .predictive-search--search-template,
   .predictive-search__results-groups-wrapper {
-    z-index: 99999 !important;
+    z-index: 10000 !important; /* Above normal navbar (1000) */
+  }
+  
+  /* When navbar is sticky, search needs even higher z-index */
+  .header__inline-menu.is-sticky ~ * .header__search details[open] > .search-modal,
+  .header__inline-menu.is-sticky ~ * .search-modal,
+  .header__inline-menu.is-sticky ~ * .predictive-search {
+    z-index: 99999 !important; /* Above sticky navbar (9999) */
   }
   
   /* Ensure all search-related elements are above navbar */
@@ -109,7 +116,7 @@
   details-modal.header__search .search-modal__content,
   details-modal.header__search predictive-search,
   details-modal.header__search .predictive-search {
-    z-index: 99999 !important;
+    z-index: 10000 !important;
   }
   
   /* Placeholder to prevent content jump when menu becomes fixed */
@@ -691,33 +698,41 @@ function openSearchModal(event) {
     searchButton.click();
     console.log('Search button clicked'); // Debug log
     
-    // Ensure the modal appears above navbar
+    // Ensure the modal appears above navbar (check if navbar is sticky)
     setTimeout(() => {
+      const navbar = document.querySelector('.header__inline-menu');
+      const isSticky = navbar && navbar.classList.contains('is-sticky');
+      const zIndexValue = isSticky ? '99999' : '10000'; // Higher z-index when navbar is sticky
+      
       const searchModal = document.querySelector('.search-modal, details[open] > .search-modal');
       const predictiveSearch = document.querySelector('.predictive-search, predictive-search');
       const searchContent = document.querySelector('.search-modal__content');
       
       if (searchModal) {
-        searchModal.style.zIndex = '99999';
+        searchModal.style.zIndex = zIndexValue;
         searchModal.style.position = 'fixed';
-        console.log('Search modal z-index updated'); // Debug log
+        console.log('Search modal z-index updated to:', zIndexValue); // Debug log
       }
       
       if (predictiveSearch) {
-        predictiveSearch.style.zIndex = '99999';
-        console.log('Predictive search z-index updated'); // Debug log
+        predictiveSearch.style.zIndex = zIndexValue;
+        console.log('Predictive search z-index updated to:', zIndexValue); // Debug log
       }
       
       if (searchContent) {
-        searchContent.style.zIndex = '99999';
-        console.log('Search content z-index updated'); // Debug log
+        searchContent.style.zIndex = zIndexValue;
+        console.log('Search content z-index updated to:', zIndexValue); // Debug log
       }
       
       // Also check for any predictive search results that appear later
       const observer = new MutationObserver(() => {
+        const currentNavbar = document.querySelector('.header__inline-menu');
+        const currentIsSticky = currentNavbar && currentNavbar.classList.contains('is-sticky');
+        const currentZIndex = currentIsSticky ? '99999' : '10000';
+        
         const allPredictiveElements = document.querySelectorAll('.predictive-search, .predictive-search__results-groups-wrapper');
         allPredictiveElements.forEach(el => {
-          el.style.zIndex = '99999';
+          el.style.zIndex = currentZIndex;
         });
       });
       
