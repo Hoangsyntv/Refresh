@@ -5,121 +5,284 @@
   {% render 'header-mega-menu' %}
 {% endcomment %}
 
+<style>
+  .header__inline-menu .mega-menu {
+    position: relative;
+  }
+  
+  .header__inline-menu .mega-menu__panel {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    padding: 32px;
+    margin-top: 8px;
+    max-width: 1200px;
+    width: max-content;
+    min-width: 800px;
+    display: none;
+  }
+  
+  .header__inline-menu .mega-menu[open] .mega-menu__panel {
+    display: flex;
+  }
+  
+  .header__inline-menu .primary-nav__trigger {
+    padding: 12px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    color: #1f2937;
+    font-weight: 600;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .header__inline-menu .primary-nav__trigger:hover,
+  .header__inline-menu .primary-nav__trigger:focus {
+    background: #f3f4f6;
+    color: #1f2937;
+  }
+  
+  .header__inline-menu .mega-menu[open] .primary-nav__trigger {
+    background: #1f2937;
+    color: #fff;
+  }
+  
+  .header__inline-menu .primary-nav__icon {
+    transition: transform 0.3s ease;
+  }
+  
+  .header__inline-menu .mega-menu[open] .primary-nav__icon {
+    transform: rotate(180deg);
+  }
+  
+  .header__inline-menu .mega-menu__column {
+    flex: 1;
+    min-width: 180px;
+    padding: 0 20px;
+    position: relative;
+  }
+  
+  .header__inline-menu .mega-menu__column:not(:last-child):after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #e5e7eb;
+  }
+  
+  .header__inline-menu .mega-menu__column--banner {
+    flex: 0 0 220px;
+    padding-left: 24px;
+  }
+  
+  .header__inline-menu .mega-menu__title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e5e7eb;
+  }
+  
+  .header__inline-menu .mega-menu__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .header__inline-menu .mega-menu__link {
+    display: block;
+    padding: 8px 0;
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.5;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  .header__inline-menu .mega-menu__link:hover,
+  .header__inline-menu .mega-menu__link:focus {
+    color: #1f2937;
+  }
+  
+  .header__inline-menu .mega-menu__banner {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .header__inline-menu .mega-menu__banner img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4/5;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .header__inline-menu .mega-menu__banner-content {
+    padding: 16px;
+  }
+  
+  .header__inline-menu .mega-menu__banner-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 8px;
+  }
+  
+  .header__inline-menu .mega-menu__cta {
+    display: inline-block;
+    background: #1f2937;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s ease;
+  }
+  
+  .header__inline-menu .mega-menu__cta:hover {
+    background: #111827;
+    color: #fff;
+  }
+  
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .header__inline-menu .mega-menu__panel {
+      max-width: 95vw;
+      min-width: auto;
+      flex-wrap: wrap;
+      padding: 24px;
+    }
+    
+    .header__inline-menu .mega-menu__column {
+      flex: 1 1 calc(50% - 20px);
+      min-width: 160px;
+    }
+    
+    .header__inline-menu .mega-menu__column--banner {
+      flex: 1 1 100%;
+      margin-top: 20px;
+      padding-left: 0;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .header__inline-menu .mega-menu__panel {
+      flex-direction: column;
+      padding: 20px;
+    }
+    
+    .header__inline-menu .mega-menu__column {
+      flex: none;
+      padding: 0 0 20px 0;
+    }
+    
+    .header__inline-menu .mega-menu__column:not(:last-child):after {
+      display: none;
+    }
+    
+    .header__inline-menu .mega-menu__column--banner {
+      margin-top: 0;
+    }
+  }
+</style>
+
 <nav class="header__inline-menu">
-  <ul class="primary-nav" role="menubar" style="height:60px;border-top:1px solid #E5E7EB;border-bottom:1px solid #E5E7EB;background:#FFF;display:flex;align-items:center;">
+  <ul class="primary-nav" role="menubar" style="height:60px;border-top:1px solid #E5E7EB;border-bottom:1px solid #E5E7EB;background:#FFF;display:flex;align-items:center;margin:0;padding:0;list-style:none;">
     {%- for link in section.settings.menu.links -%}
-      <li class="primary-nav__item" style="margin:0 24px;font-size:15px;font-weight:600;position:relative;">
+      <li class="primary-nav__item" style="margin:0 8px;font-size:15px;position:relative;">
         {%- if link.links != blank -%}
-          {%- if link.url == '#' -%}
-            <header-menu>
-              <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu" aria-haspopup="true" aria-expanded="false">
-                <summary
-                  id="HeaderMenu-{{ link.handle }}"
-                  class="primary-nav__trigger"
-                  aria-controls="MegaMenu-Content-{{ forloop.index }}"
-                  tabindex="0"
-                  style="padding:0 8px;display:flex;align-items:center;gap:8px;"
-                >
-                  <span class="primary-nav__text">{{- link.title | escape -}}</span>
-                  <span class="primary-nav__icon">{{ 'icon-caret.svg' | inline_asset_content }}</span>
-                </summary>
-                <div
-                  id="MegaMenu-Content-{{ forloop.index }}"
-                  class="mega-menu__panel"
-                  tabindex="-1"
-                  style="max-width:1320px;width:100%;box-shadow:0 8px 24px rgba(0,0,0,0.12);border-radius:8px;padding:32px 24px;background:#fff;display:flex;flex-wrap:nowrap;gap:24px;box-sizing:border-box;"
-                >
-                  {%- assign columns = link.links | size -%}
-                  {%- for childlink in link.links -%}
-                    <div class="mega-menu__column" style="flex:1 1 0;min-width:170px;max-width:200px;border-right:1px solid #E5E7EB;padding-right:16px;box-sizing:border-box;">
-                      <div class="mega-menu__title" style="font-weight:600;margin-bottom:8px;">{{ childlink.title | escape }}</div>
-                      <ul class="mega-menu__list" role="list" style="margin:0;padding:0;list-style:none;">
-                        {%- for grandchildlink in childlink.links -%}
-                          <li>
-                            <a
-                              href="{{ grandchildlink.url }}"
-                              class="mega-menu__link"
-                              style="font-size:14px;line-height:1.4;color:#1A1A1A;padding:8px 0;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
-                            >
-                              {{ grandchildlink.title | escape }}
-                            </a>
-                          </li>
-                        {%- endfor -%}
-                      </ul>
-                    </div>
-                  {%- endfor -%}
-                  <!-- Promo Banner Column -->
-                  <div class="mega-menu__column mega-menu__column--banner" style="flex:0 0 200px;max-width:200px;padding-left:16px;box-sizing:border-box;">
-                    <div class="mega-menu__banner" style="border:2px solid #FFF;border-radius:8px;overflow:hidden;background:#fff;box-shadow:0 4px 16px rgba(0,0,0,0.08);">
-                      <img src="https://img.freepik.com/free-psd/banner-template-fashion-sale-special-discount_23-2149436197.jpg" alt="Promo" loading="lazy" style="width:100%;aspect-ratio:3/4;display:block;">
-                      <div class="mega-menu__cta" style="font-size:13px;margin-top:8px;text-align:center;">{{ section.settings.promo_cta | default: 'Khuyến mãi đặc biệt!' }}</div>
+          <header-menu>
+            <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu" aria-haspopup="true" aria-expanded="false">
+              <summary
+                id="HeaderMenu-{{ link.handle }}"
+                class="primary-nav__trigger"
+                aria-controls="MegaMenu-Content-{{ forloop.index }}"
+                aria-label="Mở menu {{ link.title }}"
+                tabindex="0"
+                style="display:flex;align-items:center;gap:6px;list-style:none;"
+              >
+                <span class="primary-nav__text">{{- link.title | escape -}}</span>
+                <span class="primary-nav__icon" aria-hidden="true">
+                  <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
+                    <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </summary>
+              <div
+                id="MegaMenu-Content-{{ forloop.index }}"
+                class="mega-menu__panel"
+                tabindex="-1"
+                role="menu"
+                aria-labelledby="HeaderMenu-{{ link.handle }}"
+              >
+                {%- for childlink in link.links -%}
+                  <div class="mega-menu__column" role="group" aria-labelledby="menu-category-{{ forloop.index }}">
+                    <h3 id="menu-category-{{ forloop.index }}" class="mega-menu__title">{{ childlink.title | escape }}</h3>
+                    <ul class="mega-menu__list" role="list">
+                      {%- for grandchildlink in childlink.links -%}
+                        <li role="none">
+                          <a
+                            href="{{ grandchildlink.url }}"
+                            class="mega-menu__link"
+                            role="menuitem"
+                            tabindex="-1"
+                          >
+                            {{ grandchildlink.title | escape }}
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </div>
+                {%- endfor -%}
+                
+                <!-- Promo Banner Column -->
+                <div class="mega-menu__column mega-menu__column--banner" role="group" aria-label="Khuyến mãi đặc biệt">
+                  <div class="mega-menu__banner">
+                    <img 
+                      src="https://img.freepik.com/free-psd/banner-template-fashion-sale-special-discount_23-2149436197.jpg" 
+                      alt="Banner khuyến mãi nội thất văn phòng" 
+                      loading="lazy"
+                    >
+                    <div class="mega-menu__banner-content">
+                      <h4 class="mega-menu__banner-title">Ưu đãi đặc biệt</h4>
+                      <a href="/collections/sale" class="mega-menu__cta" role="button">
+                        Xem ngay
+                      </a>
                     </div>
                   </div>
                 </div>
-              </details>
-            </header-menu>
-          {%- else -%}
-            <header-menu>
-              <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu" aria-haspopup="true" aria-expanded="false">
-                <summary
-                  id="HeaderMenu-{{ link.handle }}"
-                  class="primary-nav__trigger"
-                  aria-controls="MegaMenu-Content-{{ forloop.index }}"
-                  tabindex="0"
-                  style="padding:0 8px;display:flex;align-items:center;gap:8px;"
-                >
-                  <span class="primary-nav__text">{{- link.title | escape -}}</span>
-                  <span class="primary-nav__icon">{{ 'icon-caret.svg' | inline_asset_content }}</span>
-                </summary>
-                <div
-                  id="MegaMenu-Content-{{ forloop.index }}"
-                  class="mega-menu__panel"
-                  tabindex="-1"
-                  style="max-width:1440px;width:100vw;box-shadow:0 8px 24px rgba(0,0,0,0.12);border-radius:8px;padding:24px;display:flex;gap:24px;"
-                >
-                  {%- assign columns = link.links | size -%}
-                  {%- for childlink in link.links -%}
-                    <div class="mega-menu__column" style="min-width:180px;border-right:1px solid #E5E7EB;padding-right:12px;">
-                      <div class="mega-menu__title" style="font-weight:600;margin-bottom:8px;">{{ childlink.title | escape }}</div>
-                      <ul class="mega-menu__list" role="list">
-                        {%- for grandchildlink in childlink.links -%}
-                          <li>
-                            <a
-                              href="{{ grandchildlink.url }}"
-                              class="mega-menu__link"
-                              style="font-size:14px;line-height:1.4;color:#1A1A1A;padding:8px 0;"
-                            >
-                              {{ grandchildlink.title | escape }}
-                            </a>
-                          </li>
-                        {%- endfor -%}
-                      </ul>
-                    </div>
-                  {%- endfor -%}
-                  <!-- Promo Banner Column -->
-                  <div class="mega-menu__column mega-menu__column--banner" style="min-width:200px;padding-left:12px;">
-                    <div class="mega-menu__banner" style="border:2px solid #FFF;border-radius:8px;overflow:hidden;">
-                      <img src="{{ section.settings.promo_banner | default: 'https://via.placeholder.com/200x266.webp' }}" alt="Promo" loading="lazy" style="width:100%;aspect-ratio:3/4;">
-                      <div class="mega-menu__cta" style="font-size:13px;margin-top:8px;">{{ section.settings.promo_cta | default: 'Khuyến mãi đặc biệt!' }}</div>
-                    </div>
-                  </div>
-                </div>
-              </details>
-            </header-menu>
-          {%- endif -%}
+              </div>
+            </details>
+          </header-menu>
         {%- else -%}
           <a
             id="HeaderMenu-{{ link.handle }}"
             href="{{ link.url }}"
             class="primary-nav__link"
-            style="padding:0 8px;"
+            style="padding:12px 16px;color:#1f2937;font-weight:500;text-decoration:none;border-radius:8px;transition:all 0.3s ease;"
             {% if link.current %} aria-current="page"{% endif %}
+            onmouseover="this.style.background='#f3f4f6'"
+            onmouseout="this.style.background='transparent'"
           >
             <span class="primary-nav__text">{{- link.title | escape -}}</span>
           </a>
         {%- endif -%}
         {%- if link.current %}
-          <span class="primary-nav__active" style="position:absolute;left:0;right:0;bottom:0;height:3px;background:#FF6F00;border-radius:2px;"></span>
+          <span class="primary-nav__active" style="position:absolute;left:50%;bottom:-1px;transform:translateX(-50%);width:calc(100% - 16px);height:3px;background:#1f2937;border-radius:2px;"></span>
         {%- endif -%}
       </li>
     {%- endfor -%}
