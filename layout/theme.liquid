@@ -311,6 +311,7 @@
 
     {%- unless request.page_type == 'index' -%}
       {% render 'breadcrumb' %}
+      {% comment %} {% render 'debug-menu' %} {% endcomment %}
     {%- endunless -%}
 
     <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
