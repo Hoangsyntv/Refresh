@@ -32,11 +32,19 @@
     display: flex;
   }
   
+  .header__inline-menu .mega-menu__labels {
+    width: 100%;
+  }
+  
+  .header__inline-menu .mega-menu__content {
+    width: 100%;
+  }
+  
   .header__inline-menu .primary-nav__trigger {
     padding: 16px 24px;
     border-radius: 0;
     transition: all 0.3s ease;
-    color: #000000;
+    color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
     background: transparent;
     border: none;
@@ -44,26 +52,27 @@
     position: relative;
     border-bottom: 3px solid transparent;
     font-size: 15px;
+    text-transform: uppercase;
   }
   
   .header__inline-menu .primary-nav__trigger:hover,
   .header__inline-menu .primary-nav__trigger:focus {
     background: rgba(0, 0, 0, 0.02);
-    color: #000000;
-    font-weight: 600;
-    border-bottom-color: #000000;
+    color: rgba(0, 0, 0, 0.7);
+    font-weight: 500;
+    border-bottom-color: rgba(0, 0, 0, 0.3);
   }
   
   .header__inline-menu .mega-menu[open] .primary-nav__trigger {
     background: rgba(0, 0, 0, 0.03);
-    color: #000000;
-    font-weight: 600;
-    border-bottom-color: #000000;
+    color: rgba(0, 0, 0, 0.7);
+    font-weight: 500;
+    border-bottom-color: rgba(0, 0, 0, 0.3);
   }
   
   .header__inline-menu .primary-nav__link {
     padding: 16px 24px;
-    color: #000000;
+    color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
     text-decoration: none;
     border-radius: 0;
@@ -72,13 +81,14 @@
     border-bottom: 3px solid transparent;
     display: block;
     font-size: 15px;
+    text-transform: uppercase;
   }
   
   .header__inline-menu .primary-nav__link:hover {
     background: rgba(0, 0, 0, 0.02);
-    color: #000000;
-    font-weight: 600;
-    border-bottom-color: #000000;
+    color: rgba(0, 0, 0, 0.7);
+    font-weight: 500;
+    border-bottom-color: rgba(0, 0, 0, 0.3);
   }
   
   .header__inline-menu .primary-nav__icon {
@@ -205,39 +215,48 @@
     .header__inline-menu .mega-menu__panel {
       max-width: 95vw;
       min-width: auto;
-      flex-wrap: wrap;
       padding: 24px;
     }
     
+    .header__inline-menu .mega-menu__labels {
+      flex-direction: column;
+      gap: 12px;
+      align-items: stretch;
+    }
+    
+    .header__inline-menu .mega-menu__labels .mega-menu__title {
+      text-align: left;
+      border-right: none !important;
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: 8px;
+      margin: 0;
+    }
+    
+    .header__inline-menu .mega-menu__content {
+      flex-direction: column;
+      gap: 20px;
+    }
+    
     .header__inline-menu .mega-menu__column {
-      flex: 1 1 calc(50% - 20px);
-      min-width: 160px;
+      flex: none;
     }
     
     .header__inline-menu .mega-menu__column--banner {
-      flex: 1 1 100%;
-      margin-top: 20px;
+      flex: none;
       padding-left: 0;
+      border-left: none;
+      border-top: 2px solid #f0f0f0;
+      padding-top: 20px;
     }
   }
   
   @media (max-width: 768px) {
     .header__inline-menu .mega-menu__panel {
-      flex-direction: column;
       padding: 20px;
     }
     
-    .header__inline-menu .mega-menu__column {
-      flex: none;
-      padding: 0 0 20px 0;
-    }
-    
-    .header__inline-menu .mega-menu__column:not(:last-child):after {
-      display: none;
-    }
-    
-    .header__inline-menu .mega-menu__column--banner {
-      margin-top: 0;
+    .header__inline-menu .mega-menu__labels .mega-menu__title {
+      font-size: 14px;
     }
   }
 </style>
@@ -245,7 +264,7 @@
 <nav class="header__inline-menu">
   <ul class="primary-nav" role="menubar" style="height:60px;border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0;background:#FFFFFF;display:flex;align-items:stretch;margin:0;padding:0;list-style:none;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
     {%- for link in section.settings.menu.links -%}
-      <li class="primary-nav__item" style="font-size:15px;position:relative;display:flex;align-items:stretch;{% unless forloop.last %}border-right:1px solid #f0f0f0;{% endunless %}">
+      <li class="primary-nav__item" style="font-size:15px;position:relative;display:flex;align-items:stretch;">
         {%- if link.links != blank -%}
           <header-menu>
             <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu" aria-haspopup="true" aria-expanded="false" style="height:100%;display:flex;">
@@ -270,40 +289,55 @@
                 tabindex="-1"
                 role="menu"
                 aria-labelledby="HeaderMenu-{{ link.handle }}"
+                style="display:flex;flex-direction:column;gap:24px;"
               >
-                {%- for childlink in link.links -%}
-                  <div class="mega-menu__column" role="group" aria-labelledby="menu-category-{{ forloop.index }}">
-                    <h3 id="menu-category-{{ forloop.index }}" class="mega-menu__title">{{ childlink.title | escape }}</h3>
-                    <ul class="mega-menu__list" role="list">
-                      {%- for grandchildlink in childlink.links -%}
-                        <li role="none">
-                          <a
-                            href="{{ grandchildlink.url }}"
-                            class="mega-menu__link"
-                            role="menuitem"
-                            tabindex="-1"
-                          >
-                            {{ grandchildlink.title | escape }}
-                          </a>
-                        </li>
-                      {%- endfor -%}
-                    </ul>
-                  </div>
-                {%- endfor -%}
+                <!-- Menu Labels Row -->
+                <div class="mega-menu__labels" style="display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;border-bottom:2px solid #f0f0f0;">
+                  {%- for childlink in link.links -%}
+                    <h3 class="mega-menu__title" style="font-size:16px;font-weight:700;color:rgba(0,0,0,0.7);margin:0;flex:1;text-align:center;text-transform:uppercase;{% unless forloop.last %}padding-right:20px;margin-right:20px;{% endunless %}">
+                      {{ childlink.title | escape }}
+                    </h3>
+                  {%- endfor -%}
+                </div>
                 
-                <!-- Promo Banner Column -->
-                <div class="mega-menu__column mega-menu__column--banner" role="group" aria-label="Khuyến mãi đặc biệt">
-                  <div class="mega-menu__banner">
-                    <img 
-                      src="https://img.freepik.com/free-psd/banner-template-fashion-sale-special-discount_23-2149436197.jpg" 
-                      alt="Banner khuyến mãi nội thất văn phòng" 
-                      loading="lazy"
-                    >
-                    <div class="mega-menu__banner-content">
-                      <h4 class="mega-menu__banner-title">🎉 Ưu đãi đặc biệt</h4>
-                      <a href="/collections/sale" class="mega-menu__cta" role="button">
-                        🛒 Xem ngay
-                      </a>
+                <!-- Menu Content Row -->
+                <div class="mega-menu__content" style="display:flex;gap:24px;">
+                  {%- for childlink in link.links -%}
+                    <div class="mega-menu__column" role="group" aria-labelledby="menu-category-{{ forloop.index }}" style="flex:1;min-width:180px;">
+                      <ul class="mega-menu__list" role="list" style="margin:0;padding:0;list-style:none;">
+                        {%- for grandchildlink in childlink.links -%}
+                          <li role="none">
+                            <a
+                              href="{{ grandchildlink.url }}"
+                              class="mega-menu__link"
+                              role="menuitem"
+                              tabindex="-1"
+                              style="display:block;padding:8px 0;color:#666;font-size:14px;line-height:1.5;text-decoration:none;transition:color 0.2s ease;"
+                              onmouseover="this.style.color='#000'"
+                              onmouseout="this.style.color='#666'"
+                            >
+                              {{ grandchildlink.title | escape }}
+                            </a>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                    </div>
+                  {%- endfor -%}
+                  
+                  <!-- Promo Banner Column -->
+                  <div class="mega-menu__column mega-menu__column--banner" role="group" aria-label="Khuyến mãi đặc biệt" style="flex:0 0 220px;padding-left:24px;border-left:2px solid #f0f0f0;">
+                    <div class="mega-menu__banner">
+                      <img 
+                        src="https://img.freepik.com/free-psd/banner-template-fashion-sale-special-discount_23-2149436197.jpg" 
+                        alt="Banner khuyến mãi nội thất văn phòng" 
+                        loading="lazy"
+                      >
+                      <div class="mega-menu__banner-content">
+                        <h4 class="mega-menu__banner-title">🎉 Ưu đãi đặc biệt</h4>
+                        <a href="/collections/sale" class="mega-menu__cta" role="button">
+                          🛒 Xem ngay
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -322,7 +356,7 @@
           </a>
         {%- endif -%}
         {%- if link.current %}
-          <span class="primary-nav__active" style="position:absolute;left:0;right:0;bottom:0;height:4px;background:#000000;box-shadow:0 -2px 4px rgba(0,0,0,0.2);"></span>
+          <span class="primary-nav__active" style="position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(0,0,0,0.8);"></span>
         {%- endif -%}
       </li>
     {%- endfor -%}
