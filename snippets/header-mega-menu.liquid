@@ -27,19 +27,19 @@
                   id="MegaMenu-Content-{{ forloop.index }}"
                   class="mega-menu__panel"
                   tabindex="-1"
-                  style="max-width:1440px;width:100vw;box-shadow:0 8px 24px rgba(0,0,0,0.12);border-radius:8px;padding:24px;display:flex;gap:24px;"
+                  style="max-width:1320px;width:100%;box-shadow:0 8px 24px rgba(0,0,0,0.12);border-radius:8px;padding:32px 24px;background:#fff;display:flex;flex-wrap:nowrap;gap:24px;box-sizing:border-box;"
                 >
                   {%- assign columns = link.links | size -%}
                   {%- for childlink in link.links -%}
-                    <div class="mega-menu__column" style="min-width:180px;border-right:1px solid #E5E7EB;padding-right:12px;">
+                    <div class="mega-menu__column" style="flex:1 1 0;min-width:170px;max-width:200px;border-right:1px solid #E5E7EB;padding-right:16px;box-sizing:border-box;">
                       <div class="mega-menu__title" style="font-weight:600;margin-bottom:8px;">{{ childlink.title | escape }}</div>
-                      <ul class="mega-menu__list" role="list">
+                      <ul class="mega-menu__list" role="list" style="margin:0;padding:0;list-style:none;">
                         {%- for grandchildlink in childlink.links -%}
                           <li>
                             <a
                               href="{{ grandchildlink.url }}"
                               class="mega-menu__link"
-                              style="font-size:14px;line-height:1.4;color:#1A1A1A;padding:8px 0;"
+                              style="font-size:14px;line-height:1.4;color:#1A1A1A;padding:8px 0;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
                             >
                               {{ grandchildlink.title | escape }}
                             </a>
@@ -49,10 +49,10 @@
                     </div>
                   {%- endfor -%}
                   <!-- Promo Banner Column -->
-                  <div class="mega-menu__column mega-menu__column--banner" style="min-width:200px;padding-left:12px;">
-                    <div class="mega-menu__banner" style="border:2px solid #FFF;border-radius:8px;overflow:hidden;">
-                      <img src="https://img.freepik.com/free-psd/banner-template-fashion-sale-special-discount_23-2149436197.jpg" alt="Promo" loading="lazy" style="width:100%;aspect-ratio:3/4;">
-                      <div class="mega-menu__cta" style="font-size:13px;margin-top:8px;">{{ section.settings.promo_cta | default: 'Khuyến mãi đặc biệt!' }}</div>
+                  <div class="mega-menu__column mega-menu__column--banner" style="flex:0 0 200px;max-width:200px;padding-left:16px;box-sizing:border-box;">
+                    <div class="mega-menu__banner" style="border:2px solid #FFF;border-radius:8px;overflow:hidden;background:#fff;box-shadow:0 4px 16px rgba(0,0,0,0.08);">
+                      <img src="https://img.freepik.com/free-psd/banner-template-fashion-sale-special-discount_23-2149436197.jpg" alt="Promo" loading="lazy" style="width:100%;aspect-ratio:3/4;display:block;">
+                      <div class="mega-menu__cta" style="font-size:13px;margin-top:8px;text-align:center;">{{ section.settings.promo_cta | default: 'Khuyến mãi đặc biệt!' }}</div>
                     </div>
                   </div>
                 </div>
