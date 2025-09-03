@@ -1,78 +1,76 @@
-
 {% comment %}
-  Improved Mega Menu: Responsive, 6–9 columns, banner, accessibility, hover delay, lazy-load, divider, etc.
+  Renders a megamenu for the header.
+
+  Usage:
+  {% render 'header-mega-menu' %}
 {% endcomment %}
 
 <nav class="header__inline-menu">
   <ul class="list-menu list-menu--inline" role="list">
     {%- for link in section.settings.menu.links -%}
-      <li>
+      <li class="header__menu-item-wrapper">
         {%- if link.links != blank -%}
           <header-menu>
-            <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu" data-hover-delay="150">
+            <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu" aria-haspopup="true" aria-expanded="false">
               <summary
                 id="HeaderMenu-{{ link.handle }}"
                 class="header__menu-item list-menu__item link focus-inset"
+                aria-controls="MegaMenu-Content-{{ forloop.index }}"
                 tabindex="0"
-                aria-haspopup="true"
-                aria-expanded="false"
               >
-                <span class="mega-menu__column-title{% if link.child_active %} header__active-menu-item{% endif %}"><strong>{{- link.title | escape -}}</strong></span>
-                {{- 'icon-caret.svg' | inline_asset_content -}}
+                <span class="header__menu-trigger-text{% if link.child_active %} header__active-menu-item{% endif %}">
+                  {{- link.title | escape -}}
+                </span>
+                <span class="header__menu-trigger-icon">{{ 'icon-caret.svg' | inline_asset_content }}</span>
               </summary>
               <div
                 id="MegaMenu-Content-{{ forloop.index }}"
                 class="mega-menu__content color-{{ section.settings.menu_color_scheme }} gradient motion-reduce global-settings-popup"
                 tabindex="-1"
-                style="z-index:1000;"
+                style="min-width:600px;box-shadow:0 4px 24px rgba(0,0,0,0.08);border-radius:8px;padding:20px;"
               >
-                <div class="mega-menu__columns-wrapper">
-                  {% assign col_count = link.links.size %}
-                  {% if col_count > 9 %}
-                    {% assign col_count = 9 %}
-                  {% endif %}
-                  {% assign split = false %}
-                  {% if col_count > 10 %}
-                    {% assign split = true %}
-                  {% endif %}
-                  {% assign split_index = col_count | divided_by: 2 %}
-                  <ul
-                    class="mega-menu__columns"
-                    style="display:grid;grid-template-columns:repeat({{ col_count }},1fr);gap:24px;border-bottom:1px solid #eee;"
-                    role="list"
-                  >
+                <div class="mega-menu__columns">
+                  <div class="mega-menu__column mega-menu__column--level-2" style="min-width:200px;border-right:1px solid #eee;padding-right:16px;">
+                    <ul class="mega-menu__list" role="list">
+                      {%- for childlink in link.links -%}
+                        <li>
+                          <a
+                            id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}"
+                            href="{{ childlink.url }}"
+                            class="mega-menu__link mega-menu__link--level-2 link{% if childlink.current %} mega-menu__link--active{% endif %}"
+                            {% if childlink.current %} aria-current="page"{% endif %}
+                            style="padding:8px 0;display:flex;align-items:center;gap:8px;"
+                          >
+                            {{ childlink.title | escape }}
+                            {%- if childlink.links != blank -%}
+                              <span class="mega-menu__arrow">{{ 'icon-caret.svg' | inline_asset_content }}</span>
+                            {%- endif -%}
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </div>
+                  <div class="mega-menu__column mega-menu__column--level-3" style="min-width:200px;padding-left:16px;">
                     {%- for childlink in link.links -%}
-                      <li class="mega-menu__column" style="border-right:1px solid #eee;padding:0 12px;">
-                        <div class="mega-menu__column-title"><strong>{{ childlink.title | escape }}</strong></div>
-                        <ul class="mega-menu__column-list" style="margin:0;padding:0;list-style:none;">
+                      {%- if childlink.links != blank -%}
+                        <ul class="mega-menu__list mega-menu__list--level-3" role="list">
                           {%- for grandchildlink in childlink.links -%}
-                            <li style="line-height:1.7;">
+                            <li>
                               <a
                                 id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
                                 href="{{ grandchildlink.url }}"
-                                class="mega-menu__link link"
-                                style="font-weight:400;font-size:15px;letter-spacing:0.01em;"
+                                class="mega-menu__link mega-menu__link--level-3 link{% if grandchildlink.current %} mega-menu__link--active{% endif %}"
                                 {% if grandchildlink.current %} aria-current="page"{% endif %}
+                                style="color:rgba(0,0,0,0.7);line-height:1.4;padding:8px 0;"
                               >
                                 {{ grandchildlink.title | escape }}
                               </a>
                             </li>
                           {%- endfor -%}
                         </ul>
-                      </li>
-                      {%- if split and forloop.index == split_index -%}
-                        </ul><ul class="mega-menu__columns" style="display:grid;grid-template-columns:repeat({{ split_index }},1fr);gap:24px;border-bottom:1px solid #eee;">
                       {%- endif -%}
                     {%- endfor -%}
-                  </ul>
-                  {%- if section.settings.banner_image != blank -%}
-                  <div class="mega-menu__banner" style="margin-top:24px;text-align:center;">
-                    <img src="{{ section.settings.banner_image | image_url: width:1200, height:600, format: 'webp' }}"
-                         alt="Banner Mega Menu"
-                         loading="lazy"
-                         style="max-width:100%;height:auto;border-radius:8px;object-fit:cover;" />
                   </div>
-                  {%- endif -%}
                 </div>
               </div>
             </details>
@@ -84,7 +82,9 @@
             class="header__menu-item list-menu__item link link--text focus-inset"
             {% if link.current %} aria-current="page"{% endif %}
           >
-            <span class="mega-menu__column-title{% if link.current %} header__active-menu-item{% endif %}"><strong>{{- link.title | escape -}}</strong></span>
+            <span class="header__menu-trigger-text{% if link.current %} header__active-menu-item{% endif %}">
+              {{- link.title | escape -}}
+            </span>
           </a>
         {%- endif -%}
       </li>
