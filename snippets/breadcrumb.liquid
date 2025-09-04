@@ -126,6 +126,11 @@
 </style>
 
 <nav class="breadcrumb" aria-label="Breadcrumb">
+  <!-- Quick Debug -->
+  <div style="background: #f0f8ff; padding: 4px; margin: 4px 0; font-size: 10px; border: 1px solid #ddd;">
+    URLS: {{ level_urls | default: 'None' }}
+  </div>
+  
   <ol class="breadcrumb__list">
     <!-- Home -->
     <li class="breadcrumb__item">
@@ -138,9 +143,8 @@
       <li class="breadcrumb__separator" aria-hidden="true">></li>
       
       {%- if menu_path != blank and menu_levels.size > 0 -%}
-        {%- comment -%} Pre-build URL mapping with debug {%- endcomment -%}
+        {%- comment -%} Pre-build URL mapping {%- endcomment -%}
         {%- assign level_urls = '' -%}
-        {%- assign debug_urls = '' -%}
         {%- for level in menu_levels -%}
           {%- assign found_url = blank -%}
           {%- for link in main_menu.links -%}
@@ -173,10 +177,8 @@
           {%- endfor -%}
           {%- if forloop.first -%}
             {%- assign level_urls = found_url | default: '#' -%}
-            {%- assign debug_urls = level | append: '=' | append: found_url | default: '#' -%}
           {%- else -%}
             {%- assign level_urls = level_urls | append: '|' | append: found_url | default: '#' -%}
-            {%- assign debug_urls = debug_urls | append: ', ' | append: level | append: '=' | append: found_url | default: '#' -%}
           {%- endif -%}
         {%- endfor -%}
         
