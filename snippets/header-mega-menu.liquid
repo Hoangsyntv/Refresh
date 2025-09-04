@@ -25,7 +25,12 @@
     transition: all 0.3s ease;
     width: 100%;
     border-top: 1px solid #f0f0f0;
-    border-bottom: 1px solid #f0f0f0; /* THIS is the navbar underline */
+    border-bottom: 3px solid #f0f0f0; /* NAVBAR underline - will change to orange on hover */
+  }
+  
+  /* Change NAVBAR underline to orange when any menu is hovered */
+  .header__inline-menu:has(.mega-menu:hover) {
+    border-bottom-color: #ff6b35; /* Orange underline for entire navbar */
   }
   
   /* When sticky is active */
@@ -161,7 +166,7 @@
   
   .header__inline-menu .mega-menu__panel {
     position: absolute; /* Changed to absolute for better positioning */
-    top: calc(100% + 1px); /* Position BELOW the navbar border-bottom */
+    top: calc(100% + 3px); /* Position BELOW the navbar border-bottom (3px thick) */
     left: 0;
     right: 0;
     transform: none;
@@ -184,7 +189,7 @@
   /* When menu is sticky, use higher z-index and fixed positioning */
   .header__inline-menu.is-sticky .mega-menu__panel {
     position: fixed;
-    top: calc(60px + 1px); /* Below sticky navbar + its border */
+    top: calc(60px + 3px); /* Below sticky navbar + its 3px border */
     z-index: 360; /* Above sticky navbar */
   }
   
@@ -206,12 +211,17 @@
     background: rgba(0, 0, 0, 0.02);
     color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
-    border-bottom-color: #ff6b35; /* Màu cam khi hover */
+    /* Navbar underline will change via :has() selector above */
   }
   
   .header__inline-menu .mega-menu:hover .primary-nav__icon {
     transform: rotate(180deg);
     opacity: 1;
+  }
+  
+  /* Alternative fallback for browsers without :has() support */
+  .header__inline-menu .mega-menu:hover {
+    /* This will be handled by JavaScript fallback */
   }
   
   .header__inline-menu .mega-menu__labels {
@@ -232,7 +242,7 @@
     border: none;
     cursor: pointer;
     position: relative;
-    border-bottom: 3px solid transparent;
+    border-bottom: none; /* Remove individual menu underline */
     font-size: 15px;
     text-transform: uppercase;
   }
@@ -242,14 +252,14 @@
     background: rgba(0, 0, 0, 0.02);
     color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
-    border-bottom-color: #ff6b35; /* Màu cam cho underline khi hover */
+    /* No individual underline - navbar underline will change */
   }
   
   .header__inline-menu .mega-menu[open] .primary-nav__trigger {
     background: rgba(0, 0, 0, 0.03);
     color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
-    border-bottom-color: #ff6b35; /* Màu cam cho underline khi menu mở */
+    /* No individual underline - navbar underline will change */
   }
   
   .header__inline-menu .primary-nav__link {
@@ -260,7 +270,7 @@
     border-radius: 0;
     transition: all 0.3s ease;
     position: relative;
-    border-bottom: 3px solid transparent;
+    border-bottom: none; /* Remove individual link underline */
     display: block;
     font-size: 15px;
     text-transform: uppercase;
@@ -270,7 +280,7 @@
     background: rgba(0, 0, 0, 0.02);
     color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
-    border-bottom-color: rgba(0, 0, 0, 0.3);
+    /* No individual underline - navbar underline will change */
   }
   
   .header__inline-menu .primary-nav__icon {
@@ -714,6 +724,7 @@ document.addEventListener('DOMContentLoaded', function() {
   megaMenus.forEach(menu => {
     const trigger = menu.querySelector('.primary-nav__trigger');
     const panel = menu.querySelector('.mega-menu__panel');
+    const navbar = document.querySelector('.header__inline-menu');
     let hoverTimeout;
     
     if (trigger && panel) {
@@ -735,6 +746,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Open this mega menu
         menu.setAttribute('open', '');
         
+        // Change navbar underline color (fallback for browsers without :has())
+        if (navbar) {
+          navbar.style.borderBottomColor = '#ff6b35';
+        }
+        
         // Update position
         setTimeout(() => {
           updateStickyPosition();
@@ -745,6 +761,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Close mega menu quickly when mouse leaves
         hoverTimeout = setTimeout(() => {
           menu.removeAttribute('open');
+          
+          // Reset navbar underline color if no menus are hovered
+          const hoveredMenus = document.querySelectorAll('.mega-menu:hover');
+          if (hoveredMenus.length === 0 && navbar) {
+            navbar.style.borderBottomColor = '#f0f0f0';
+          }
         }, 150); // Fast close - 150ms delay
       });
       
