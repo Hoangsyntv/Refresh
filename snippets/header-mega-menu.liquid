@@ -2,93 +2,1085 @@
   Renders a megamenu for the header.
 
   Usage:
-  {% render 'header-mega-menu' %}
+  {% render 'header-mega-menu', menu: section.settings.menu %}
 {% endcomment %}
 
-<nav class="header__inline-menu">
-  <ul class="list-menu list-menu--inline" role="list">
-    {%- for link in section.settings.menu.links -%}
-      <li>
-        {%- if link.links != blank -%}
-          <header-menu>
-            <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu">
-              <summary
-                id="HeaderMenu-{{ link.handle }}"
-                class="header__menu-item list-menu__item link focus-inset"
-              >
-                <span
-                  {%- if link.child_active %}
-                    class="header__active-menu-item"
-                  {% endif %}
-                >
-                  {{- link.title | escape -}}
-                </span>
-                {{- 'icon-caret.svg' | inline_asset_content -}}
-              </summary>
-              <div
-                id="MegaMenu-Content-{{ forloop.index }}"
-                class="mega-menu__content color-{{ section.settings.menu_color_scheme }} gradient motion-reduce global-settings-popup"
-                tabindex="-1"
-              >
-                <ul
-                  class="mega-menu__list page-width{% if link.levels == 1 %} mega-menu__list--condensed{% endif %}"
-                  role="list"
-                >
-                  {%- for childlink in link.links -%}
-                    <li>
-                      <a
-                        id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}"
-                        href="{{ childlink.url }}"
-                        class="mega-menu__link mega-menu__link--level-2 link{% if childlink.current %} mega-menu__link--active{% endif %}"
-                        {% if childlink.current %}
-                          aria-current="page"
-                        {% endif %}
-                      >
-                        {{ childlink.title | escape }}
-                      </a>
-                      {%- if childlink.links != blank -%}
-                        <ul class="list-unstyled" role="list">
-                          {%- for grandchildlink in childlink.links -%}
-                            <li>
-                              <a
-                                id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
-                                href="{{ grandchildlink.url }}"
-                                class="mega-menu__link link{% if grandchildlink.current %} mega-menu__link--active{% endif %}"
-                                {% if grandchildlink.current %}
-                                  aria-current="page"
-                                {% endif %}
-                              >
-                                {{ grandchildlink.title | escape }}
+<style>
+  /* ===========================================
+     Z-INDEX SYSTEM - ORGANIZED LAYERS
+     =========================================== */
+  
+  /* Layer 1: Base Elements (1-99) */
+  /* Layer 2: Navigation (100-199) */
+  /* Layer 3: Overlays & Modals (200-299) */
+  /* Layer 4: Critical UI (300-399) */
+  /* Layer 5: Emergency/Debug (400+) */
+  
+  /* Full width navigation container */
+  .header__inline-menu {
+    position: relative;
+    z-index: 150; /* Layer 2: Navigation - Higher than breadcrumb */
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    width: 100%;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0; /* Navbar border (not the underline we want) */
+    /* EMERGENCY FIX: Ensure mega menu can escape stacking context */
+    isolation: isolate;
+  }
+  
+  /* Remove navbar-wide underline change on hover */
+  
+  /* When sticky is active */
+  .header__inline-menu.is-sticky {
+    position: fixed;
+    top: 0 !important;
+    left: 0;
+    right: 0;
+    z-index: 350; /* Layer 4: Critical UI when sticky */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    margin: 0 !important;
+    padding: 0 !important;
+    margin-top: 0 !important;
+    transform: translateY(0) !important;
+  }
+  
+  /* Ensure no gaps from body/html when sticky */
+  body:has(.header__inline-menu.is-sticky) {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
+  /* Reset any potential offsets */
+  .header__inline-menu.is-sticky,
+  .header__inline-menu.is-sticky * {
+    box-sizing: border-box;
+  }
+  
+  /* Center content when sticky */
+  .header__inline-menu.is-sticky .header__nav-container {
+    justify-content: center !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    position: relative !important;
+  }
+  
+  /* Center the menu when sticky while keeping space for icons */
+  .header__inline-menu.is-sticky .header__nav-menu {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+  
+  /* Show right icons when sticky - positioned absolutely to not affect centering */
+  .header__inline-menu.is-sticky .header__nav-icons {
+    display: flex !important;
+    position: absolute !important;
+    right: 24px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 10000 !important;
+  }
+  
+  /* Navigation container styling */
+  .header__nav-container {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  
+  /* Capitalize menu text (first letter uppercase) */
+  .primary-nav__text {
+    text-transform: capitalize;
+    white-space: nowrap; /* Prevent text wrapping in menu labels */
+    font-size: 15px;
+    line-height: 1.2;
+    display: inline-block;
+  }
+  
+  /* Hide right icons by default, show only when sticky */
+  .header__nav-icons {
+    display: none !important;
+  }
+  
+  /* Ensure icons are clickable when sticky */
+  .header__inline-menu.is-sticky .header__nav-icon {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+  }
+  
+  /* Fix search modal z-index to appear above navbar (both normal and sticky) */
+  .header__search details[open] > .search-modal,
+  .search-modal {
+    z-index: 10000 !important; /* Above normal navbar (1000) and below sticky navbar (9999) when not sticky */
+  }
+  
+  .header__search details[open] {
+    z-index: 10000 !important;
+  }
+  
+  /* Ensure search modal content is properly positioned */
+  .search-modal__content {
+    z-index: 10000 !important;
+    position: relative !important;
+  }
+  
+  /* Fix predictive search results z-index - higher than normal navbar */
+  .predictive-search,
+  predictive-search[open] .predictive-search,
+  predictive-search[loading] .predictive-search,
+  .predictive-search--search-template,
+  .predictive-search__results-groups-wrapper {
+    z-index: 10000 !important; /* Above normal navbar (1000) */
+  }
+  
+  /* When navbar is sticky, search needs even higher z-index */
+  .header__inline-menu.is-sticky ~ * .header__search details[open] > .search-modal,
+  .header__inline-menu.is-sticky ~ * .search-modal,
+  .header__inline-menu.is-sticky ~ * .predictive-search {
+    z-index: 99999 !important; /* Above sticky navbar (9999) */
+  }
+  
+  /* Ensure all search-related elements are above navbar */
+  details-modal.header__search,
+  details-modal.header__search[open],
+  details-modal.header__search .search-modal,
+  details-modal.header__search .search-modal__content,
+  details-modal.header__search predictive-search,
+  details-modal.header__search .predictive-search {
+    z-index: 10000 !important;
+  }
+  
+  /* Placeholder to prevent content jump when menu becomes fixed */
+  .header__inline-menu-placeholder {
+    height: 60px;
+    display: none;
+  }
+  
+  .header__inline-menu-placeholder.active {
+    display: block;
+  }
+  
+  .header__inline-menu .mega-menu {
+    position: relative;
+  }
+  
+  .header__inline-menu .mega-menu__panel {
+    position: fixed; /* EMERGENCY FIX: Use fixed instead of absolute to escape stacking context */
+    top: calc(100% + 60px); /* Position below navbar, accounting for navbar height */
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
+    z-index: 2147483647 !important; /* MAX INTEGER Z-INDEX - ULTIMATE NUCLEAR 😂 */
+    background: #fff;
+    border: none;
+    border-top: none;
+    border-bottom: 1px solid #e5e7eb;
+    border-radius: 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 32px 0;
+    margin-top: 0;
+    width: max-content;
+    max-width: min(1200px, 90vw);
+    min-width: 800px;
+    display: none !important;
+    visibility: hidden;
+    opacity: 0;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: all 0.3s ease;
+    pointer-events: auto; /* Ensure mega menu can be interacted with */
+  }
+  
+  /* When menu is sticky, use higher z-index and fixed positioning */
+  .header__inline-menu.is-sticky .mega-menu__panel {
+    position: fixed;
+    top: 60px; /* Below sticky navbar height */
+    z-index: 2147483647 !important; /* MAX INTEGER Z-INDEX 😂 */
+  }
+  
+  /* Overlay for mega menu - DISABLED to allow navigation between menus */
+  .header__inline-menu .mega-menu[open]::before {
+    display: none; /* Bỏ overlay để có thể di chuyển giữa các menu */
+  }
+  
+  .header__inline-menu .mega-menu[open] .mega-menu__panel {
+    display: flex !important;
+  }
+  
+  /* Hover effect for mega menu */
+  .header__inline-menu .mega-menu:hover .mega-menu__panel,
+  .header__inline-menu .mega-menu[open] .mega-menu__panel,
+  .mega-menu__panel {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 2147483647 !important; /* MAX INTEGER Z-INDEX 😂 */
+    position: fixed !important; /* Force fixed positioning */
+  }
+  
+  /* NUCLEAR BREADCRUMB DESTROYER 😂 */
+  .breadcrumb,
+  .breadcrumb *,
+  nav.breadcrumb,
+  [class*="breadcrumb"] {
+    z-index: -999 !important; /* SUPER NEGATIVE Z-INDEX 😂 */
+    position: relative !important;
+  }
+  
+  /* GLOBAL MEGA MENU SUPREMACY 😂 */
+  .mega-menu__panel,
+  [class*="mega-menu"] .mega-menu__panel,
+  div.mega-menu__panel {
+    z-index: 2147483647 !important; /* MAX INTEGER Z-INDEX - HIGHEST POSSIBLE 😂 */
+    position: fixed !important;
+  }
+  
+  .header__inline-menu .mega-menu:hover .primary-nav__trigger {
+    background: rgba(0, 0, 0, 0.02);
+    color: rgba(0, 0, 0, 0.7);
+    font-weight: 500;
+    border-bottom-color: #ff6b35; /* Orange underline on menu hover */
+  }
+  
+  .header__inline-menu .mega-menu:hover .primary-nav__icon {
+    transform: rotate(180deg);
+    opacity: 1;
+  }
+  
+  .header__inline-menu .mega-menu__labels {
+    width: 100%;
+  }
+  
+  .header__inline-menu .mega-menu__content {
+    width: 100%;
+  }
+  
+  .header__inline-menu .primary-nav__trigger {
+    padding: 16px 20px; /* Reduced horizontal padding */
+    border-radius: 0;
+    transition: all 0.3s ease;
+    color: rgba(0, 0, 0, 0.7);
+    font-weight: 500;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    border-bottom: 3px solid transparent; /* Individual menu underline */
+    font-size: 15px;
+    text-transform: uppercase;
+    white-space: nowrap; /* Prevent text wrapping */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: max-content; /* Ensure enough width for text */
+  }
+  
+  .header__inline-menu .primary-nav__trigger:hover,
+  .header__inline-menu .primary-nav__trigger:focus {
+    background: rgba(0, 0, 0, 0.02);
+    color: rgba(0, 0, 0, 0.7);
+    font-weight: 500;
+    border-bottom-color: #ff6b35; /* Orange underline on individual menu hover */
+  }
+  
+  .header__inline-menu .mega-menu[open] .primary-nav__trigger {
+    background: rgba(0, 0, 0, 0.03);
+    color: rgba(0, 0, 0, 0.7);
+    font-weight: 500;
+    border-bottom-color: #ff6b35; /* Orange underline when menu is open */
+  }
+  
+  .header__inline-menu .primary-nav__link {
+    padding: 16px 20px; /* Match trigger padding for consistent alignment */
+    color: rgba(0, 0, 0, 0.7);
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 0;
+    transition: all 0.3s ease;
+    position: relative;
+    border-bottom: 3px solid transparent; /* Individual link underline */
+    display: flex; /* Match trigger display type */
+    align-items: center; /* Match trigger alignment */
+    justify-content: center; /* Match trigger justification */
+    font-size: 15px;
+    text-transform: uppercase;
+    white-space: nowrap; /* Prevent text wrapping */
+    min-width: max-content; /* Match trigger width behavior */
+  }
+  
+  .header__inline-menu .primary-nav__link:hover {
+    background: rgba(0, 0, 0, 0.02);
+    color: rgba(0, 0, 0, 0.7);
+    font-weight: 500;
+    border-bottom-color: #ff6b35; /* Orange underline on individual link hover */
+  }
+  
+  /* Remove any special styling for current page - all menus should behave the same */
+  .header__inline-menu .primary-nav__link[aria-current="page"] {
+    border-bottom-color: transparent; /* No permanent underline for current page */
+  }
+  
+  /* Current page only shows orange underline on hover, like other menus */
+  .header__inline-menu .primary-nav__link[aria-current="page"]:hover {
+    border-bottom-color: #ff6b35;
+  }
+  
+  .header__inline-menu .primary-nav__icon {
+    transition: transform 0.3s ease;
+    width: 12px;
+    height: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+  }
+  
+  .header__inline-menu .mega-menu[open] .primary-nav__icon {
+    transform: rotate(180deg);
+    opacity: 1;
+  }
+  
+  .header__inline-menu .mega-menu__column {
+    flex: 1;
+    min-width: 180px;
+    padding: 0 20px;
+    position: relative;
+  }
+  
+  .header__inline-menu .mega-menu__column:not(:last-child):after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, transparent 0%, #e5e7eb 20%, #e5e7eb 80%, transparent 100%);
+  }
+  
+  .header__inline-menu .mega-menu__column--banner {
+    flex: 0 0 220px;
+    padding-left: 24px;
+  }
+  
+  .header__inline-menu .mega-menu__title {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 12px;
+    padding: 8px 0;
+    text-decoration: none;
+    text-transform: none;
+    transition: color 0.2s ease;
+    border-bottom: none;
+    font-family: 'Inter', 'Roboto', 'Noto Sans', var(--font-body-family), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+  
+  .header__inline-menu .mega-menu__title:hover {
+    color: rgba(0, 0, 0, 0.9);
+  }
+  
+  .header__inline-menu .mega-menu__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .header__inline-menu .mega-menu__link {
+    display: block;
+    padding: 8px 0;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    font-family: 'Inter', 'Roboto', 'Noto Sans', var(--font-body-family), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+  
+  .header__inline-menu .mega-menu__link:hover,
+  .header__inline-menu .mega-menu__link:focus {
+    color: #1f2937;
+  }
+  
+  .header__inline-menu .mega-menu__banner {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .header__inline-menu .mega-menu__banner img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4/5;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .header__inline-menu .mega-menu__banner-content {
+    padding: 20px 16px;
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+    color: #fff;
+  }
+  
+  .header__inline-menu .mega-menu__banner-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  
+  .header__inline-menu .mega-menu__cta {
+    display: inline-block;
+    background: #fff;
+    color: #1f2937;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  
+  .header__inline-menu .mega-menu__cta:hover {
+    background: #f9fafb;
+    color: #111827;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .header__inline-menu .mega-menu__panel {
+      padding: 24px 0;
+    }
+    
+    .header__inline-menu .mega-menu__container {
+      padding: 0 16px;
+      flex-direction: column;
+      gap: 24px;
+    }
+    
+    .header__inline-menu .mega-menu__content {
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .header__inline-menu .mega-menu__column {
+      flex: none;
+    }
+    
+    .header__inline-menu .mega-menu__column--banner {
+      flex: none;
+      padding-left: 0;
+      border-left: none;
+      border-top: 2px solid #f0f0f0;
+      padding-top: 20px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .header__inline-menu .mega-menu__panel {
+      padding: 20px 0;
+    }
+    
+    .header__inline-menu .mega-menu__container {
+      padding: 0 12px;
+    }
+    
+    .header__inline-menu .mega-menu__title {
+      font-size: 13px;
+    }
+    
+    .header__inline-menu .mega-menu__link {
+      font-size: 13px;
+    }
+    
+    .header__inline-menu .mega-menu__icon-item span {
+      font-size: 11px;
+    }
+  }
+  
+  /* Ensure mega menu is always centered on larger screens */
+  @media (min-width: 1025px) {
+    .header__inline-menu .mega-menu__panel {
+      left: 50%;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: min(1200px, 90vw);
+    }
+  }
+</style>
+
+<!-- Placeholder for sticky menu -->
+<div class="header__inline-menu-placeholder"></div>
+
+<nav class="header__inline-menu" id="mega-menu-nav">
+  <div class="header__nav-container" style="max-width:100%;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;">
+    
+    <!-- Navigation Menu - Left Side -->
+    <div class="header__nav-menu" style="flex:1;display:flex;justify-content:flex-start;">
+      <ul class="primary-nav" role="menubar" style="display:flex;align-items:center;margin:0;padding:0;list-style:none;gap:24px;height:100%;">
+        {%- for link in menu.links -%}
+          <li class="primary-nav__item" style="font-size:15px;position:relative;display:flex;align-items:center;height:100%;">
+            {%- if link.links != blank -%}
+              <header-menu>
+                <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu" aria-haspopup="true" aria-expanded="false" style="height:100%;display:flex;">
+                  <summary
+                    id="HeaderMenu-{{ link.handle }}"
+                    class="primary-nav__trigger"
+                    aria-controls="MegaMenu-Content-{{ forloop.index }}"
+                    aria-label="Mở menu {{ link.title }}"
+                    tabindex="0"
+                    style="display:flex;align-items:center;gap:8px;list-style:none;height:100%;"
+                  >
+                    <span class="primary-nav__text">{{- link.title | escape -}}</span>
+                    <span class="primary-nav__icon" aria-hidden="true">
+                      <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 1L6 7L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </span>
+                  </summary>
+                  <div
+                    id="MegaMenu-Content-{{ forloop.index }}"
+                    class="mega-menu__panel"
+                    tabindex="-1"
+                    role="menu"
+                    aria-labelledby="HeaderMenu-{{ link.handle }}"
+                  >
+                    <div class="mega-menu__container" style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;gap:40px;">
+                      <!-- Menu Content with Category Titles -->
+                      <div class="mega-menu__content" style="display:flex;gap:32px;flex:1;">
+                        {%- for childlink in link.links -%}
+                          <div class="mega-menu__column" role="group" aria-labelledby="menu-category-{{ forloop.index }}" style="flex:1;min-width:180px;">
+                            <!-- Category Title as first item -->
+                            <a href="{{ childlink.url }}" class="mega-menu__title" style="text-decoration:none;">
+                              {{ childlink.title | escape }}
+                            </a>
+                            
+                            <ul class="mega-menu__list" role="list" style="margin:0;padding:0;list-style:none;">
+                              {%- for grandchildlink in childlink.links -%}
+                                <li role="none">
+                                  <a
+                                    href="{{ grandchildlink.url }}"
+                                    class="mega-menu__link"
+                                    role="menuitem"
+                                    tabindex="-1"
+                                    style="display:block;padding:6px 0;color:#666;font-size:14px;line-height:1.5;text-decoration:none;transition:color 0.2s ease;"
+                                    onmouseover="this.style.color='#000'"
+                                    onmouseout="this.style.color='#666'"
+                                  >
+                                    {{ grandchildlink.title | escape }}
+                                  </a>
+                                </li>
+                              {%- endfor -%}
+                            </ul>
+                          </div>
+                        {%- endfor -%}
+                        
+                        <!-- Promo Banner Column -->
+                        <div class="mega-menu__column mega-menu__column--banner" role="group" aria-label="Khuyến mãi đặc biệt" style="flex:0 0 250px;padding-left:32px;border-left:2px solid #f0f0f0;">
+                          <div class="mega-menu__banner">
+                            <img 
+                              src="https://img.freepik.com/free-psd/banner-template-fashion-sale-special-discount_23-2149436197.jpg" 
+                              alt="Banner khuyến mãi nội thất văn phòng" 
+                              loading="lazy"
+                            >
+                            <div class="mega-menu__banner-content">
+                              <h4 class="mega-menu__banner-title">🎉 Ưu đãi đặc biệt</h4>
+                              <a href="/collections/sale" class="mega-menu__cta" role="button">
+                                🛒 Xem ngay
                               </a>
-                            </li>
-                          {%- endfor -%}
-                        </ul>
-                      {%- endif -%}
-                    </li>
-                  {%- endfor -%}
-                </ul>
-              </div>
-            </details>
-          </header-menu>
-        {%- else -%}
-          <a
-            id="HeaderMenu-{{ link.handle }}"
-            href="{{ link.url }}"
-            class="header__menu-item list-menu__item link link--text focus-inset"
-            {% if link.current %}
-              aria-current="page"
-            {% endif %}
-          >
-            <span
-              {%- if link.current %}
-                class="header__active-menu-item"
-              {% endif %}
-            >
-              {{- link.title | escape -}}
-            </span>
-          </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              </header-menu>
+            {%- else -%}
+              <a
+                id="HeaderMenu-{{ link.handle }}"
+                href="{{ link.url }}"
+                class="primary-nav__link"
+                {% if link.current %} aria-current="page"{% endif %}
+                style="display:flex;align-items:center;height:100%;justify-content:center;"
+              >
+                <span class="primary-nav__text">{{- link.title | escape -}}</span>
+              </a>
+            {%- endif -%}
+            {%- comment -%}
+            {%- if link.current %}
+              <span class="primary-nav__active" style="position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(0,0,0,0.8);"></span>
+            {%- endif -%}
+            {%- endcomment -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+    
+    <!-- Right Icons Section -->
+    <div class="header__nav-icons" style="display:flex;align-items:center;gap:20px;">
+      <a href="{{ routes.account_url }}" class="header__nav-icon" style="display:flex;align-items:center;gap:8px;color:#666;text-decoration:none;font-size:13px;padding:8px 12px;border-radius:6px;transition:all 0.2s ease;" title="Tài khoản" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='transparent'">
+        <div style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+      </a>
+      
+      <a href="#" class="header__nav-icon header__search-trigger" style="display:flex;align-items:center;gap:8px;color:#666;text-decoration:none;font-size:13px;padding:8px 12px;border-radius:6px;transition:all 0.2s ease;" title="Tìm kiếm" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='transparent'" onclick="openSearchModal(event)">
+        <div style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
+          </svg>
+        </div>
+      </a>
+      
+      <a href="{{ routes.cart_url }}" class="header__nav-icon" style="display:flex;align-items:center;gap:8px;color:#666;text-decoration:none;font-size:13px;padding:8px 12px;border-radius:6px;transition:all 0.2s ease;position:relative;" title="Giỏ hàng" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='transparent'">
+        <div style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"/>
+            <circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+        </div>
+        {%- if cart.item_count > 0 -%}
+          <span style="position:absolute;top:2px;right:2px;background:#ff4444;color:white;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;">{{ cart.item_count }}</span>
         {%- endif -%}
-      </li>
-    {%- endfor -%}
-  </ul>
+      </a>
+    </div>
+    
+  </div>
 </nav>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const headerMenu = document.querySelector('.header__inline-menu');
+  const placeholder = document.querySelector('.header__inline-menu-placeholder');
+  const headerContainer = document.querySelector('.header-wrapper, .shopify-section-header');
+  
+  if (!headerMenu || !placeholder) return;
+  
+  // NUCLEAR Z-INDEX FORCE ON PAGE LOAD 😂
+  function forceNuclearZIndex() {
+    const megaMenuPanels = document.querySelectorAll('.mega-menu__panel');
+    megaMenuPanels.forEach(panel => {
+      panel.style.zIndex = '2147483647';
+      console.log('NUCLEAR Z-INDEX FORCED ON LOAD:', panel); // Debug
+    });
+    
+    // Also destroy breadcrumb z-index
+    const breadcrumbs = document.querySelectorAll('.breadcrumb');
+    breadcrumbs.forEach(breadcrumb => {
+      breadcrumb.style.zIndex = '1';
+      console.log('BREADCRUMB DESTROYED ON LOAD:', breadcrumb); // Debug
+    });
+  }
+  
+  // Force nuclear z-index immediately
+  forceNuclearZIndex();
+  
+  // Force again after a short delay to ensure DOM is fully ready
+  setTimeout(forceNuclearZIndex, 100);
+  
+  // Get initial menu position
+  let initialMenuOffsetTop = headerMenu.offsetTop;
+  let menuOffsetTop = initialMenuOffsetTop;
+  let isSticky = false;
+  
+  // Function to update sticky position
+  function updateStickyPosition() {
+    const headerHeight = headerContainer ? headerContainer.offsetHeight : 0;
+    const navbarHeight = headerMenu.offsetHeight; // Get actual navbar height
+    
+    // Update menu offset top when window resizes and not sticky
+    if (!isSticky) {
+      menuOffsetTop = headerMenu.offsetTop;
+      initialMenuOffsetTop = menuOffsetTop;
+    }
+    
+    // For sticky navbar, ensure mega menu panels are positioned correctly
+    if (isSticky) {
+      const megaMenuPanels = document.querySelectorAll('.mega-menu__panel');
+      megaMenuPanels.forEach(panel => {
+        panel.style.top = navbarHeight + 'px';
+      });
+    }
+  }
+  
+  // Sticky scroll handler
+  function handleScroll() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
+    // Use a small threshold to prevent flickering
+    const threshold = 5;
+    
+    if (scrollTop >= (initialMenuOffsetTop - threshold) && !isSticky) {
+      // Make sticky
+      isSticky = true;
+      headerMenu.classList.add('is-sticky');
+      placeholder.classList.add('active');
+      
+      // Ensure navbar is positioned at the very top
+      headerMenu.style.position = 'fixed';
+      headerMenu.style.top = '0px';
+      headerMenu.style.left = '0';
+      headerMenu.style.right = '0';
+      headerMenu.style.width = '100%';
+      headerMenu.style.margin = '0';
+      headerMenu.style.transform = 'translateY(0)';
+      
+      // Close any open mega menus when becoming sticky
+      const openMenus = document.querySelectorAll('.mega-menu[open]');
+      openMenus.forEach(menu => {
+        menu.removeAttribute('open');
+      });
+      
+    } else if (scrollTop < (initialMenuOffsetTop - threshold) && isSticky) {
+      // Remove sticky - reset to original position
+      isSticky = false;
+      headerMenu.classList.remove('is-sticky');
+      placeholder.classList.remove('active');
+      
+      // Reset navbar styles to original state
+      headerMenu.style.position = '';
+      headerMenu.style.top = '';
+      headerMenu.style.left = '';
+      headerMenu.style.right = '';
+      headerMenu.style.width = '';
+      headerMenu.style.margin = '';
+      headerMenu.style.transform = '';
+      
+      // Recalculate position after reset
+      setTimeout(() => {
+        menuOffsetTop = headerMenu.offsetTop;
+        initialMenuOffsetTop = menuOffsetTop;
+      }, 10);
+    }
+    
+    updateStickyPosition();
+  }
+  
+  // Update on load and resize
+  updateStickyPosition();
+  window.addEventListener('resize', function() {
+    updateStickyPosition();
+    // Recalculate menu position when not sticky
+    if (!isSticky) {
+      menuOffsetTop = headerMenu.offsetTop;
+    }
+  });
+  
+  // Handle scroll for sticky behavior
+  window.addEventListener('scroll', handleScroll);
+  
+  // Handle mega menu centering and hover events
+  const megaMenus = document.querySelectorAll('.mega-menu');
+  
+  megaMenus.forEach(menu => {
+    const trigger = menu.querySelector('.primary-nav__trigger');
+    const panel = menu.querySelector('.mega-menu__panel');
+    let hoverTimeout;
+    
+    if (trigger && panel) {
+      // Handle hover events
+      menu.addEventListener('mouseenter', function() {
+        console.log('Mouse enter on menu:', menu); // Debug
+        
+        // Clear any pending close timeout
+        if (hoverTimeout) {
+          clearTimeout(hoverTimeout);
+          hoverTimeout = null;
+        }
+        
+        // Close other open menus immediately
+        megaMenus.forEach(otherMenu => {
+          if (otherMenu !== menu) {
+            otherMenu.removeAttribute('open');
+          }
+        });
+        
+        // Open this mega menu
+        menu.setAttribute('open', '');
+        
+        // Force panel to show with direct styling as backup
+        if (panel) {
+          panel.style.display = 'flex';
+          panel.style.visibility = 'visible';
+          panel.style.opacity = '1';
+          
+          // FORCE NUCLEAR Z-INDEX EVERY TIME 😂
+          panel.style.zIndex = '2147483647';
+          
+          // Also destroy breadcrumb every hover
+          const breadcrumbs = document.querySelectorAll('.breadcrumb');
+          breadcrumbs.forEach(breadcrumb => {
+            breadcrumb.style.zIndex = '1';
+          });
+          
+          // EMERGENCY FIX: Calculate and set position dynamically - CENTERED
+          const navbar = document.querySelector('.header__inline-menu');
+          const navbarRect = navbar.getBoundingClientRect();
+          
+          panel.style.position = 'fixed';
+          panel.style.top = navbarRect.bottom + 'px';
+          panel.style.left = '50%';
+          panel.style.transform = 'translateX(-50%)';
+          panel.style.width = 'max-content';
+          panel.style.maxWidth = 'min(1200px, 90vw)';
+          panel.style.minWidth = '800px';
+          panel.style.zIndex = '2147483647'; /* MAX INTEGER Z-INDEX 😂 */
+          
+          console.log('Panel forced to show with MAX INTEGER z-index:', {
+            top: navbarRect.bottom,
+            positioning: 'centered',
+            zIndex: 2147483647,
+            panel: panel
+          });
+        }
+        
+        // Update position
+        setTimeout(() => {
+          updateStickyPosition();
+        }, 10);
+      });
+      
+      menu.addEventListener('mouseleave', function(e) {
+        console.log('Mouse leave on menu:', menu); // Debug
+        
+        // Check if mouse is moving to a link inside the mega menu
+        const relatedTarget = e.relatedTarget;
+        if (relatedTarget && menu.contains(relatedTarget)) {
+          console.log('Mouse moving within mega menu, keeping open'); // Debug
+          return; // Don't close if mouse is still within mega menu
+        }
+        
+        // Close mega menu quickly when mouse actually leaves
+        hoverTimeout = setTimeout(() => {
+          menu.removeAttribute('open');
+          
+          // Force panel to hide
+          if (panel) {
+            panel.style.display = 'none';
+            panel.style.visibility = 'hidden';
+            panel.style.opacity = '0';
+            console.log('Panel forced to hide:', panel); // Debug
+          }
+        }, 300); // Increased delay to 300ms for better UX
+      });
+      
+      // Keep existing click handler as backup
+      trigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        if (menu.hasAttribute('open')) {
+          menu.removeAttribute('open');
+        } else {
+          // Close other open menus first
+          megaMenus.forEach(otherMenu => {
+            if (otherMenu !== menu) {
+              otherMenu.removeAttribute('open');
+            }
+          });
+          menu.setAttribute('open', '');
+        }
+        
+        setTimeout(() => {
+          updateStickyPosition();
+        }, 10);
+      });
+      
+      // Add event listeners to mega menu links to prevent immediate closing
+      const megaMenuLinks = menu.querySelectorAll('.mega-menu__link, .mega-menu__title');
+      megaMenuLinks.forEach(link => {
+        link.addEventListener('mouseenter', function() {
+          // Clear any pending close timeout when hovering over links
+          if (hoverTimeout) {
+            clearTimeout(hoverTimeout);
+            hoverTimeout = null;
+          }
+          console.log('Hovering over mega menu link, keeping menu open'); // Debug
+        });
+        
+        link.addEventListener('click', function(e) {
+          console.log('Clicking mega menu link, will navigate...'); // Debug
+          // Don't prevent default - let navigation happen
+          // But clear any pending timeouts
+          if (hoverTimeout) {
+            clearTimeout(hoverTimeout);
+            hoverTimeout = null;
+          }
+        });
+      });
+    }
+  });
+  
+  // Close mega menu when clicking outside (but not when just hovering)
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.mega-menu')) {
+      const openMenus = document.querySelectorAll('.mega-menu[open]');
+      openMenus.forEach(menu => {
+        menu.removeAttribute('open');
+      });
+    }
+  });
+  
+  // NUCLEAR MUTATION OBSERVER 😂 - Watch for DOM changes that might reset z-index
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.type === 'childList' || mutation.type === 'attributes') {
+        // Re-apply nuclear z-index if DOM changes
+        setTimeout(() => {
+          const megaMenuPanels = document.querySelectorAll('.mega-menu__panel');
+          megaMenuPanels.forEach(panel => {
+            if (panel.style.zIndex !== '2147483647') {
+              panel.style.zIndex = '2147483647';
+              console.log('NUCLEAR Z-INDEX RE-APPLIED DUE TO DOM CHANGE:', panel);
+            }
+          });
+          
+          const breadcrumbs = document.querySelectorAll('.breadcrumb');
+          breadcrumbs.forEach(breadcrumb => {
+            if (breadcrumb.style.zIndex !== '1') {
+              breadcrumb.style.zIndex = '1';
+              console.log('BREADCRUMB RE-DESTROYED DUE TO DOM CHANGE:', breadcrumb);
+            }
+          });
+        }, 50);
+      }
+    });
+  });
+  
+  // Start observing
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['style', 'class']
+  });
+});
+
+// Function to handle search icon click
+function openSearchModal(event) {
+  event.preventDefault();
+  console.log('Search icon clicked!'); // Debug log
+  
+  // Try multiple selectors to find the search button
+  const selectors = [
+    '.header__search details summary',
+    'details-modal.header__search summary', 
+    '.header__icon--search',
+    '.header__search summary',
+    'details.header__search summary',
+    '[aria-label*="Search"]',
+    '[aria-label*="search"]'
+  ];
+  
+  let searchButton = null;
+  for (const selector of selectors) {
+    searchButton = document.querySelector(selector);
+    if (searchButton) {
+      console.log('Found search button with selector:', selector); // Debug log
+      break;
+    }
+  }
+  
+  if (searchButton) {
+    // Found the search button, click it to open modal
+    searchButton.click();
+    console.log('Search button clicked'); // Debug log
+    
+    // Ensure the modal appears above navbar (check if navbar is sticky)
+    setTimeout(() => {
+      const navbar = document.querySelector('.header__inline-menu');
+      const isSticky = navbar && navbar.classList.contains('is-sticky');
+      const zIndexValue = isSticky ? '99999' : '10000'; // Higher z-index when navbar is sticky
+      
+      const searchModal = document.querySelector('.search-modal, details[open] > .search-modal');
+      const predictiveSearch = document.querySelector('.predictive-search, predictive-search');
+      const searchContent = document.querySelector('.search-modal__content');
+      
+      if (searchModal) {
+        searchModal.style.zIndex = zIndexValue;
+        searchModal.style.position = 'fixed';
+        console.log('Search modal z-index updated to:', zIndexValue); // Debug log
+      }
+      
+      if (predictiveSearch) {
+        predictiveSearch.style.zIndex = zIndexValue;
+        console.log('Predictive search z-index updated to:', zIndexValue); // Debug log
+      }
+      
+      if (searchContent) {
+        searchContent.style.zIndex = zIndexValue;
+        console.log('Search content z-index updated to:', zIndexValue); // Debug log
+      }
+      
+      // Also check for any predictive search results that appear later
+      const observer = new MutationObserver(() => {
+        const currentNavbar = document.querySelector('.header__inline-menu');
+        const currentIsSticky = currentNavbar && currentNavbar.classList.contains('is-sticky');
+        const currentZIndex = currentIsSticky ? '99999' : '10000';
+        
+        const allPredictiveElements = document.querySelectorAll('.predictive-search, .predictive-search__results-groups-wrapper');
+        allPredictiveElements.forEach(el => {
+          el.style.zIndex = currentZIndex;
+        });
+      });
+      
+      const searchContainer = document.querySelector('.header__search');
+      if (searchContainer) {
+        observer.observe(searchContainer, { childList: true, subtree: true });
+      }
+    }, 10);
+  } else {
+    console.log('No search button found, redirecting to search page'); // Debug log
+    // Fallback: redirect to search page
+    window.location.href = '/search';
+  }
+}
+
+// Ensure icons are properly clickable when sticky
+document.addEventListener('DOMContentLoaded', function() {
+  // Add click handlers for nav icons to ensure they work
+  document.addEventListener('click', function(e) {
+    const navIcon = e.target.closest('.header__nav-icon');
+    if (!navIcon) return;
+    
+    // Handle search trigger specifically
+    if (navIcon.classList.contains('header__search-trigger')) {
+      e.preventDefault();
+      openSearchModal(e);
+      return;
+    }
+    
+    // Ensure other links work properly
+    if (navIcon.href && navIcon.href !== '#') {
+      // Let normal navigation happen
+      return true;
+    }
+  });
+  
+  // Additional search icon click handler as backup
+  const searchTriggers = document.querySelectorAll('.header__search-trigger');
+  searchTriggers.forEach(trigger => {
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log('Search trigger clicked via event listener');
+      openSearchModal(e);
+    });
+  });
+});
+</script>

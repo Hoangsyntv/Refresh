@@ -1,0 +1,70 @@
+{% comment %}
+  Debug menu structure to understand breadcrumb navigation
+{% endcomment %}
+
+<div style="background: #f0f0f0; padding: 20px; margin: 20px; border: 1px solid #ccc;">
+  <h3>Debug Menu Structure</h3>
+  
+  <h4>Available Linklists:</h4>
+  <ul>
+    {% for linklist in linklists %}
+      <li><strong>{{ linklist[0] }}</strong>: {{ linklist[1].handle }} ({{ linklist[1].links.size }} links)</li>
+    {% endfor %}
+  </ul>
+  
+  {% assign main_menu = blank %}
+  {% if linklists['main-menu'] != blank %}
+    {% assign main_menu = linklists['main-menu'] %}
+    <p><strong>Using main-menu</strong></p>
+  {% elsif linklists['header'] != blank %}  
+    {% assign main_menu = linklists['header'] %}
+    <p><strong>Using header menu</strong></p>
+  {% elsif linklists['primary'] != blank %}
+    {% assign main_menu = linklists['primary'] %}
+    <p><strong>Using primary menu</strong></p>
+  {% endif %}
+  
+  {% if main_menu != blank %}
+    <h4>Menu Structure:</h4>
+    <ul>
+      {% for link in main_menu.links %}
+        <li>
+          <strong>{{ link.title }}</strong> ({{ link.url }})
+          {% if link.links.size > 0 %}
+            <ul>
+              {% for childlink in link.links %}
+                <li>
+                  {{ childlink.title }} ({{ childlink.url }})
+                  {% if childlink.links.size > 0 %}
+                    <ul>
+                      {% for grandchildlink in childlink.links %}
+                        <li>{{ grandchildlink.title }} ({{ grandchildlink.url }})</li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p><strong>No menu found!</strong></p>
+  {% endif %}
+  
+  {% if request.page_type == 'product' and product %}
+    <h4>Current Product:</h4>
+    <p><strong>Product:</strong> {{ product.title }}</p>
+    <p><strong>Collections:</strong> 
+      {% for collection in product.collections %}
+        {{ collection.title }} ({{ collection.handle }}), 
+      {% endfor %}
+    </p>
+  {% endif %}
+  
+  {% if request.page_type == 'collection' and collection %}
+    <h4>Current Collection:</h4>
+    <p><strong>Collection:</strong> {{ collection.title }} ({{ collection.handle }})</p>
+  {% endif %}
+</div>

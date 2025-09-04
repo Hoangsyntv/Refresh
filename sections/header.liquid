@@ -74,6 +74,16 @@
       padding-top: 0.5rem;
     }
   }
+  
+  /* Store Name Styling */
+  .header__heading-link:hover .h2 {
+    color: #ff6600 !important;
+    transition: color 0.3s ease;
+  }
+  
+  .header__heading-link .h2 {
+    transition: color 0.3s ease;
+  }
 </style>
 
 {%- style -%}
@@ -172,7 +182,7 @@
             }}
           </div>
         {%- else -%}
-          <span class="h2">{{ shop.name }}</span>
+          <span class="h2" style="color: #ff8c00; font-weight: 700; text-decoration: none;">Nội Thất Vàng</span>
         {%- endif -%}
       </a>
       {%- if request.page_type == 'index' -%}
@@ -182,11 +192,7 @@
 
     {%- liquid
       if section.settings.menu != blank
-        if section.settings.menu_type_desktop == 'dropdown'
-          render 'header-dropdown-menu'
-        elsif section.settings.menu_type_desktop != 'drawer'
-          render 'header-mega-menu'
-        endif
+        render 'header-mega-menu', menu: section.settings.menu
       endif
     %}
 
@@ -215,7 +221,7 @@
             }}
           </div>
         {%- else -%}
-          <span class="h2">{{ shop.name }}</span>
+          <span class="h2" style="color: #ff8c00; font-weight: 700; text-decoration: none;">Nội Thất Vàng</span>
         {%- endif -%}
       </a>
       {%- if request.page_type == 'index' -%}
@@ -536,7 +542,7 @@
           "label": "t:sections.header.settings.menu_type_desktop.options__3.label"
         }
       ],
-      "default": "dropdown",
+      "default": "mega",
       "label": "t:sections.header.settings.menu_type_desktop.label"
     },
     {

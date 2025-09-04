@@ -1,0 +1,36 @@
+{
+  "name": "shopify-theme-refresh",
+  "version": "1.0.0",
+  "description": "Shopify theme with automated code quality checks",
+  "scripts": {
+    "check-code": "node check-code.js",
+    "dev": "shopify theme dev",
+    "deploy": "shopify theme push",
+    "deploy-staging": "shopify theme push --theme='Staging'",
+    "test": "jest",
+    "lint": "eslint **/*.js",
+    "format": "prettier --write **/*.{js,css,scss,md}",
+    "quality-check": "npm run lint && npm run test && npm run check-code"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "prettier-plugin-liquid": "^0.0.1-security",
+    "eslint": "^8.0.0",
+    "@shopify/eslint-plugin": "^42.0.0",
+    "@shopify/prettier-config": "^1.1.2",
+    "husky": "^8.0.0",
+    "jest": "^29.0.0",
+    "glob": "^8.0.0"
+  },
+  "dependencies": {
+    "@shopify/cli": "^3.0.0"
+  },
+  "keywords": [
+    "shopify",
+    "theme",
+    "liquid",
+    "ecommerce"
+  ],
+  "author": "Team Shopify Development",
+  "license": "MIT"
+}
