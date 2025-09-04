@@ -22,6 +22,7 @@
     endif
   elsif request.page_type == 'collection'
     comment 'For collection pages, find parent collection if any'
+    endcomment
     assign parent_collection = collection.metafields.custom.parent_collection
     if parent_collection
       assign crumb_collection = parent_collection
