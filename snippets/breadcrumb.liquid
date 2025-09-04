@@ -21,16 +21,10 @@
       assign collection_source = 'None'
     endif
   elsif request.page_type == 'collection'
-    comment 'For collection pages, find parent collection if any'
+    comment 'For collection pages, use current collection and build parent chain'
     endcomment
-    assign parent_collection = collection.metafields.custom.parent_collection
-    if parent_collection
-      assign crumb_collection = parent_collection
-      assign collection_source = 'Parent collection'
-    else
-      assign crumb_collection = nil
-      assign collection_source = 'Root collection'
-    endif
+    assign crumb_collection = collection
+    assign collection_source = 'Current collection'
   else
     assign crumb_collection = nil
     assign collection_source = 'Not applicable'
@@ -39,10 +33,28 @@
   comment '2) Build ancestor chain from parent metafields'
   endcomment
   assign ancestors = '' | split: ''
-  assign current_collection = crumb_collection
-  assign max_depth = 3
   
-  if crumb_collection
+  if request.page_type == 'collection'
+    comment 'For collection pages, start from current collection and build parent chain'
+    endcomment
+    assign current_collection = collection
+    assign max_depth = 3
+    
+    for i in (1..max_depth)
+      if current_collection and current_collection.metafields.custom.parent_collection
+        assign parent = current_collection.metafields.custom.parent_collection
+        assign ancestors = ancestors | push: parent
+        assign current_collection = parent
+      else
+        break
+      endif
+    endfor
+  elsif crumb_collection
+    comment 'For other pages, start from crumb_collection'
+    endcomment
+    assign current_collection = crumb_collection
+    assign max_depth = 3
+    
     for i in (1..max_depth)
       if current_collection and current_collection.metafields.custom.parent_collection
         assign parent = current_collection.metafields.custom.parent_collection
@@ -163,8 +175,8 @@
         <li class="breadcrumb__separator" aria-hidden="true">></li>
       {%- endfor -%}
       
-      {%- comment -%} Render collection (if any) {%- endcomment -%}
-      {%- if crumb_collection -%}
+      {%- comment -%} Render collection link (except on collection pages where it would be current) {%- endcomment -%}
+      {%- if crumb_collection and request.page_type != 'collection' -%}
         <li class="breadcrumb__item">
           <a href="{{ crumb_collection.url }}" class="breadcrumb__link">{{ crumb_collection.title | escape }}</a>
         </li>
@@ -179,12 +191,9 @@
           </li>
           
         {%- when 'collection' -%}
-          {%- comment -%} For collection pages, don't duplicate the collection link {%- endcomment -%}
-          {%- unless crumb_collection and crumb_collection.id == collection.id -%}
-            <li class="breadcrumb__item">
-              <span class="breadcrumb__current" aria-current="page">{{ collection.title | escape }}</span>
-            </li>
-          {%- endunless -%}
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__current" aria-current="page">{{ collection.title | escape }}</span>
+          </li>
           
         {%- when 'page' -%}
           <li class="breadcrumb__item">
