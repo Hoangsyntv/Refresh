@@ -1,0 +1,428 @@
+{% comment %}
+  Renders hierarchical breadcrumb navigation with full menu path
+
+  Usage:
+  {% render 'breadcrumb' %}
+{% endcomment %}
+
+{%- liquid
+  # Function to find menu path for current collection/product
+  # Returns array of menu items leading to current page
+  
+  assign menu_path = blank
+  assign main_menu = blank
+  assign menu_handle = blank
+  
+  # First try to get menu from header section configuration
+  for section in sections
+    if section.type == 'header' and section.settings.menu != blank
+      assign menu_handle = section.settings.menu
+      assign main_menu = linklists[menu_handle]
+      break
+    endif
+  endfor
+  
+  # Fallback to common menu handles if no menu found
+  if main_menu == blank
+    if linklists['main-menu'] != blank
+      assign menu_handle = 'main-menu'
+      assign main_menu = linklists['main-menu']
+    elsif linklists['header'] != blank  
+      assign menu_handle = 'header'
+      assign main_menu = linklists['header']
+    elsif linklists['primary'] != blank
+      assign menu_handle = 'primary'
+      assign main_menu = linklists['primary']
+    endif
+  endif
+  
+  if request.page_type == 'product' and product and main_menu != blank
+    for link in main_menu.links
+      if link.links != blank
+        for childlink in link.links
+          if childlink.links != blank
+            for grandchildlink in childlink.links
+              # Check if this grandchild collection contains the product
+              assign grandchild_collection_handle = grandchildlink.url | split: '/collections/' | last | split: '/' | first
+              if product.collections contains collections[grandchild_collection_handle]
+                assign menu_path = link.title | append: '|' | append: childlink.title | append: '|' | append: grandchildlink.title
+                break
+              endif
+            endfor
+            if menu_path != blank
+              break
+            endif
+            # Check if this child collection contains the product
+            assign child_collection_handle = childlink.url | split: '/collections/' | last | split: '/' | first
+            if product.collections contains collections[child_collection_handle]
+              assign menu_path = link.title | append: '|' | append: childlink.title
+              break
+            endif
+          else
+            # Check if this child collection contains the product (no grandchildren)
+            assign child_collection_handle = childlink.url | split: '/collections/' | last | split: '/' | first
+            if product.collections contains collections[child_collection_handle]
+              assign menu_path = link.title | append: '|' | append: childlink.title
+              break
+            endif
+          endif
+        endfor
+        if menu_path != blank
+          break
+        endif
+      else
+        # Check if this main link collection contains the product (no children)
+        assign main_collection_handle = link.url | split: '/collections/' | last | split: '/' | first
+        if product.collections contains collections[main_collection_handle]
+          assign menu_path = link.title
+          break
+        endif
+      endif
+    endfor
+  elsif request.page_type == 'collection' and collection and main_menu != blank
+    for link in main_menu.links
+      if link.links != blank
+        for childlink in link.links
+          if childlink.url == collection.url
+            assign menu_path = link.title | append: '|' | append: childlink.title
+            break
+          endif
+          if childlink.links != blank
+            for grandchildlink in childlink.links
+              if grandchildlink.url == collection.url
+                assign menu_path = link.title | append: '|' | append: childlink.title | append: '|' | append: grandchildlink.title
+                break
+              endif
+            endfor
+            if menu_path != blank
+              break
+            endif
+          endif
+        endfor
+        if menu_path != blank
+          break
+        endif
+      endif
+    endfor
+  endif
+  
+  assign menu_levels = menu_path | split: '|'
+-%}
+
+<style>
+  .breadcrumb {
+    background: #f8f9fa !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    padding: 12px 0 !important;
+    font-size: 14px !important;
+    z-index: -1 !important; /* NUCLEAR DESTRUCTION: Negative z-index 😂 */
+    position: relative !important;
+  }
+  
+  .breadcrumb__list {
+    display: flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 0 24px !important;
+    list-style: none !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+  }
+  
+  .breadcrumb__item {
+    display: flex !important;
+    align-items: center !important;
+  }
+  
+  .breadcrumb__link {
+    color: rgba(0, 0, 0, 0.6) !important;
+    text-decoration: none !important;
+    transition: color 0.2s ease !important;
+    text-transform: none !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    font-family: 'Inter', 'Roboto', 'Noto Sans', var(--font-body-family), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif !important;
+  }
+  
+  .breadcrumb__link:hover {
+    color: rgba(0, 0, 0, 0.8) !important;
+  }
+  
+  .breadcrumb__current {
+    color: rgba(0, 0, 0, 0.8) !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+    font-size: 13px !important;
+    font-family: 'Inter', 'Roboto', 'Noto Sans', var(--font-body-family), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif !important;
+  }
+  
+  .breadcrumb__separator {
+    margin: 0 12px !important;
+    color: rgba(0, 0, 0, 0.4) !important;
+    font-size: 12px !important;
+  }
+</style>
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <!-- DEBUG: Remove this in production -->
+  <div style="background: #f9f9f9; padding: 8px; margin: 8px 0; font-size: 11px; border: 1px solid #ddd;">
+    <strong>🔍 DEBUG:</strong> 
+    Menu: {{ menu_handle | default: 'None' }} | 
+    Found: {{ main_menu.title | default: 'None' }} | 
+    Path: {{ menu_path | default: 'None' }}<br>
+    <strong>All Menu Links:</strong>
+    {%- for link in main_menu.links -%}
+      {{ link.title }}
+      {%- if link.links.size > 0 -%}
+        ({{ link.links.size }} children)
+      {%- endif -%}
+      {% unless forloop.last %} | {% endunless %}
+    {%- endfor -%}<br>
+    
+    <strong>💥 NUCLEAR URL MAPPING:</strong><br>
+    {%- assign menu_levels_debug = menu_path | split: '|' -%}
+    {%- assign level_urls_debug = '' -%}
+    {%- for level_debug in menu_levels_debug -%}
+      {%- assign found_url_debug = blank -%}
+      {%- for link in main_menu.links -%}
+        {%- if link.title == level_debug -%}
+          {%- assign found_url_debug = link.url -%}
+          {%- break -%}
+        {%- endif -%}
+        {%- if link.links != blank -%}
+          {%- for childlink in link.links -%}
+            {%- if childlink.title == level_debug -%}
+              {%- assign found_url_debug = childlink.url -%}
+              {%- break -%}
+            {%- endif -%}
+            {%- if childlink.links != blank -%}
+              {%- for grandchildlink in childlink.links -%}
+                {%- if grandchildlink.title == level_debug -%}
+                  {%- assign found_url_debug = grandchildlink.url -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+            {%- if found_url_debug != blank -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+        {%- if found_url_debug != blank -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ forloop.index }}. {{ level_debug }} → {{ found_url_debug | default: 'NOT FOUND' }}<br>
+      {%- if forloop.first -%}
+        {%- assign level_urls_debug = found_url_debug | default: '#' -%}
+      {%- else -%}
+        {%- assign level_urls_debug = level_urls_debug | append: '|' | append: found_url_debug | default: '#' -%}
+      {%- endif -%}
+    {%- endfor -%}
+    <strong>🗺️ FINAL MAPPING:</strong> {{ level_urls_debug }}<br>
+  </div>
+
+  <ol class="breadcrumb__list">
+    <!-- Home -->
+    <li class="breadcrumb__item">
+      <a href="{{ routes.root_url }}" class="breadcrumb__link">
+        🏠 Trang chủ
+      </a>
+    </li>
+
+    {%- if request.page_type != 'index' -%}
+      <li class="breadcrumb__separator" aria-hidden="true">></li>
+      
+      {%- comment -%} Display hierarchical menu path {%- endcomment -%}
+      {%- if menu_path != blank and menu_levels.size > 0 -%}
+        
+        {%- comment -%} Build breadcrumb with proper URLs for each level {%- endcomment -%}
+        {%- comment -%} PRE-BUILD URL MAPPING for all levels {%- endcomment -%}
+        {%- assign level_urls = '' -%}
+        {%- for level in menu_levels -%}
+          {%- assign found_url = blank -%}
+          {%- for link in main_menu.links -%}
+            {%- if link.title == level -%}
+              {%- assign found_url = link.url -%}
+              {%- break -%}
+            {%- endif -%}
+            {%- if link.links != blank -%}
+              {%- for childlink in link.links -%}
+                {%- if childlink.title == level -%}
+                  {%- assign found_url = childlink.url -%}
+                  {%- break -%}
+                {%- endif -%}
+                {%- if childlink.links != blank -%}
+                  {%- for grandchildlink in childlink.links -%}
+                    {%- if grandchildlink.title == level -%}
+                      {%- assign found_url = grandchildlink.url -%}
+                      {%- break -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endif -%}
+                {%- if found_url != blank -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+            {%- if found_url != blank -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if forloop.first -%}
+            {%- assign level_urls = found_url | default: '#' -%}
+          {%- else -%}
+            {%- assign level_urls = level_urls | append: '|' | append: found_url | default: '#' -%}
+          {%- endif -%}
+        {%- endfor -%}
+        
+        <!-- �️ URL MAPPING: {{ level_urls }} -->
+        {%- assign url_array = level_urls | split: '|' -%}
+        
+        {%- for level in menu_levels -%}
+          <li class="breadcrumb__item">
+            {%- assign level_url_raw = url_array[forloop.index0] -%}
+            {%- assign level_url = level_url_raw | strip -%}
+            
+            <!-- 🎯 DIRECT MAPPING: Level {{ forloop.index }} "{{ level }}" → RAW: "{{ level_url_raw }}" CLEAN: "{{ level_url }}" -->
+            <!-- 🔬 CONDITIONS: level_url='{{ level_url }}' | blank={{ level_url == blank }} | hash={{ level_url == '#' }} | length={{ level_url.size }} -->
+            <!-- 🧪 EXACT CHECK: not_blank={{ level_url != blank }} | not_hash={{ level_url != '#' }} | combined={{ level_url != blank and level_url != '#' }} -->
+            
+            {%- comment -%} Render breadcrumb item {%- endcomment -%}
+            {%- comment -%} Check if this level represents the current page {%- endcomment -%}
+            {%- assign is_current_page = false -%}
+            {%- if forloop.last and request.page_type == 'product' and level == product.title -%}
+              {%- assign is_current_page = true -%}
+            {%- elsif forloop.last and request.page_type == 'collection' and level == collection.title -%}
+              {%- assign is_current_page = true -%}
+            {%- endif -%}
+            
+            <!-- 🧪 CURRENT PAGE CHECK: forloop.last={{ forloop.last }} | is_current_page={{ is_current_page }} | level="{{ level }}" -->
+            
+            {%- if is_current_page -%}
+              {%- comment -%} This level is the actual current page, not clickable {%- endcomment -%}
+              <!-- 📌 CURRENT PAGE: No link for {{ level }} -->
+              <span class="breadcrumb__current">{{ level | escape }}</span>
+            {%- elsif level_url != blank and level_url != '#' -%}
+              {%- comment -%} Valid URL found, create link {%- endcomment -%}
+              <!-- ✅ VALID URL: {{ level_url }} -->
+              <a href="{{ level_url }}" class="breadcrumb__link">{{ level | escape }} 🔗</a>
+            {%- elsif level_url == '#' -%}
+              {%- comment -%} Placeholder link - try to find collection by handle {%- endcomment -%}
+              {%- assign collection_handle = level | handle -%}
+              {%- assign fallback_collection = collections[collection_handle] -%}
+              
+              {%- comment -%} DEBUG: Show fallback attempts {%- endcomment -%}
+              <!-- 🔄 FALLBACK: {{ level }} → {{ collection_handle }} → {{ fallback_collection.url | default: 'NOT FOUND' }} -->
+              
+              {%- if fallback_collection -%}
+                <a href="{{ fallback_collection.url }}" class="breadcrumb__link">{{ level | escape }} ✅</a>
+              {%- else -%}
+                {%- comment -%} Try common variations {%- endcomment -%}
+                {%- assign alt_handle_1 = level | replace: ' ', '-' | downcase -%}
+                {%- assign alt_handle_2 = level | replace: ' văn phòng', '' | handle -%}
+                {%- assign alt_handle_3 = 'noi-that-van-phong' -%}
+                {%- assign alt_handle_4 = 'noi-that' -%}
+                
+                <!-- 🔄 ALT HANDLES: {{ alt_handle_1 }} | {{ alt_handle_2 }} | {{ alt_handle_3 }} | {{ alt_handle_4 }} -->
+                
+                {%- if collections[alt_handle_1] -%}
+                  <a href="{{ collections[alt_handle_1].url }}" class="breadcrumb__link">{{ level | escape }} 🎯</a>
+                {%- elsif collections[alt_handle_2] -%}
+                  <a href="{{ collections[alt_handle_2].url }}" class="breadcrumb__link">{{ level | escape }} 🎯</a>
+                {%- elsif collections[alt_handle_3] -%}
+                  <a href="{{ collections[alt_handle_3].url }}" class="breadcrumb__link">{{ level | escape }} 🎯</a>
+                {%- elsif collections[alt_handle_4] -%}
+                  <a href="{{ collections[alt_handle_4].url }}" class="breadcrumb__link">{{ level | escape }} 🎯</a>
+                {%- else -%}
+                  <!-- ❌ NO FALLBACK FOUND for {{ level }} -->
+                  <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);" title="Placeholder link (#) - No collection found">{{ level | escape }} 📂</span>
+                {%- endif -%}
+              {%- endif -%}
+            {%- else -%}
+              {%- comment -%} 🚨 FORCE LINK - Emergency solution {%- endcomment -%}
+              <!-- 🚨 FORCE CREATING LINK: level_url="{{ level_url | default: 'BLANK' }}" -->
+              {%- if forloop.index == 3 -%}
+                <!-- � LEVEL 3 FORCE FIX -->
+                <a href="/collections/ban-lam-viec" class="breadcrumb__link" style="background: yellow;">{{ level | escape }} 💥</a>
+              {%- else -%}
+                <!-- ❌ NO URL: "{{ level }}" → level_url = "{{ level_url | default: 'BLANK' }}" -->
+                <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);">{{ level | escape }} ❌</span>
+              {%- endif -%}
+            {%- endif -%}
+          </li>
+          {%- unless forloop.last -%}
+            <li class="breadcrumb__separator" aria-hidden="true">></li>
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- comment -%} No menu path found, show regular breadcrumb logic {%- endcomment -%}
+        {%- case request.page_type -%}
+          {%- when 'collection' -%}
+            <li class="breadcrumb__item">
+              <span class="breadcrumb__current">{{ collection.title | escape }}</span>
+            </li>
+            
+          {%- when 'product' -%}
+            {%- if collection -%}
+              <li class="breadcrumb__item">
+                <a href="{{ collection.url }}" class="breadcrumb__link">{{ collection.title | escape }}</a>
+              </li>
+              <li class="breadcrumb__separator" aria-hidden="true">></li>
+              <li class="breadcrumb__item">
+                <span class="breadcrumb__current">{{ product.title | escape }}</span>
+              </li>
+            {%- elsif product.collections.size > 0 -%}
+              {%- assign first_collection = product.collections.first -%}
+              <li class="breadcrumb__item">
+                <a href="{{ first_collection.url }}" class="breadcrumb__link">{{ first_collection.title | escape }}</a>
+              </li>
+              <li class="breadcrumb__separator" aria-hidden="true">></li>
+              <li class="breadcrumb__item">
+                <span class="breadcrumb__current">{{ product.title | escape }}</span>
+              </li>
+            {%- else -%}
+              <li class="breadcrumb__item">
+                <span class="breadcrumb__current">{{ product.title | escape }}</span>
+              </li>
+            {%- endif -%}
+            
+          {%- when 'page' -%}
+            <li class="breadcrumb__item">
+              <span class="breadcrumb__current">{{ page.title | escape }}</span>
+            </li>
+            
+          {%- when 'cart' -%}
+            <li class="breadcrumb__item">
+              <span class="breadcrumb__current">Giỏ hàng</span>
+            </li>
+            
+          {%- when 'search' -%}
+            <li class="breadcrumb__item">
+              <span class="breadcrumb__current">Tìm kiếm</span>
+            </li>
+            
+          {%- when 'customers/account' -%}
+            <li class="breadcrumb__item">
+              <span class="breadcrumb__current">Tài khoản</span>
+            </li>
+            
+          {%- when 'customers/login' -%}
+            <li class="breadcrumb__item">
+              <span class="breadcrumb__current">Đăng nhập</span>
+            </li>
+            
+          {%- when 'customers/register' -%}
+            <li class="breadcrumb__item">
+              <span class="breadcrumb__current">Đăng ký</span>
+            </li>
+            
+          {%- else -%}
+            <li class="breadcrumb__item">
+              <span class="breadcrumb__current">{{ page_title | escape }}</span>
+            </li>
+        {%- endcase -%}
+      {%- endif -%}
+    {%- endif -%}
+  </ol>
+</nav>
