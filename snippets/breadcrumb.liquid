@@ -132,6 +132,13 @@
     Primary Metafield: {{ primary_collection.title | default: 'None' }}<br>
     First Collection: {{ product.collections.first.title | default: 'None' }}<br>
     Selected: {{ crumb_collection.title | default: 'None' }}<br>
+    
+    <strong>🔍 PARENT CHAIN DEBUG:</strong><br>
+    Current Collection: {{ collection.title | default: 'None' }}<br>
+    Has Parent Metafield: {{ collection.metafields.custom.parent_collection | default: 'false' }}<br>
+    Parent Collection: {{ collection.metafields.custom.parent_collection.title | default: 'None' }}<br>
+    Parent Collection ID: {{ collection.metafields.custom.parent_collection.id | default: 'None' }}<br>
+    
     <strong>🏗️ ANCESTORS:</strong>
     {%- for ancestor in ancestors -%}
       {{ ancestor.title }}{% unless forloop.last %} → {% endunless %}
