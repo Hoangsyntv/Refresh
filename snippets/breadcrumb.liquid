@@ -177,6 +177,42 @@
         ({{ link.links.size }} children)
       {%- endif -%}
       {% unless forloop.last %} | {% endunless %}
+    {%- endfor -%}<br>
+    
+    <strong>URL Search Results:</strong><br>
+    {%- assign menu_levels_debug = menu_path | split: '|' -%}
+    {%- for level_debug in menu_levels_debug -%}
+      {{ forloop.index }}. {{ level_debug }} → 
+      {%- assign found_url = blank -%}
+      {%- for link in main_menu.links -%}
+        {%- if link.title == level_debug -%}
+          {%- assign found_url = link.url -%}
+          {%- break -%}
+        {%- endif -%}
+        {%- if link.links != blank -%}
+          {%- for childlink in link.links -%}
+            {%- if childlink.title == level_debug -%}
+              {%- assign found_url = childlink.url -%}
+              {%- break -%}
+            {%- endif -%}
+            {%- if childlink.links != blank -%}
+              {%- for grandchildlink in childlink.links -%}
+                {%- if grandchildlink.title == level_debug -%}
+                  {%- assign found_url = grandchildlink.url -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+            {%- if found_url != blank -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+        {%- if found_url != blank -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ found_url | default: 'NOT FOUND' }}<br>
     {%- endfor -%}
   </div>
 
@@ -200,12 +236,14 @@
             {%- assign level_url = blank -%}
             {%- assign level_index = forloop.index0 -%}
             
-            {%- comment -%} Find URL based on position in hierarchy {%- endcomment -%}
+            {%- comment -%} DEBUG: Show search process {%- endcomment -%}
             {%- comment -%} Try to find URL by searching through entire menu structure {%- endcomment -%}
+            {%- assign search_debug = 'Searching for: ' | append: level | append: ' | ' -%}
             {%- for link in main_menu.links -%}
               {%- comment -%} Check if this is the level we're looking for {%- endcomment -%}
               {%- if link.title == level -%}
                 {%- assign level_url = link.url -%}
+                {%- assign search_debug = search_debug | append: 'Found at top level: ' | append: link.title | append: ' → ' | append: link.url | append: ' | ' -%}
                 {%- break -%}
               {%- endif -%}
               
@@ -214,6 +252,7 @@
                 {%- for childlink in link.links -%}
                   {%- if childlink.title == level -%}
                     {%- assign level_url = childlink.url -%}
+                    {%- assign search_debug = search_debug | append: 'Found in ' | append: link.title | append: ': ' | append: childlink.title | append: ' → ' | append: childlink.url | append: ' | ' -%}
                     {%- break -%}
                   {%- endif -%}
                   
@@ -222,6 +261,7 @@
                     {%- for grandchildlink in childlink.links -%}
                       {%- if grandchildlink.title == level -%}
                         {%- assign level_url = grandchildlink.url -%}
+                        {%- assign search_debug = search_debug | append: 'Found in ' | append: link.title | append: '→' | append: childlink.title | append: ': ' | append: grandchildlink.title | append: ' → ' | append: grandchildlink.url | append: ' | ' -%}
                         {%- break -%}
                       {%- endif -%}
                     {%- endfor -%}
@@ -236,8 +276,12 @@
               {%- endif -%}
             {%- endfor -%}
             
+            {%- if level_url == blank -%}
+              {%- assign search_debug = search_debug | append: 'NOT FOUND!' -%}
+            {%- endif -%}
+            
             {%- comment -%} DEBUG: Show what URL was found {%- endcomment -%}
-            {%- comment -%} Level: {{ level }} | URL: {{ level_url | default: 'NOT FOUND' }} {%- endcomment -%}
+            {%- comment -%} {{ search_debug }} {%- endcomment -%}
             
             {%- comment -%} Render breadcrumb item {%- endcomment -%}
             {%- if forloop.last -%}
@@ -246,8 +290,8 @@
             {%- elsif level_url != blank -%}
               <a href="{{ level_url }}" class="breadcrumb__link">{{ level | escape }}</a>
             {%- else -%}
-              {%- comment -%} No URL found, display as text only {%- endcomment -%}
-              <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);">{{ level | escape }} ❌</span>
+              {%- comment -%} No URL found, display as text only with debug {%- endcomment -%}
+              <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);" title="{{ search_debug }}">{{ level | escape }} ❌</span>
             {%- endif -%}
           </li>
           {%- unless forloop.last -%}
