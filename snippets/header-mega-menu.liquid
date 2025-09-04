@@ -158,11 +158,11 @@
     z-index: 999999; /* Extremely high z-index to stay above breadcrumb */
     background: #fff;
     border: none;
-    border-top: 1px solid #e5e7eb;
+    border-top: none; /* Remove top border to sit flush with navbar */
     border-bottom: 1px solid #e5e7eb;
     border-radius: 0;
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
-    padding: 40px 0;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1); /* Reduced shadow for cleaner look */
+    padding: 32px 0; /* Reduced top padding */
     margin-top: 0;
     width: 100vw;
     display: none;
@@ -171,9 +171,9 @@
     transition: all 0.3s ease;
   }
   
-  /* When menu is sticky, adjust panel position */
+  /* When menu is sticky, adjust panel position to be directly under */
   .header__inline-menu.is-sticky .mega-menu__panel {
-    top: 60px; /* Fixed position when sticky */
+    top: 60px; /* Exactly under the sticky navbar */
   }
   
   /* Overlay for mega menu - DISABLED to allow navigation between menus */
@@ -614,6 +614,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateStickyPosition() {
     const headerHeight = headerContainer ? headerContainer.offsetHeight : 0;
     const megaMenuPanels = document.querySelectorAll('.mega-menu__panel');
+    const navbarHeight = headerMenu.offsetHeight; // Get actual navbar height
     
     // Update menu offset top when window resizes and not sticky
     if (!isSticky) {
@@ -622,7 +623,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     megaMenuPanels.forEach(panel => {
-      panel.style.top = (isSticky ? 60 : headerHeight) + 'px';
+      if (isSticky) {
+        // When sticky, position directly under the fixed navbar
+        panel.style.top = navbarHeight + 'px';
+      } else {
+        // When not sticky, position under the navbar at its current position
+        const navbarBottom = headerMenu.offsetTop + navbarHeight;
+        panel.style.top = navbarBottom + 'px';
+      }
     });
   }
   
