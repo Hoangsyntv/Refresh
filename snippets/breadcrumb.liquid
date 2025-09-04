@@ -280,6 +280,9 @@
               {%- assign search_debug = search_debug | append: 'NOT FOUND!' -%}
             {%- endif -%}
             
+            {%- comment -%} VERIFY: Assignment persistence check {%- endcomment -%}
+            <!-- 🔬 ASSIGNMENT CHECK: level_url = "{{ level_url | default: 'BLANK_AFTER_SEARCH' }}" for "{{ level }}" -->
+            
             {%- comment -%} DEBUG: Show what URL was found {%- endcomment -%}
             <!-- 🔍 LEVEL {{ forloop.index }}: "{{ level }}" → URL: "{{ level_url | default: 'BLANK' }}" -->
             <!-- 📊 PAGE TYPE: {{ request.page_type }} | PRODUCT: {{ product.title | default: 'N/A' }} | COLLECTION: {{ collection.title | default: 'N/A' }} -->
