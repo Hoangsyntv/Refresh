@@ -2,6 +2,17 @@
   comment 'Breadcrumb navigation following proper spec'
   endcomment
   
+  comment '0) Get main menu for hierarchy detection'
+  endcomment
+  assign main_menu = blank
+  if linklists['main-menu'] != blank
+    assign main_menu = linklists['main-menu']
+  elsif linklists['header'] != blank  
+    assign main_menu = linklists['header']
+  elsif linklists['primary'] != blank
+    assign main_menu = linklists['primary']
+  endif
+  
   comment '1) Determine crumb_collection with priority order'
   endcomment
   assign primary_collection = product.metafields.custom.primary_collection
@@ -30,40 +41,98 @@
     assign collection_source = 'Not applicable'
   endif
   
-  comment '2) Build ancestor chain from parent metafields'
+  comment '2) Build ancestor chain from menu hierarchy and metafields'
   endcomment
   assign ancestors = '' | split: ''
+  assign menu_ancestors = '' | split: ''
   
+  comment 'Find current collection in menu structure'
+  endcomment
+  assign target_collection = nil
   if request.page_type == 'collection'
-    comment 'For collection pages, start from current collection and build parent chain'
+    assign target_collection = collection
+  elsif request.page_type == 'product' and crumb_collection
+    assign target_collection = crumb_collection
+  endif
+  
+  if target_collection and main_menu
+    comment 'Search for collection in menu hierarchy (3 levels max)'
     endcomment
-    assign current_collection = collection
-    assign max_depth = 3
-    
-    for i in (1..max_depth)
-      if current_collection and current_collection.metafields.custom.parent_collection
-        assign parent = current_collection.metafields.custom.parent_collection
-        assign ancestors = ancestors | push: parent
-        assign current_collection = parent
-      else
+    for link in main_menu.links
+      comment 'Level 1: Check top level'
+      endcomment
+      if link.url == target_collection.url
+        assign menu_found = true
         break
       endif
-    endfor
-  elsif crumb_collection
-    comment 'For other pages, start from crumb_collection'
-    endcomment
-    assign current_collection = crumb_collection
-    assign max_depth = 3
-    
-    for i in (1..max_depth)
-      if current_collection and current_collection.metafields.custom.parent_collection
-        assign parent = current_collection.metafields.custom.parent_collection
-        assign ancestors = ancestors | push: parent
-        assign current_collection = parent
-      else
-        break
+      
+      comment 'Level 2: Check second level'
+      endcomment
+      if link.links.size > 0
+        for childlink in link.links
+          if childlink.url == target_collection.url
+            assign menu_ancestors = menu_ancestors | push: link
+            assign menu_found = true
+            break
+          endif
+          
+          comment 'Level 3: Check third level'
+          endcomment
+          if childlink.links.size > 0
+            for grandchildlink in childlink.links
+              if grandchildlink.url == target_collection.url
+                assign menu_ancestors = menu_ancestors | push: link
+                assign menu_ancestors = menu_ancestors | push: childlink
+                assign menu_found = true
+                break
+              endif
+            endfor
+            if menu_found
+              break
+            endif
+          endif
+        endfor
+        if menu_found
+          break
+        endif
       endif
     endfor
+  endif
+  
+  comment 'Use menu hierarchy as primary source, fallback to metafields'
+  endcomment
+  if menu_ancestors.size > 0
+    assign ancestors = menu_ancestors
+  else
+    comment 'Fallback to metafield-based hierarchy'
+    endcomment
+    if request.page_type == 'collection'
+      assign current_collection = collection
+      assign max_depth = 3
+      
+      for i in (1..max_depth)
+        if current_collection and current_collection.metafields.custom.parent_collection
+          assign parent = current_collection.metafields.custom.parent_collection
+          assign ancestors = ancestors | push: parent
+          assign current_collection = parent
+        else
+          break
+        endif
+      endfor
+    elsif crumb_collection
+      assign current_collection = crumb_collection
+      assign max_depth = 3
+      
+      for i in (1..max_depth)
+        if current_collection and current_collection.metafields.custom.parent_collection
+          assign parent = current_collection.metafields.custom.parent_collection
+          assign ancestors = ancestors | push: parent
+          assign current_collection = parent
+        else
+          break
+        endif
+      endfor
+    endif
   endif
 -%}
 
@@ -133,13 +202,24 @@
     First Collection: {{ product.collections.first.title | default: 'None' }}<br>
     Selected: {{ crumb_collection.title | default: 'None' }}<br>
     
+    <strong>🍔 MENU HIERARCHY:</strong><br>
+    Menu Available: {{ main_menu != blank }}<br>
+    Target Collection: {{ target_collection.title | default: 'None' }}<br>
+    Menu Found: {{ menu_found | default: 'false' }}<br>
+    Menu Ancestors: 
+    {%- for menu_ancestor in menu_ancestors -%}
+      {{ menu_ancestor.title }}{% unless forloop.last %} → {% endunless %}
+    {%- else -%}
+      None
+    {%- endfor -%}<br>
+    
     <strong>🔍 PARENT CHAIN DEBUG:</strong><br>
     Current Collection: {{ collection.title | default: 'None' }}<br>
     Has Parent Metafield: {{ collection.metafields.custom.parent_collection | default: 'false' }}<br>
     Parent Collection: {{ collection.metafields.custom.parent_collection.title | default: 'None' }}<br>
     Parent Collection ID: {{ collection.metafields.custom.parent_collection.id | default: 'None' }}<br>
     
-    <strong>🏗️ ANCESTORS:</strong>
+    <strong>🏗️ FINAL ANCESTORS:</strong>
     {%- for ancestor in ancestors -%}
       {{ ancestor.title }}{% unless forloop.last %} → {% endunless %}
     {%- else -%}
