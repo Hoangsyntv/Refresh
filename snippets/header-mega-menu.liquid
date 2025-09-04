@@ -203,20 +203,25 @@
   .header__inline-menu .mega-menu[open] .mega-menu__panel {
     display: flex;
   }
-  
-  /* Hover effect for mega menu */
+
+  /* Hover effect for mega menu - backup for JavaScript */
   .header__inline-menu .mega-menu:hover .mega-menu__panel {
     display: flex;
   }
   
-  .header__inline-menu .mega-menu:hover .primary-nav__trigger {
+  /* Active class for JavaScript control */
+  .header__inline-menu .mega-menu.active .mega-menu__panel {
+    display: flex;
+  }  .header__inline-menu .mega-menu:hover .primary-nav__trigger,
+  .header__inline-menu .mega-menu.active .primary-nav__trigger {
     background: rgba(0, 0, 0, 0.02);
     color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
     border-bottom-color: #ff6b35; /* Orange underline on menu hover */
   }
-  
-  .header__inline-menu .mega-menu:hover .primary-nav__icon {
+
+  .header__inline-menu .mega-menu:hover .primary-nav__icon,
+  .header__inline-menu .mega-menu.active .primary-nav__icon {
     transform: rotate(180deg);
     opacity: 1;
   }
@@ -798,6 +803,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (trigger && panel) {
       // Handle hover events
       menu.addEventListener('mouseenter', function() {
+        console.log('Mouse enter on menu:', menu); // Debug log
+        
         // Clear any pending close timeout
         if (hoverTimeout) {
           clearTimeout(hoverTimeout);
@@ -808,11 +815,15 @@ document.addEventListener('DOMContentLoaded', function() {
         megaMenus.forEach(otherMenu => {
           if (otherMenu !== menu) {
             otherMenu.removeAttribute('open');
+            otherMenu.classList.remove('active');
           }
         });
         
-        // Open this mega menu
+        // Open this mega menu with both methods
         menu.setAttribute('open', '');
+        menu.classList.add('active');
+        
+        console.log('Menu opened:', menu); // Debug log
         
         // Update position
         setTimeout(() => {
@@ -821,44 +832,59 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       
       menu.addEventListener('mouseleave', function() {
+        console.log('Mouse leave on menu:', menu); // Debug log
+        
         // Close mega menu quickly when mouse leaves
         hoverTimeout = setTimeout(() => {
           menu.removeAttribute('open');
+          menu.classList.remove('active');
+          console.log('Menu closed:', menu); // Debug log
         }, 150); // Fast close - 150ms delay
       });
       
       // Keep existing click handler as backup
       trigger.addEventListener('click', function(e) {
         e.preventDefault();
+        console.log('Click on trigger:', trigger); // Debug log
         
-        if (menu.hasAttribute('open')) {
+        if (menu.hasAttribute('open') || menu.classList.contains('active')) {
           menu.removeAttribute('open');
+          menu.classList.remove('active');
         } else {
           // Close other open menus first
           megaMenus.forEach(otherMenu => {
             if (otherMenu !== menu) {
               otherMenu.removeAttribute('open');
+              otherMenu.classList.remove('active');
             }
           });
           menu.setAttribute('open', '');
+          menu.classList.add('active');
         }
         
         setTimeout(() => {
           updateStickyPosition();
         }, 10);
       });
+    } else {
+      console.log('Missing trigger or panel for menu:', menu); // Debug log
     }
   });
   
   // Close mega menu when clicking outside (but not when just hovering)
   document.addEventListener('click', function(e) {
     if (!e.target.closest('.mega-menu')) {
-      const openMenus = document.querySelectorAll('.mega-menu[open]');
+      const openMenus = document.querySelectorAll('.mega-menu[open], .mega-menu.active');
       openMenus.forEach(menu => {
         menu.removeAttribute('open');
+        menu.classList.remove('active');
       });
     }
   });
+  
+  // Debug: Log when DOM is ready
+  console.log('Mega menu JavaScript initialized');
+  console.log('Found mega menus:', document.querySelectorAll('.mega-menu').length);
 });
 
 // Function to handle search icon click
