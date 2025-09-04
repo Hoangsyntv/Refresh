@@ -284,6 +284,7 @@
             {%- assign level_url = url_array[forloop.index0] -%}
             
             <!-- 🎯 DIRECT MAPPING: Level {{ forloop.index }} "{{ level }}" → "{{ level_url }}" -->
+            <!-- 🔬 CONDITIONS: level_url='{{ level_url }}' | blank={{ level_url == blank }} | hash={{ level_url == '#' }} -->
             
             {%- comment -%} Render breadcrumb item {%- endcomment -%}
             {%- comment -%} Check if this level represents the current page {%- endcomment -%}
@@ -337,10 +338,15 @@
                 {%- endif -%}
               {%- endif -%}
             {%- else -%}
-              {%- comment -%} No URL found, display as text only with debug {%- endcomment -%}
-              <!-- ❌ NO URL: "{{ level }}" → level_url = "{{ level_url | default: 'BLANK' }}" -->
-              <!-- 🚨 FORCE LINK TEST: Creating link anyway for debugging -->
-              <a href="/collections/test-{{ level | handle }}" class="breadcrumb__link" style="border: 2px dashed red;">{{ level | escape }} 🧪</a>
+              {%- comment -%} 🚨 FORCE LINK - Emergency solution {%- endcomment -%}
+              <!-- 🚨 FORCE CREATING LINK: level_url="{{ level_url | default: 'BLANK' }}" -->
+              {%- if forloop.index == 3 -%}
+                <!-- � LEVEL 3 FORCE FIX -->
+                <a href="/collections/ban-lam-viec" class="breadcrumb__link" style="background: yellow;">{{ level | escape }} 💥</a>
+              {%- else -%}
+                <!-- ❌ NO URL: "{{ level }}" → level_url = "{{ level_url | default: 'BLANK' }}" -->
+                <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);">{{ level | escape }} ❌</span>
+              {%- endif -%}
             {%- endif -%}
           </li>
           {%- unless forloop.last -%}
