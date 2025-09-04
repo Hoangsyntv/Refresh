@@ -334,11 +334,8 @@
   }
   
   .header__inline-menu .mega-menu__column {
-    flex: 0 1 auto; /* Don't grow, can shrink, auto width */
-    width: max-content; /* Auto-fit to content width */
-    max-width: 300px; /* Prevent overly wide columns */
-    min-width: 120px; /* Minimum width for readability */
-    padding: 0 20px;
+    flex: 1 1 0; /* Equal width columns - each column takes same space */
+    padding: 0 16px; /* Reduced padding for more content space */
     position: relative;
   }
   
@@ -359,11 +356,11 @@
   
   .header__inline-menu .mega-menu__title {
     display: block;
-    font-size: 14px;
+    font-size: 13px; /* Reduced from 14px for more compact layout */
     font-weight: 600;
     color: #1f2937;
-    margin-bottom: 12px;
-    padding: 8px 0;
+    margin-bottom: 10px; /* Reduced from 12px */
+    padding: 6px 0; /* Reduced from 8px */
     text-decoration: none;
     text-transform: none;
     transition: color 0.2s ease;
@@ -384,11 +381,11 @@
   
   .header__inline-menu .mega-menu__link {
     display: block;
-    padding: 8px 0;
+    padding: 6px 0; /* Reduced from 8px for more compact layout */
     color: #6b7280;
-    font-size: 14px;
+    font-size: 13px; /* Reduced from 14px for more content */
     font-weight: 400;
-    line-height: 1.5;
+    line-height: 1.4; /* Slightly reduced line height */
     text-decoration: none;
     transition: color 0.2s ease;
     font-family: 'Inter', 'Roboto', 'Noto Sans', var(--font-body-family), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
@@ -550,11 +547,11 @@
                     role="menu"
                     aria-labelledby="HeaderMenu-{{ link.handle }}"
                   >
-                    <div class="mega-menu__container" style="max-width:1400px;margin:0 auto;padding:0 24px;display:flex;gap:20px;justify-content:flex-start;">
+                    <div class="mega-menu__container" style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;gap:40px;">
                       <!-- Menu Content with Category Titles -->
-                      <div class="mega-menu__content" style="display:flex;gap:20px;flex:1;justify-content:flex-start;">
+                      <div class="mega-menu__content" style="display:flex;gap:24px;flex:1;">
                         {%- for childlink in link.links -%}
-                          <div class="mega-menu__column" role="group" aria-labelledby="menu-category-{{ forloop.index }}" style="flex:0 1 auto;width:max-content;max-width:300px;min-width:120px;">
+                          <div class="mega-menu__column" role="group" aria-labelledby="menu-category-{{ forloop.index }}" style="flex:1 1 0;">
                             <!-- Category Title as first item -->
                             <a href="{{ childlink.url }}" class="mega-menu__title" style="text-decoration:none;">
                               {{ childlink.title | escape }}
@@ -568,7 +565,7 @@
                                     class="mega-menu__link"
                                     role="menuitem"
                                     tabindex="-1"
-                                    style="display:block;padding:6px 0;color:#666;font-size:14px;line-height:1.5;text-decoration:none;transition:color 0.2s ease;"
+                                    style="display:block;padding:6px 0;color:#666;font-size:13px;line-height:1.4;text-decoration:none;transition:color 0.2s ease;"
                                     onmouseover="this.style.color='#000'"
                                     onmouseout="this.style.color='#666'"
                                   >
