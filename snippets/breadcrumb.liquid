@@ -129,14 +129,12 @@
 </style>
 
 {%- liquid
-  comment 'Dynamic breadcrumb with working links using CSS classes'
+  comment 'Dynamic breadcrumb with CSS-only links'
   endcomment
   assign menu_handle = 'main-menu'
   assign main_menu = linklists[menu_handle]
   assign menu_path = blank
 
-  comment 'Build menu path for products and collections'
-  endcomment
   if request.page_type == 'product' and product and main_menu
     for link in main_menu.links
       if link.url == collection.url or link.title contains 'Nội thất văn phòng'
@@ -196,30 +194,10 @@
   assign menu_levels = menu_path | split: '|'
 -%}
 
-<style>
-  .breadcrumb-link {
-    color: #0066cc !important;
-    text-decoration: underline !important;
-    cursor: pointer !important;
-    transition: color 0.2s ease !important;
-  }
-  .breadcrumb-link:hover {
-    color: #004499 !important;
-  }
-</style>
-
-<script>
-  function breadcrumbNavigate(url) {
-    window.location.href = url;
-  }
-</script>
-
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol class="breadcrumb__list">
     <li class="breadcrumb__item">
-      <span class="breadcrumb-link" onclick="breadcrumbNavigate('{{ routes.root_url }}')">
-        🏠 Trang chủ
-      </span>
+      <a href="{{ routes.root_url }}" class="breadcrumb__link">🏠 Trang chủ</a>
     </li>
 
     {%- if request.page_type != 'index' -%}
@@ -259,9 +237,7 @@
           
           <li class="breadcrumb__item">
             {%- unless forloop.last -%}
-              <span class="breadcrumb-link" onclick="breadcrumbNavigate('{{ found_url }}')">
-                {{ level | escape }}
-              </span>
+              <a href="{{ found_url }}" class="breadcrumb__link">{{ level | escape }}</a>
             {%- else -%}
               <span class="breadcrumb__current" aria-current="page">{{ level | escape }}</span>
             {%- endunless -%}
@@ -287,7 +263,7 @@
           {%- when 'product' -%}
             {%- if collection -%}
               <li class="breadcrumb__item">
-                <span class="breadcrumb-link" onclick="breadcrumbNavigate('{{ collection.url }}')">{{ collection.title | escape }}</span>
+                <a href="{{ collection.url }}" class="breadcrumb__link">{{ collection.title | escape }}</a>
               </li>
               <li class="breadcrumb__separator" aria-hidden="true">></li>
               <li class="breadcrumb__item">
