@@ -224,8 +224,7 @@
                 {%- endcase -%}
               {%- endif -%}
             {%- else -%}
-              <small style="color: green;">DIRECT LINK</small><br>
-              <a href="{{ level_url }}" class="breadcrumb__link">{{ level | escape }}</a>
+              <a href="{{ level_url }}" class="breadcrumb__link" style="color: blue !important; text-decoration: underline !important;">{{ level | escape }}</a>
             {%- endif -%}
           </li>
           {%- unless forloop.last -%}
