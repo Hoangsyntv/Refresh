@@ -7,9 +7,15 @@
 
   comment 'Build menu path for products and collections'
   endcomment
-  if request.page_type == 'product' and product and main_menu
+  if request.page_type == 'product' and product and main_menu and collection
+    comment 'Find collection hierarchy in menu for products'
+    endcomment
     for link in main_menu.links
-      if link.url == collection.url or link.title contains 'Nội thất văn phòng'
+      if link.url == collection.url
+        assign menu_path = link.title
+        break
+      endif
+      if link.links != blank
         for childlink in link.links
           if childlink.url == collection.url
             assign menu_path = link.title | append: '|' | append: childlink.title
