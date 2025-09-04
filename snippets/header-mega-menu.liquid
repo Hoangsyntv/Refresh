@@ -166,7 +166,7 @@
   
   .header__inline-menu .mega-menu__panel {
     position: absolute; /* Changed to absolute for better positioning */
-    top: calc(100% + 3px); /* Position BELOW the navbar border-bottom (3px thick) */
+    top: 100%; /* Position directly at the bottom edge of navbar (touching underline) */
     left: 0;
     right: 0;
     transform: none;
@@ -189,7 +189,7 @@
   /* When menu is sticky, use higher z-index and fixed positioning */
   .header__inline-menu.is-sticky .mega-menu__panel {
     position: fixed;
-    top: calc(60px + 3px); /* Below sticky navbar + its 3px border */
+    top: 60px; /* Direct bottom edge of sticky navbar (touching underline) */
     z-index: 360; /* Above sticky navbar */
   }
   
