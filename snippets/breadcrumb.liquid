@@ -7,37 +7,46 @@
 
   comment 'Build menu path for products and collections'
   endcomment
-  if request.page_type == 'product' and product and main_menu and collection
-    comment 'Find collection hierarchy in menu for products'
+  if request.page_type == 'product' and product and main_menu
+    comment 'Try to find collection - first from current context, then from product collections'
     endcomment
-    for link in main_menu.links
-      if link.url == collection.url
-        assign menu_path = link.title
-        break
-      endif
-      if link.links != blank
-        for childlink in link.links
-          if childlink.url == collection.url
-            assign menu_path = link.title | append: '|' | append: childlink.title
-            break
-          endif
-          if childlink.links != blank
-            for grandchildlink in childlink.links
-              if grandchildlink.url == collection.url
-                assign menu_path = link.title | append: '|' | append: childlink.title | append: '|' | append: grandchildlink.title
-                break
-              endif
-            endfor
-            if menu_path != blank
-              break
-            endif
-          endif
-        endfor
-        if menu_path != blank
+    assign target_collection = collection
+    if target_collection == blank and product.collections.size > 0
+      assign target_collection = product.collections.first
+    endif
+    
+    if target_collection
+      comment 'Find collection hierarchy in menu'
+      endcomment
+      for link in main_menu.links
+        if link.url == target_collection.url
+          assign menu_path = link.title
           break
         endif
-      endif
-    endfor
+        if link.links != blank
+          for childlink in link.links
+            if childlink.url == target_collection.url
+              assign menu_path = link.title | append: '|' | append: childlink.title
+              break
+            endif
+            if childlink.links != blank
+              for grandchildlink in childlink.links
+                if grandchildlink.url == target_collection.url
+                  assign menu_path = link.title | append: '|' | append: childlink.title | append: '|' | append: grandchildlink.title
+                  break
+                endif
+              endfor
+              if menu_path != blank
+                break
+              endif
+            endif
+          endfor
+          if menu_path != blank
+            break
+          endif
+        endif
+      endfor
+    endif
   elsif request.page_type == 'collection' and collection and main_menu
     comment 'Find collection in menu hierarchy'
     endcomment
@@ -201,7 +210,8 @@
   
   comment 'DEBUG: Show detected hierarchy + collection info'
   endcomment
-  assign debug_info = 'DETECTED PATH: ' | append: menu_path | append: ' | LEVELS: ' | append: menu_levels.size | append: ' | COLLECTION: ' | append: collection.title | append: ' | COLLECTION_URL: ' | append: collection.url
+  assign debug_collection = target_collection | default: collection
+  assign debug_info = 'DETECTED PATH: ' | append: menu_path | append: ' | LEVELS: ' | append: menu_levels.size | append: ' | COLLECTION: ' | append: debug_collection.title | append: ' | COLLECTION_URL: ' | append: debug_collection.url | append: ' | PRODUCT_COLLECTIONS: ' | append: product.collections.size
 -%}
 
 <!-- DEBUG INFO -->
