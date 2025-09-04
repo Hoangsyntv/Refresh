@@ -26,6 +26,8 @@
     width: 100%;
     border-top: 1px solid #f0f0f0;
     border-bottom: 1px solid #f0f0f0; /* Navbar border (not the underline we want) */
+    /* EMERGENCY FIX: Ensure mega menu can escape stacking context */
+    isolation: isolate;
   }
   
   /* Remove navbar-wide underline change on hover */
@@ -162,12 +164,12 @@
   }
   
   .header__inline-menu .mega-menu__panel {
-    position: absolute;
-    top: 100%; /* Position directly below the menu item (including its underline) */
+    position: fixed; /* EMERGENCY FIX: Use fixed instead of absolute to escape stacking context */
+    top: calc(100% + 60px); /* Position below navbar, accounting for navbar height */
     left: 0;
     right: 0;
     transform: none;
-    z-index: 250; /* Layer 3: Overlays - Above navbar but below sticky */
+    z-index: 9999 !important; /* EMERGENCY FIX: Force above all elements */
     background: #fff;
     border: none;
     border-top: none;
@@ -189,7 +191,7 @@
   .header__inline-menu.is-sticky .mega-menu__panel {
     position: fixed;
     top: 60px; /* Below sticky navbar height */
-    z-index: 360; /* Above sticky navbar */
+    z-index: 99999 !important; /* EMERGENCY FIX: Force above all elements when sticky */
   }
   
   /* Overlay for mega menu - DISABLED to allow navigation between menus */
@@ -760,7 +762,23 @@ document.addEventListener('DOMContentLoaded', function() {
           panel.style.display = 'flex';
           panel.style.visibility = 'visible';
           panel.style.opacity = '1';
-          console.log('Panel forced to show:', panel); // Debug
+          
+          // EMERGENCY FIX: Calculate and set position dynamically
+          const navbar = document.querySelector('.header__inline-menu');
+          const navbarRect = navbar.getBoundingClientRect();
+          const navbarBottom = navbarRect.bottom + window.pageYOffset;
+          
+          panel.style.position = 'fixed';
+          panel.style.top = navbarRect.bottom + 'px';
+          panel.style.left = '0';
+          panel.style.right = '0';
+          panel.style.zIndex = '99999';
+          
+          console.log('Panel forced to show with position:', {
+            top: navbarRect.bottom,
+            zIndex: 99999,
+            panel: panel
+          });
         }
         
         // Update position
