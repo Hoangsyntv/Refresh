@@ -199,23 +199,18 @@
           <li class="breadcrumb__item">
             {%- assign level_url = url_array[forloop.index0] | strip -%}
             
-            <!-- Debug level URL -->
-            <small style="font-size: 8px; color: blue;">{{ level }}: [{{ level_url }}]</small><br>
-            
             {%- if level_url == '#' or level_url contains '#' -%}
-              {%- comment -%} Fallback URL mapping for invalid/placeholder URLs {%- endcomment -%}
-              <small style="color: red;">FALLBACK</small><br>
+              {%- comment -%} Fallback URL mapping {%- endcomment -%}
               {%- assign collection_handle = level | handle -%}
               {%- if collections[collection_handle] -%}
-                <a href="{{ collections[collection_handle].url }}" class="breadcrumb__link">{{ level | escape }}</a>
+                <a href="{{ collections[collection_handle].url }}" class="breadcrumb__link" style="color: blue !important; text-decoration: underline !important;">{{ level | escape }}</a>
               {%- else -%}
-                {%- comment -%} Try alternative collection handles {%- endcomment -%}
                 {%- case level -%}
                   {%- when 'Nội thất văn phòng' -%}
                     {%- if collections['noi-that-van-phong'] -%}
-                      <a href="{{ collections['noi-that-van-phong'].url }}" class="breadcrumb__link">{{ level | escape }}</a>
+                      <a href="{{ collections['noi-that-van-phong'].url }}" class="breadcrumb__link" style="color: blue !important; text-decoration: underline !important;">{{ level | escape }}</a>
                     {%- elsif collections['van-phong'] -%}
-                      <a href="{{ collections['van-phong'].url }}" class="breadcrumb__link">{{ level | escape }}</a>
+                      <a href="{{ collections['van-phong'].url }}" class="breadcrumb__link" style="color: blue !important; text-decoration: underline !important;">{{ level | escape }}</a>
                     {%- else -%}
                       <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);">{{ level | escape }}</span>
                     {%- endif -%}
