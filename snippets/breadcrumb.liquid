@@ -70,7 +70,16 @@
   comment 'Initialize level_urls for URL mapping'
   endcomment
   assign level_urls = ''
+  
+  comment 'Debug output in same scope'
+  endcomment
+  assign debug_output = 'URLS: ' | append: level_urls | default: 'None'
 -%}
+
+<!-- Debug moved to liquid scope -->  
+<div style="background: #f0f8ff; padding: 4px; margin: 4px 0; font-size: 10px; border: 1px solid #ddd;">
+  {{ debug_output }}
+</div>
 
 <style>
   .breadcrumb {
@@ -129,11 +138,6 @@
 </style>
 
 <nav class="breadcrumb" aria-label="Breadcrumb">
-  <!-- Quick Debug -->
-  <div style="background: #f0f8ff; padding: 4px; margin: 4px 0; font-size: 10px; border: 1px solid #ddd;">
-    URLS: {{ level_urls | default: 'None' }}
-  </div>
-  
   <ol class="breadcrumb__list">
     <!-- Home -->
     <li class="breadcrumb__item">
@@ -185,6 +189,11 @@
         {%- endfor -%}
         
         {%- assign url_array = level_urls | split: '|' -%}
+        
+        <!-- Update debug with final URLs -->
+        <div style="background: #fff3cd; padding: 4px; margin: 4px 0; font-size: 10px; border: 1px solid #ffeaa7;">
+          FINAL URLS: {{ level_urls }}
+        </div>
         
         {%- for level in menu_levels -%}
           <li class="breadcrumb__item">
