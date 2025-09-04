@@ -165,19 +165,19 @@
   }
   
   .header__inline-menu .mega-menu__panel {
-    position: absolute; /* Changed to absolute for better positioning */
-    top: 100%; /* Position directly at the bottom edge of navbar (touching underline) */
+    position: absolute;
+    top: calc(100% - 1px); /* Overlap slightly with the navbar border to create seamless connection */
     left: 0;
     right: 0;
     transform: none;
     z-index: 250; /* Layer 3: Overlays - Above navbar but below sticky */
     background: #fff;
     border: none;
-    border-top: none; /* Remove top border to sit flush with navbar */
+    border-top: 1px solid #ff6b35; /* Match the orange underline color for seamless connection */
     border-bottom: 1px solid #e5e7eb;
     border-radius: 0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Reduced shadow for cleaner look */
-    padding: 32px 0; /* Reduced top padding */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 32px 0;
     margin-top: 0;
     width: 100vw;
     display: none;
@@ -189,7 +189,7 @@
   /* When menu is sticky, use higher z-index and fixed positioning */
   .header__inline-menu.is-sticky .mega-menu__panel {
     position: fixed;
-    top: 60px; /* Direct bottom edge of sticky navbar (touching underline) */
+    top: calc(60px - 1px); /* Overlap with sticky navbar border */
     z-index: 360; /* Above sticky navbar */
   }
   
