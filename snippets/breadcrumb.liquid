@@ -164,46 +164,69 @@
       {%- comment -%} Display hierarchical menu path {%- endcomment -%}
       {%- if menu_path != blank and menu_levels.size > 0 -%}
         
+        {%- comment -%} Build breadcrumb with proper URLs for each level {%- endcomment -%}
         {%- for level in menu_levels -%}
           <li class="breadcrumb__item">
-            {%- comment -%} Try to find the URL for this menu level {%- endcomment -%}
             {%- assign level_url = blank -%}
-            {%- for link in main_menu.links -%}
-              {%- if link.title == level -%}
-                {%- assign level_url = link.url -%}
-                {%- break -%}
-              {%- endif -%}
-              {%- if link.links != blank -%}
-                {%- for childlink in link.links -%}
-                  {%- if childlink.title == level -%}
-                    {%- assign level_url = childlink.url -%}
-                    {%- break -%}
-                  {%- endif -%}
-                  {%- if childlink.links != blank -%}
-                    {%- for grandchildlink in childlink.links -%}
-                      {%- if grandchildlink.title == level -%}
-                        {%- assign level_url = grandchildlink.url -%}
-                        {%- break -%}
-                      {%- endif -%}
-                    {%- endfor -%}
-                  {%- endif -%}
-                  {%- if level_url != blank -%}
+            {%- assign level_index = forloop.index0 -%}
+            
+            {%- comment -%} Find URL based on position in hierarchy {%- endcomment -%}
+            {%- case level_index -%}
+              {%- when 0 -%}
+                {%- comment -%} First level - find in main menu {%- endcomment -%}
+                {%- for link in main_menu.links -%}
+                  {%- if link.title == level -%}
+                    {%- assign level_url = link.url -%}
                     {%- break -%}
                   {%- endif -%}
                 {%- endfor -%}
-              {%- endif -%}
-              {%- if level_url != blank -%}
-                {%- break -%}
-              {%- endif -%}
-            {%- endfor -%}
+                
+              {%- when 1 -%}
+                {%- comment -%} Second level - find in first level's children {%- endcomment -%}
+                {%- assign parent_level = menu_levels[0] -%}
+                {%- for link in main_menu.links -%}
+                  {%- if link.title == parent_level and link.links != blank -%}
+                    {%- for childlink in link.links -%}
+                      {%- if childlink.title == level -%}
+                        {%- assign level_url = childlink.url -%}
+                        {%- break -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                    {%- break -%}
+                  {%- endif -%}
+                {%- endfor -%}
+                
+              {%- when 2 -%}
+                {%- comment -%} Third level - find in second level's children {%- endcomment -%}
+                {%- assign parent_level = menu_levels[0] -%}
+                {%- assign grandparent_level = menu_levels[1] -%}
+                {%- for link in main_menu.links -%}
+                  {%- if link.title == parent_level and link.links != blank -%}
+                    {%- for childlink in link.links -%}
+                      {%- if childlink.title == grandparent_level and childlink.links != blank -%}
+                        {%- for grandchildlink in childlink.links -%}
+                          {%- if grandchildlink.title == level -%}
+                            {%- assign level_url = grandchildlink.url -%}
+                            {%- break -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                        {%- break -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                    {%- break -%}
+                  {%- endif -%}
+                {%- endfor -%}
+            {%- endcase -%}
             
+            {%- comment -%} Render breadcrumb item {%- endcomment -%}
             {%- if forloop.last -%}
-              {%- comment -%} Last level is current, not clickable {%- endcomment -%}
+              {%- comment -%} Last level is current page, not clickable {%- endcomment -%}
               <span class="breadcrumb__current">{{ level | escape }}</span>
             {%- elsif level_url != blank -%}
               <a href="{{ level_url }}" class="breadcrumb__link">{{ level | escape }}</a>
             {%- else -%}
-              <span class="breadcrumb__link">{{ level | escape }}</span>
+              {%- comment -%} No URL found, display as text only {%- endcomment -%}
+              <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);">{{ level | escape }}</span>
             {%- endif -%}
           </li>
           {%- unless forloop.last -%}
@@ -221,11 +244,24 @@
           {%- when 'product' -%}
             {%- if collection -%}
               <li class="breadcrumb__item">
-                <span class="breadcrumb__current">{{ collection.title | escape }}</span>
+                <a href="{{ collection.url }}" class="breadcrumb__link">{{ collection.title | escape }}</a>
+              </li>
+              <li class="breadcrumb__separator" aria-hidden="true">></li>
+              <li class="breadcrumb__item">
+                <span class="breadcrumb__current">{{ product.title | escape }}</span>
+              </li>
+            {%- elsif product.collections.size > 0 -%}
+              {%- assign first_collection = product.collections.first -%}
+              <li class="breadcrumb__item">
+                <a href="{{ first_collection.url }}" class="breadcrumb__link">{{ first_collection.title | escape }}</a>
+              </li>
+              <li class="breadcrumb__separator" aria-hidden="true">></li>
+              <li class="breadcrumb__item">
+                <span class="breadcrumb__current">{{ product.title | escape }}</span>
               </li>
             {%- else -%}
               <li class="breadcrumb__item">
-                <span class="breadcrumb__current">Sản phẩm</span>
+                <span class="breadcrumb__current">{{ product.title | escape }}</span>
               </li>
             {%- endif -%}
             
@@ -237,6 +273,26 @@
           {%- when 'cart' -%}
             <li class="breadcrumb__item">
               <span class="breadcrumb__current">Giỏ hàng</span>
+            </li>
+            
+          {%- when 'search' -%}
+            <li class="breadcrumb__item">
+              <span class="breadcrumb__current">Tìm kiếm</span>
+            </li>
+            
+          {%- when 'customers/account' -%}
+            <li class="breadcrumb__item">
+              <span class="breadcrumb__current">Tài khoản</span>
+            </li>
+            
+          {%- when 'customers/login' -%}
+            <li class="breadcrumb__item">
+              <span class="breadcrumb__current">Đăng nhập</span>
+            </li>
+            
+          {%- when 'customers/register' -%}
+            <li class="breadcrumb__item">
+              <span class="breadcrumb__current">Đăng ký</span>
             </li>
             
           {%- else -%}
