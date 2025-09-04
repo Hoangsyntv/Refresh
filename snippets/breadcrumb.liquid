@@ -177,6 +177,16 @@
         ({{ link.links.size }} children)
       {%- endif -%}
       {% unless forloop.last %} | {% endunless %}
+    {%- endfor -%}<br>
+    {%- comment -%} Show Danh mục children {%- endcomment -%}
+    {%- for link in main_menu.links -%}
+      {%- if link.title == 'Danh mục' -%}
+        <strong>Danh mục children:</strong>
+        {%- for childlink in link.links limit: 5 -%}
+          {{ childlink.title }}{% unless forloop.last %} | {% endunless %}
+        {%- endfor -%}
+        {%- break -%}
+      {%- endif -%}
     {%- endfor -%}
   </div>
 
@@ -201,52 +211,40 @@
             {%- assign level_index = forloop.index0 -%}
             
             {%- comment -%} Find URL based on position in hierarchy {%- endcomment -%}
-            {%- case level_index -%}
-              {%- when 0 -%}
-                {%- comment -%} First level - find in main menu {%- endcomment -%}
-                {%- for link in main_menu.links -%}
-                  {%- if link.title == level -%}
-                    {%- assign level_url = link.url -%}
+            {%- comment -%} Try to find URL by searching through entire menu structure {%- endcomment -%}
+            {%- for link in main_menu.links -%}
+              {%- comment -%} Check if this is the level we're looking for {%- endcomment -%}
+              {%- if link.title == level -%}
+                {%- assign level_url = link.url -%}
+                {%- break -%}
+              {%- endif -%}
+              
+              {%- comment -%} Search in children {%- endcomment -%}
+              {%- if link.links != blank -%}
+                {%- for childlink in link.links -%}
+                  {%- if childlink.title == level -%}
+                    {%- assign level_url = childlink.url -%}
                     {%- break -%}
                   {%- endif -%}
-                {%- endfor -%}
-                
-              {%- when 1 -%}
-                {%- comment -%} Second level - find in first level's children {%- endcomment -%}
-                {%- assign parent_level = menu_levels[0] -%}
-                {%- for link in main_menu.links -%}
-                  {%- if link.title == parent_level and link.links != blank -%}
-                    {%- for childlink in link.links -%}
-                      {%- if childlink.title == level -%}
-                        {%- assign level_url = childlink.url -%}
+                  
+                  {%- comment -%} Search in grandchildren {%- endcomment -%}
+                  {%- if childlink.links != blank -%}
+                    {%- for grandchildlink in childlink.links -%}
+                      {%- if grandchildlink.title == level -%}
+                        {%- assign level_url = grandchildlink.url -%}
                         {%- break -%}
                       {%- endif -%}
                     {%- endfor -%}
+                  {%- endif -%}
+                  {%- if level_url != blank -%}
                     {%- break -%}
                   {%- endif -%}
                 {%- endfor -%}
-                
-              {%- when 2 -%}
-                {%- comment -%} Third level - find in second level's children {%- endcomment -%}
-                {%- assign parent_level = menu_levels[0] -%}
-                {%- assign parent_level_2 = menu_levels[1] -%}
-                {%- for link in main_menu.links -%}
-                  {%- if link.title == parent_level and link.links != blank -%}
-                    {%- for childlink in link.links -%}
-                      {%- if childlink.title == parent_level_2 and childlink.links != blank -%}
-                        {%- for grandchildlink in childlink.links -%}
-                          {%- if grandchildlink.title == level -%}
-                            {%- assign level_url = grandchildlink.url -%}
-                            {%- break -%}
-                          {%- endif -%}
-                        {%- endfor -%}
-                        {%- break -%}
-                      {%- endif -%}
-                    {%- endfor -%}
-                    {%- break -%}
-                  {%- endif -%}
-                {%- endfor -%}
-            {%- endcase -%}
+              {%- endif -%}
+              {%- if level_url != blank -%}
+                {%- break -%}
+              {%- endif -%}
+            {%- endfor -%}
             
             {%- comment -%} DEBUG: Show what URL was found {%- endcomment -%}
             {%- comment -%} Level: {{ level }} | URL: {{ level_url | default: 'NOT FOUND' }} {%- endcomment -%}
