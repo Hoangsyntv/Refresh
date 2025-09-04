@@ -92,6 +92,9 @@
   /* Capitalize menu text (first letter uppercase) */
   .primary-nav__text {
     text-transform: capitalize;
+    white-space: nowrap; /* Đảm bảo menu text luôn nằm trên một dòng */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Hiển thị ... nếu text quá dài */
   }
   
   /* Hide right icons by default, show only when sticky */
@@ -241,6 +244,8 @@
     align-items: center;
     height: 100%;
     box-sizing: border-box; /* Đảm bảo padding không ảnh hưởng vị trí underline */
+    white-space: nowrap; /* Đảm bảo menu trigger không bị wrap */
+    flex-shrink: 0; /* Không cho phép shrink */
   }
   
   .header__inline-menu .primary-nav__trigger:hover,
@@ -274,6 +279,8 @@
     box-sizing: border-box; /* Đảm bảo padding không ảnh hưởng vị trí underline */
     display: flex;
     align-items: center;
+    white-space: nowrap; /* Đảm bảo menu link không bị wrap */
+    flex-shrink: 0; /* Không cho phép shrink */
   }
   
   .header__inline-menu .primary-nav__link:hover {
@@ -289,6 +296,22 @@
     align-items: center;
     height: 100%;
     position: relative;
+    flex-shrink: 0; /* Không cho phép nav item bị shrink */
+    white-space: nowrap; /* Đảm bảo nav item không bị wrap */
+  }
+  
+  /* Ensure navigation list doesn't wrap and has proper spacing */
+  .header__inline-menu .primary-nav {
+    display: flex !important;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 20px; /* Giảm gap từ 40px xuống 20px để tiết kiệm không gian */
+    height: 100%;
+    flex-wrap: nowrap; /* Không cho phép wrap */
+    overflow-x: auto; /* Cho phép scroll ngang nếu cần */
+    overflow-y: hidden;
   }
   
   /* Make sure all menu triggers and links align properly */
@@ -512,9 +535,9 @@
     
     <!-- Navigation Menu - Left Side -->
     <div class="header__nav-menu" style="flex:1;display:flex;justify-content:flex-start;">
-      <ul class="primary-nav" role="menubar" style="display:flex;align-items:center;margin:0;padding:0;list-style:none;gap:40px;height:100%;">
+      <ul class="primary-nav" role="menubar" style="height:100%;">
         {%- for link in menu.links -%}
-          <li class="primary-nav__item" style="font-size:15px;position:relative;display:flex;align-items:center;height:100%;">
+          <li class="primary-nav__item">
             {%- if link.links != blank -%}
               <header-menu>
                 <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu" aria-haspopup="true" aria-expanded="false" style="height:100%;display:flex;">
