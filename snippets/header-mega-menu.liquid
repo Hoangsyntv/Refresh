@@ -658,6 +658,28 @@ document.addEventListener('DOMContentLoaded', function() {
   
   if (!headerMenu || !placeholder) return;
   
+  // NUCLEAR Z-INDEX FORCE ON PAGE LOAD 😂
+  function forceNuclearZIndex() {
+    const megaMenuPanels = document.querySelectorAll('.mega-menu__panel');
+    megaMenuPanels.forEach(panel => {
+      panel.style.zIndex = '999999';
+      console.log('NUCLEAR Z-INDEX FORCED ON LOAD:', panel); // Debug
+    });
+    
+    // Also destroy breadcrumb z-index
+    const breadcrumbs = document.querySelectorAll('.breadcrumb');
+    breadcrumbs.forEach(breadcrumb => {
+      breadcrumb.style.zIndex = '1';
+      console.log('BREADCRUMB DESTROYED ON LOAD:', breadcrumb); // Debug
+    });
+  }
+  
+  // Force nuclear z-index immediately
+  forceNuclearZIndex();
+  
+  // Force again after a short delay to ensure DOM is fully ready
+  setTimeout(forceNuclearZIndex, 100);
+  
   // Get initial menu position
   let initialMenuOffsetTop = headerMenu.offsetTop;
   let menuOffsetTop = initialMenuOffsetTop;
@@ -784,6 +806,15 @@ document.addEventListener('DOMContentLoaded', function() {
           panel.style.visibility = 'visible';
           panel.style.opacity = '1';
           
+          // FORCE NUCLEAR Z-INDEX EVERY TIME 😂
+          panel.style.zIndex = '999999';
+          
+          // Also destroy breadcrumb every hover
+          const breadcrumbs = document.querySelectorAll('.breadcrumb');
+          breadcrumbs.forEach(breadcrumb => {
+            breadcrumb.style.zIndex = '1';
+          });
+          
           // EMERGENCY FIX: Calculate and set position dynamically - CENTERED
           const navbar = document.querySelector('.header__inline-menu');
           const navbarRect = navbar.getBoundingClientRect();
@@ -889,6 +920,40 @@ document.addEventListener('DOMContentLoaded', function() {
         menu.removeAttribute('open');
       });
     }
+  });
+  
+  // NUCLEAR MUTATION OBSERVER 😂 - Watch for DOM changes that might reset z-index
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.type === 'childList' || mutation.type === 'attributes') {
+        // Re-apply nuclear z-index if DOM changes
+        setTimeout(() => {
+          const megaMenuPanels = document.querySelectorAll('.mega-menu__panel');
+          megaMenuPanels.forEach(panel => {
+            if (panel.style.zIndex !== '999999') {
+              panel.style.zIndex = '999999';
+              console.log('NUCLEAR Z-INDEX RE-APPLIED DUE TO DOM CHANGE:', panel);
+            }
+          });
+          
+          const breadcrumbs = document.querySelectorAll('.breadcrumb');
+          breadcrumbs.forEach(breadcrumb => {
+            if (breadcrumb.style.zIndex !== '1') {
+              breadcrumb.style.zIndex = '1';
+              console.log('BREADCRUMB RE-DESTROYED DUE TO DOM CHANGE:', breadcrumb);
+            }
+          });
+        }, 50);
+      }
+    });
+  });
+  
+  // Start observing
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['style', 'class']
   });
 });
 
