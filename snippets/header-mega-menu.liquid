@@ -194,6 +194,23 @@
     display: flex;
   }
   
+  /* Hover effect for mega menu */
+  .header__inline-menu .mega-menu:hover .mega-menu__panel {
+    display: flex;
+  }
+  
+  .header__inline-menu .mega-menu:hover .primary-nav__trigger {
+    background: rgba(0, 0, 0, 0.02);
+    color: rgba(0, 0, 0, 0.7);
+    font-weight: 500;
+    border-bottom-color: #ff6b35; /* Màu cam khi hover */
+  }
+  
+  .header__inline-menu .mega-menu:hover .primary-nav__icon {
+    transform: rotate(180deg);
+    opacity: 1;
+  }
+  
   .header__inline-menu .mega-menu__labels {
     width: 100%;
   }
@@ -222,14 +239,14 @@
     background: rgba(0, 0, 0, 0.02);
     color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
-    border-bottom-color: rgba(0, 0, 0, 0.3);
+    border-bottom-color: #ff6b35; /* Màu cam cho underline khi hover */
   }
   
   .header__inline-menu .mega-menu[open] .primary-nav__trigger {
     background: rgba(0, 0, 0, 0.03);
     color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
-    border-bottom-color: rgba(0, 0, 0, 0.3);
+    border-bottom-color: #ff6b35; /* Màu cam cho underline khi menu mở */
   }
   
   .header__inline-menu .primary-nav__link {
@@ -684,7 +701,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Handle scroll for sticky behavior
   window.addEventListener('scroll', handleScroll);
   
-  // Handle mega menu centering
+  // Handle mega menu centering and hover events
   const megaMenus = document.querySelectorAll('.mega-menu');
   
   megaMenus.forEach(menu => {
@@ -692,9 +709,38 @@ document.addEventListener('DOMContentLoaded', function() {
     const panel = menu.querySelector('.mega-menu__panel');
     
     if (trigger && panel) {
-      trigger.addEventListener('click', function() {
-        // No need for centering calculation since panel is full width
-        // Just ensure it's positioned correctly
+      // Handle hover events
+      menu.addEventListener('mouseenter', function() {
+        // Open mega menu on hover
+        menu.setAttribute('open', '');
+        
+        // Update position
+        setTimeout(() => {
+          updateStickyPosition();
+        }, 10);
+      });
+      
+      menu.addEventListener('mouseleave', function() {
+        // Close mega menu when mouse leaves
+        menu.removeAttribute('open');
+      });
+      
+      // Keep existing click handler as backup
+      trigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        if (menu.hasAttribute('open')) {
+          menu.removeAttribute('open');
+        } else {
+          // Close other open menus first
+          megaMenus.forEach(otherMenu => {
+            if (otherMenu !== menu) {
+              otherMenu.removeAttribute('open');
+            }
+          });
+          menu.setAttribute('open', '');
+        }
+        
         setTimeout(() => {
           updateStickyPosition();
         }, 10);
@@ -702,7 +748,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // Close mega menu when clicking outside
+  // Close mega menu when clicking outside (but not when just hovering)
   document.addEventListener('click', function(e) {
     if (!e.target.closest('.mega-menu')) {
       const openMenus = document.querySelectorAll('.mega-menu[open]');
@@ -710,6 +756,31 @@ document.addEventListener('DOMContentLoaded', function() {
         menu.removeAttribute('open');
       });
     }
+  });
+  
+  // Prevent menu from closing when moving mouse within the menu area
+  document.addEventListener('mousemove', function(e) {
+    const hoveredMenu = e.target.closest('.mega-menu');
+    const openMenus = document.querySelectorAll('.mega-menu[open]');
+    
+    openMenus.forEach(menu => {
+      if (menu !== hoveredMenu) {
+        // Only close if mouse is not over this menu
+        const menuRect = menu.getBoundingClientRect();
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+        
+        if (mouseX < menuRect.left || mouseX > menuRect.right || 
+            mouseY < menuRect.top || mouseY > menuRect.bottom) {
+          // Mouse is outside this menu, close it after a small delay
+          setTimeout(() => {
+            if (!menu.matches(':hover')) {
+              menu.removeAttribute('open');
+            }
+          }, 100);
+        }
+      }
+    });
   });
 });
 
