@@ -190,6 +190,7 @@
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     transition: all 0.3s ease;
+    pointer-events: auto; /* Ensure mega menu can be interacted with */
   }
   
   /* When menu is sticky, use higher z-index and fixed positioning */
@@ -810,10 +811,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 10);
       });
       
-      menu.addEventListener('mouseleave', function() {
+      menu.addEventListener('mouseleave', function(e) {
         console.log('Mouse leave on menu:', menu); // Debug
         
-        // Close mega menu quickly when mouse leaves
+        // Check if mouse is moving to a link inside the mega menu
+        const relatedTarget = e.relatedTarget;
+        if (relatedTarget && menu.contains(relatedTarget)) {
+          console.log('Mouse moving within mega menu, keeping open'); // Debug
+          return; // Don't close if mouse is still within mega menu
+        }
+        
+        // Close mega menu quickly when mouse actually leaves
         hoverTimeout = setTimeout(() => {
           menu.removeAttribute('open');
           
@@ -824,7 +832,7 @@ document.addEventListener('DOMContentLoaded', function() {
             panel.style.opacity = '0';
             console.log('Panel forced to hide:', panel); // Debug
           }
-        }, 150); // Fast close - 150ms delay
+        }, 300); // Increased delay to 300ms for better UX
       });
       
       // Keep existing click handler as backup
@@ -846,6 +854,29 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
           updateStickyPosition();
         }, 10);
+      });
+      
+      // Add event listeners to mega menu links to prevent immediate closing
+      const megaMenuLinks = menu.querySelectorAll('.mega-menu__link, .mega-menu__title');
+      megaMenuLinks.forEach(link => {
+        link.addEventListener('mouseenter', function() {
+          // Clear any pending close timeout when hovering over links
+          if (hoverTimeout) {
+            clearTimeout(hoverTimeout);
+            hoverTimeout = null;
+          }
+          console.log('Hovering over mega menu link, keeping menu open'); // Debug
+        });
+        
+        link.addEventListener('click', function(e) {
+          console.log('Clicking mega menu link, will navigate...'); // Debug
+          // Don't prevent default - let navigation happen
+          // But clear any pending timeouts
+          if (hoverTimeout) {
+            clearTimeout(hoverTimeout);
+            hoverTimeout = null;
+          }
+        });
       });
     }
   });
