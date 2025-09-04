@@ -179,41 +179,47 @@
       {% unless forloop.last %} | {% endunless %}
     {%- endfor -%}<br>
     
-    <strong>URL Search Results:</strong><br>
+    <strong>💥 NUCLEAR URL MAPPING:</strong><br>
     {%- assign menu_levels_debug = menu_path | split: '|' -%}
+    {%- assign level_urls_debug = '' -%}
     {%- for level_debug in menu_levels_debug -%}
-      {{ forloop.index }}. {{ level_debug }} → 
-      {%- assign found_url = blank -%}
+      {%- assign found_url_debug = blank -%}
       {%- for link in main_menu.links -%}
         {%- if link.title == level_debug -%}
-          {%- assign found_url = link.url -%}
+          {%- assign found_url_debug = link.url -%}
           {%- break -%}
         {%- endif -%}
         {%- if link.links != blank -%}
           {%- for childlink in link.links -%}
             {%- if childlink.title == level_debug -%}
-              {%- assign found_url = childlink.url -%}
+              {%- assign found_url_debug = childlink.url -%}
               {%- break -%}
             {%- endif -%}
             {%- if childlink.links != blank -%}
               {%- for grandchildlink in childlink.links -%}
                 {%- if grandchildlink.title == level_debug -%}
-                  {%- assign found_url = grandchildlink.url -%}
+                  {%- assign found_url_debug = grandchildlink.url -%}
                   {%- break -%}
                 {%- endif -%}
               {%- endfor -%}
             {%- endif -%}
-            {%- if found_url != blank -%}
+            {%- if found_url_debug != blank -%}
               {%- break -%}
             {%- endif -%}
           {%- endfor -%}
         {%- endif -%}
-        {%- if found_url != blank -%}
+        {%- if found_url_debug != blank -%}
           {%- break -%}
         {%- endif -%}
       {%- endfor -%}
-      {{ found_url | default: 'NOT FOUND' }}<br>
+      {{ forloop.index }}. {{ level_debug }} → {{ found_url_debug | default: 'NOT FOUND' }}<br>
+      {%- if forloop.first -%}
+        {%- assign level_urls_debug = found_url_debug | default: '#' -%}
+      {%- else -%}
+        {%- assign level_urls_debug = level_urls_debug | append: '|' | append: found_url_debug | default: '#' -%}
+      {%- endif -%}
     {%- endfor -%}
+    <strong>🗺️ FINAL MAPPING:</strong> {{ level_urls_debug }}<br>
   </div>
 
   <ol class="breadcrumb__list">
