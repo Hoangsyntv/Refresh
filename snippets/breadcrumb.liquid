@@ -150,7 +150,7 @@
     border-bottom: 1px solid #e5e7eb !important;
     padding: 12px 0 !important;
     font-size: 14px !important;
-    z-index: -1 !important;
+    z-index: 10 !important;
     position: relative !important;
   }
   
@@ -200,17 +200,7 @@
   }
 </style>
 
-{%- liquid
-  comment 'DEBUG: Show collection handle and mapping result'
-  endcomment
-  assign debug_collection = target_collection | default: collection
-  assign debug_info = 'COLLECTION_HANDLE: ' | append: debug_collection.handle | append: ' | MAPPED_PATH: ' | append: menu_path | append: ' | LEVELS: ' | append: menu_levels.size
--%}
 
-<!-- DEBUG INFO -->
-<div style="background: #ffebee; padding: 8px; margin: 8px 0; border: 1px solid #f44336; font-size: 12px;">
-  {{ debug_info }}
-</div>
 
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol class="breadcrumb__list">
