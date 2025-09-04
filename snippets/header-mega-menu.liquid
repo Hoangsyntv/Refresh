@@ -6,16 +6,26 @@
 {% endcomment %}
 
 <style>
+  /* ===========================================
+     Z-INDEX SYSTEM - ORGANIZED LAYERS
+     =========================================== */
+  
+  /* Layer 1: Base Elements (1-99) */
+  /* Layer 2: Navigation (100-199) */
+  /* Layer 3: Overlays & Modals (200-299) */
+  /* Layer 4: Critical UI (300-399) */
+  /* Layer 5: Emergency/Debug (400+) */
+  
   /* Full width navigation container */
   .header__inline-menu {
     position: relative;
-    z-index: 1000; /* Lowered from 9999 to allow search results to appear above */
+    z-index: 150; /* Layer 2: Navigation - Higher than breadcrumb */
     background: #fff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     width: 100%;
     border-top: 1px solid #f0f0f0;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0; /* THIS is the navbar underline */
   }
   
   /* When sticky is active */
@@ -24,7 +34,7 @@
     top: 0 !important;
     left: 0;
     right: 0;
-    z-index: 9999; /* High z-index when sticky */
+    z-index: 350; /* Layer 4: Critical UI when sticky */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -151,17 +161,17 @@
   
   .header__inline-menu .mega-menu__panel {
     position: absolute; /* Changed to absolute for better positioning */
-    top: 100%; /* Directly below the navbar */
+    top: calc(100% + 1px); /* Position BELOW the navbar border-bottom */
     left: 0;
     right: 0;
     transform: none;
-    z-index: 999999; /* Extremely high z-index to stay above breadcrumb */
+    z-index: 250; /* Layer 3: Overlays - Above navbar but below sticky */
     background: #fff;
     border: none;
     border-top: none; /* Remove top border to sit flush with navbar */
     border-bottom: 1px solid #e5e7eb;
     border-radius: 0;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1); /* Reduced shadow for cleaner look */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Reduced shadow for cleaner look */
     padding: 32px 0; /* Reduced top padding */
     margin-top: 0;
     width: 100vw;
@@ -171,10 +181,11 @@
     transition: all 0.3s ease;
   }
   
-  /* When menu is sticky, use fixed positioning */
+  /* When menu is sticky, use higher z-index and fixed positioning */
   .header__inline-menu.is-sticky .mega-menu__panel {
     position: fixed;
-    top: 60px; /* Exactly under the sticky navbar height */
+    top: calc(60px + 1px); /* Below sticky navbar + its border */
+    z-index: 360; /* Above sticky navbar */
   }
   
   /* Overlay for mega menu - DISABLED to allow navigation between menus */
