@@ -181,36 +181,22 @@
         
         {%- assign url_array = level_urls | split: '|' -%}
         
-        <!-- FINAL DEBUG: Show URLs and array -->
-        <div style="background: red; color: white; padding: 8px; margin: 8px 0;">
-          <strong>LEVEL_URLS:</strong> {{ level_urls }}<br>
-          <strong>URL_ARRAY:</strong> {{ url_array | join: ' | ' }}<br>
-          <strong>ARRAY_SIZE:</strong> {{ url_array.size }}
-        </div>
-        
         {%- for level in menu_levels -%}
           <li class="breadcrumb__item">
             {%- assign level_url = url_array[forloop.index0] | strip -%}
             
-            <!-- DEBUG per level -->
-            <div style="background: yellow; padding: 2px; font-size: 10px;">
-              Level: {{ level }} | URL: {{ level_url }} | Index: {{ forloop.index0 }} | URL_LENGTH: {{ level_url.size }}
-            </div>
-            
-            {%- comment -%} MEGA NUCLEAR: HARDCORE LINK WITH ALL POSSIBLE OVERRIDES {%- endcomment -%}
+            {%- comment -%} CLEAN: No debug boxes that might break HTML {%- endcomment -%}
             <a href="{{ level_url }}" 
-               class="FORCE-LINK" 
                style="color: red !important; 
                       text-decoration: underline !important; 
                       font-weight: bold !important; 
                       background: yellow !important;
-                      display: inline !important;
-                      pointer-events: auto !important;
-                      cursor: pointer !important;
-                      z-index: 999999 !important;
-                      position: relative !important;"
-               onclick="window.location.href='{{ level_url }}'; return true;">
-              <strong style="color: blue !important;">{{ level | escape }}</strong>
+                      display: inline-block !important;
+                      padding: 4px 8px !important;
+                      border: 2px solid blue !important;
+                      cursor: pointer !important;"
+               onclick="alert('Clicking: {{ level_url }}'); window.location.href='{{ level_url }}'; return false;">
+              {{ level | escape }}
             </a>
           </li>
           {%- unless forloop.last -%}
