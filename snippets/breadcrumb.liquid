@@ -287,8 +287,31 @@
             {%- if forloop.last -%}
               {%- comment -%} Last level is current page, not clickable {%- endcomment -%}
               <span class="breadcrumb__current">{{ level | escape }}</span>
-            {%- elsif level_url != blank -%}
+            {%- elsif level_url != blank and level_url != '#' -%}
+              {%- comment -%} Valid URL found, create link {%- endcomment -%}
               <a href="{{ level_url }}" class="breadcrumb__link">{{ level | escape }}</a>
+            {%- elsif level_url == '#' -%}
+              {%- comment -%} Placeholder link - try to find collection by handle {%- endcomment -%}
+              {%- assign collection_handle = level | handle -%}
+              {%- assign fallback_collection = collections[collection_handle] -%}
+              {%- if fallback_collection -%}
+                <a href="{{ fallback_collection.url }}" class="breadcrumb__link">{{ level | escape }}</a>
+              {%- else -%}
+                {%- comment -%} Try common variations {%- endcomment -%}
+                {%- assign alt_handle_1 = level | replace: ' ', '-' | downcase -%}
+                {%- assign alt_handle_2 = level | replace: ' văn phòng', '' | handle -%}
+                {%- assign alt_handle_3 = 'noi-that-van-phong' -%}
+                
+                {%- if collections[alt_handle_1] -%}
+                  <a href="{{ collections[alt_handle_1].url }}" class="breadcrumb__link">{{ level | escape }}</a>
+                {%- elsif collections[alt_handle_2] -%}
+                  <a href="{{ collections[alt_handle_2].url }}" class="breadcrumb__link">{{ level | escape }}</a>
+                {%- elsif collections[alt_handle_3] -%}
+                  <a href="{{ collections[alt_handle_3].url }}" class="breadcrumb__link">{{ level | escape }}</a>
+                {%- else -%}
+                  <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);" title="Placeholder link (#)">{{ level | escape }} 📂</span>
+                {%- endif -%}
+              {%- endif -%}
             {%- else -%}
               {%- comment -%} No URL found, display as text only with debug {%- endcomment -%}
               <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);" title="{{ search_debug }}">{{ level | escape }} ❌</span>
