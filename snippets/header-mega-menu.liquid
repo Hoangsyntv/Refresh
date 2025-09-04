@@ -335,7 +335,7 @@
   
   .header__inline-menu .mega-menu__column {
     flex: 1;
-    min-width: 180px;
+    min-width: 220px; /* Increased from 180px to accommodate longer menu labels */
     padding: 0 20px;
     position: relative;
   }
@@ -367,6 +367,7 @@
     transition: color 0.2s ease;
     border-bottom: none;
     font-family: 'Inter', 'Roboto', 'Noto Sans', var(--font-body-family), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    white-space: nowrap; /* Prevent menu labels from wrapping to multiple lines */
   }
   
   .header__inline-menu .mega-menu__title:hover {
@@ -551,7 +552,7 @@
                       <!-- Menu Content with Category Titles -->
                       <div class="mega-menu__content" style="display:flex;gap:32px;flex:1;">
                         {%- for childlink in link.links -%}
-                          <div class="mega-menu__column" role="group" aria-labelledby="menu-category-{{ forloop.index }}" style="flex:1;min-width:180px;">
+                          <div class="mega-menu__column" role="group" aria-labelledby="menu-category-{{ forloop.index }}" style="flex:1;min-width:220px;">
                             <!-- Category Title as first item -->
                             <a href="{{ childlink.url }}" class="mega-menu__title" style="text-decoration:none;">
                               {{ childlink.title | escape }}
