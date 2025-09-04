@@ -173,40 +173,43 @@
             {%- endif -%}
           {%- endfor -%}
           {%- if forloop.first -%}
-            {%- assign level_urls = found_url | default: '#' -%}
+            {%- assign level_urls = found_url -%}
           {%- else -%}
-            {%- assign level_urls = level_urls | append: '|' | append: found_url | default: '#' -%}
+            {%- assign level_urls = level_urls | append: '|' | append: found_url -%}
           {%- endif -%}
         {%- endfor -%}
         
         {%- assign url_array = level_urls | split: '|' -%}
         
+        <!-- FINAL DEBUG: Show URLs and array -->
+        <div style="background: red; color: white; padding: 8px; margin: 8px 0;">
+          <strong>LEVEL_URLS:</strong> {{ level_urls }}<br>
+          <strong>URL_ARRAY:</strong> {{ url_array | join: ' | ' }}<br>
+          <strong>ARRAY_SIZE:</strong> {{ url_array.size }}
+        </div>
+        
         {%- for level in menu_levels -%}
           <li class="breadcrumb__item">
             {%- assign level_url = url_array[forloop.index0] | strip -%}
             
-            {%- comment -%} ALWAYS create links - URLs are correct {%- endcomment -%}
-            {%- if level_url != blank and level_url != '#' -%}
-              <a href="{{ level_url }}" class="breadcrumb__link" style="color: blue !important; text-decoration: underline !important;">{{ level | escape }}</a>
+            <!-- DEBUG per level -->
+            <div style="background: yellow; padding: 2px; font-size: 10px;">
+              Level: {{ level }} | URL: {{ level_url }} | Index: {{ forloop.index0 }}
+            </div>
+            
+            {%- comment -%} Force create links regardless {%- endcomment -%}
+            {%- if level_url != blank and level_url != '#' and level_url != '' -%}
+              <a href="{{ level_url }}" class="breadcrumb__link" style="color: red !important; text-decoration: underline !important; font-weight: bold !important;">{{ level | escape }}</a>
             {%- else -%}
-              {%- comment -%} Fallback URL mapping {%- endcomment -%}
-              {%- assign collection_handle = level | handle -%}
-              {%- if collections[collection_handle] -%}
-                <a href="{{ collections[collection_handle].url }}" class="breadcrumb__link" style="color: blue !important; text-decoration: underline !important;">{{ level | escape }}</a>
-              {%- else -%}
-                {%- case level -%}
-                  {%- when 'Nội thất văn phòng' -%}
-                    {%- if collections['noi-that-van-phong'] -%}
-                      <a href="{{ collections['noi-that-van-phong'].url }}" class="breadcrumb__link" style="color: blue !important; text-decoration: underline !important;">{{ level | escape }}</a>
-                    {%- elsif collections['van-phong'] -%}
-                      <a href="{{ collections['van-phong'].url }}" class="breadcrumb__link" style="color: blue !important; text-decoration: underline !important;">{{ level | escape }}</a>
-                    {%- else -%}
-                      <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);">{{ level | escape }}</span>
-                    {%- endif -%}
-                  {%- else -%}
-                    <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);">{{ level | escape }}</span>
-                {%- endcase -%}
-              {%- endif -%}
+              {%- comment -%} Fallback: Create links anyway using collection handles {%- endcomment -%}
+              {%- case level -%}
+                {%- when 'Nội thất văn phòng' -%}
+                  <a href="/collections/noi-that-van-phong" class="breadcrumb__link" style="color: green !important; text-decoration: underline !important; font-weight: bold !important;">{{ level | escape }}</a>
+                {%- when 'Bàn văn phòng' -%}
+                  <a href="/collections/ban-van-phong" class="breadcrumb__link" style="color: green !important; text-decoration: underline !important; font-weight: bold !important;">{{ level | escape }}</a>
+                {%- else -%}
+                  <span style="color: gray;">{{ level | escape }}</span>
+              {%- endcase -%}
             {%- endif -%}
           </li>
           {%- unless forloop.last -%}
