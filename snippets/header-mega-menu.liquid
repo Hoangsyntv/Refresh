@@ -172,7 +172,7 @@
     top: calc(100% + 60px); /* Position below navbar, accounting for navbar height */
     left: 50%;
     transform: translateX(-50%); /* Center horizontally */
-    z-index: 999999 !important; /* NUCLEAR FIX: Ultra high z-index 😂 */
+    z-index: 2147483647 !important; /* MAX INTEGER Z-INDEX - ULTIMATE NUCLEAR 😂 */
     background: #fff;
     border: none;
     border-top: none;
@@ -197,7 +197,7 @@
   .header__inline-menu.is-sticky .mega-menu__panel {
     position: fixed;
     top: 60px; /* Below sticky navbar height */
-    z-index: 9999999 !important; /* NUCLEAR FIX: Even higher for sticky 😂 */
+    z-index: 2147483647 !important; /* MAX INTEGER Z-INDEX 😂 */
   }
   
   /* Overlay for mega menu - DISABLED to allow navigation between menus */
@@ -216,7 +216,7 @@
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
-    z-index: 999999 !important; /* NUCLEAR HOVER FIX 😂 */
+    z-index: 2147483647 !important; /* MAX INTEGER Z-INDEX 😂 */
     position: fixed !important; /* Force fixed positioning */
   }
   
@@ -233,7 +233,7 @@
   .mega-menu__panel,
   [class*="mega-menu"] .mega-menu__panel,
   div.mega-menu__panel {
-    z-index: 9999999 !important; /* HIGHEST POSSIBLE 😂 */
+    z-index: 2147483647 !important; /* MAX INTEGER Z-INDEX - HIGHEST POSSIBLE 😂 */
     position: fixed !important;
   }
   
@@ -677,7 +677,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function forceNuclearZIndex() {
     const megaMenuPanels = document.querySelectorAll('.mega-menu__panel');
     megaMenuPanels.forEach(panel => {
-      panel.style.zIndex = '999999';
+      panel.style.zIndex = '2147483647';
       console.log('NUCLEAR Z-INDEX FORCED ON LOAD:', panel); // Debug
     });
     
@@ -822,7 +822,7 @@ document.addEventListener('DOMContentLoaded', function() {
           panel.style.opacity = '1';
           
           // FORCE NUCLEAR Z-INDEX EVERY TIME 😂
-          panel.style.zIndex = '999999';
+          panel.style.zIndex = '2147483647';
           
           // Also destroy breadcrumb every hover
           const breadcrumbs = document.querySelectorAll('.breadcrumb');
@@ -841,12 +841,12 @@ document.addEventListener('DOMContentLoaded', function() {
           panel.style.width = 'max-content';
           panel.style.maxWidth = 'min(1200px, 90vw)';
           panel.style.minWidth = '800px';
-          panel.style.zIndex = '999999'; /* NUCLEAR JS FIX 😂 */
+          panel.style.zIndex = '2147483647'; /* MAX INTEGER Z-INDEX 😂 */
           
-          console.log('Panel forced to show with NUCLEAR z-index:', {
+          console.log('Panel forced to show with MAX INTEGER z-index:', {
             top: navbarRect.bottom,
             positioning: 'centered',
-            zIndex: 999999,
+            zIndex: 2147483647,
             panel: panel
           });
         }
@@ -945,8 +945,8 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
           const megaMenuPanels = document.querySelectorAll('.mega-menu__panel');
           megaMenuPanels.forEach(panel => {
-            if (panel.style.zIndex !== '999999') {
-              panel.style.zIndex = '999999';
+            if (panel.style.zIndex !== '2147483647') {
+              panel.style.zIndex = '2147483647';
               console.log('NUCLEAR Z-INDEX RE-APPLIED DUE TO DOM CHANGE:', panel);
             }
           });
