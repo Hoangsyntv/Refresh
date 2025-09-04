@@ -92,9 +92,6 @@
   /* Capitalize menu text (first letter uppercase) */
   .primary-nav__text {
     text-transform: capitalize;
-    white-space: nowrap; /* Đảm bảo menu text luôn nằm trên một dòng */
-    overflow: hidden;
-    text-overflow: ellipsis; /* Hiển thị ... nếu text quá dài */
   }
   
   /* Hide right icons by default, show only when sticky */
@@ -180,12 +177,12 @@
     padding: 32px 0;
     margin-top: 0;
     width: 100vw;
-    display: none;
+    display: none !important;
+    visibility: hidden;
+    opacity: 0;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     transition: all 0.3s ease;
-    /* Fix positioning to prevent layout issues */
-    margin-left: calc(-50vw + 50%);
   }
   
   /* When menu is sticky, use higher z-index and fixed positioning */
@@ -201,27 +198,24 @@
   }
   
   .header__inline-menu .mega-menu[open] .mega-menu__panel {
-    display: flex;
-  }
-
-  /* Hover effect for mega menu - backup for JavaScript */
-  .header__inline-menu .mega-menu:hover .mega-menu__panel {
-    display: flex;
+    display: flex !important;
   }
   
-  /* Active class for JavaScript control */
-  .header__inline-menu .mega-menu.active .mega-menu__panel {
-    display: flex;
-  }  .header__inline-menu .mega-menu:hover .primary-nav__trigger,
-  .header__inline-menu .mega-menu.active .primary-nav__trigger {
+  /* Hover effect for mega menu */
+  .header__inline-menu .mega-menu:hover .mega-menu__panel {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  .header__inline-menu .mega-menu:hover .primary-nav__trigger {
     background: rgba(0, 0, 0, 0.02);
     color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
     border-bottom-color: #ff6b35; /* Orange underline on menu hover */
   }
-
-  .header__inline-menu .mega-menu:hover .primary-nav__icon,
-  .header__inline-menu .mega-menu.active .primary-nav__icon {
+  
+  .header__inline-menu .mega-menu:hover .primary-nav__icon {
     transform: rotate(180deg);
     opacity: 1;
   }
@@ -232,15 +226,6 @@
   
   .header__inline-menu .mega-menu__content {
     width: 100%;
-  }
-  
-  /* Mega menu container styling */
-  .header__inline-menu .mega-menu__container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-    display: flex;
-    gap: 40px;
   }
   
   .header__inline-menu .primary-nav__trigger {
@@ -256,12 +241,6 @@
     border-bottom: 3px solid transparent; /* Individual menu underline */
     font-size: 15px;
     text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    height: 100%;
-    box-sizing: border-box; /* Đảm bảo padding không ảnh hưởng vị trí underline */
-    white-space: nowrap; /* Đảm bảo menu trigger không bị wrap */
-    flex-shrink: 0; /* Không cho phép shrink */
   }
   
   .header__inline-menu .primary-nav__trigger:hover,
@@ -291,12 +270,6 @@
     display: block;
     font-size: 15px;
     text-transform: uppercase;
-    height: 100%;
-    box-sizing: border-box; /* Đảm bảo padding không ảnh hưởng vị trí underline */
-    display: flex;
-    align-items: center;
-    white-space: nowrap; /* Đảm bảo menu link không bị wrap */
-    flex-shrink: 0; /* Không cho phép shrink */
   }
   
   .header__inline-menu .primary-nav__link:hover {
@@ -304,40 +277,6 @@
     color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
     border-bottom-color: #ff6b35; /* Orange underline on individual link hover */
-  }
-  
-  /* Ensure all navigation items have consistent positioning and underline behavior */
-  .header__inline-menu .primary-nav__item {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    position: relative;
-    flex-shrink: 0; /* Không cho phép nav item bị shrink */
-    white-space: nowrap; /* Đảm bảo nav item không bị wrap */
-  }
-  
-  /* Ensure navigation list doesn't wrap and has proper spacing */
-  .header__inline-menu .primary-nav {
-    display: flex !important;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    gap: 20px; /* Giảm gap từ 40px xuống 20px để tiết kiệm không gian */
-    height: 100%;
-    flex-wrap: nowrap; /* Không cho phép wrap */
-    overflow-x: auto; /* Cho phép scroll ngang nếu cần */
-    overflow-y: hidden;
-  }
-  
-  /* Make sure all menu triggers and links align properly */
-  .header__inline-menu .primary-nav__trigger,
-  .header__inline-menu .primary-nav__link {
-    min-height: 60px; /* Match navbar height */
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
   }
   
   /* Remove any special styling for current page - all menus should behave the same */
@@ -532,18 +471,13 @@
     }
   }
   
-  /* Ensure mega menu is properly positioned on larger screens */
+  /* Ensure mega menu is always centered on larger screens */
   @media (min-width: 1025px) {
     .header__inline-menu .mega-menu__panel {
-      /* Keep full width but center the content inside */
-      width: 100vw;
-      margin-left: calc(-50vw + 50%);
-    }
-    
-    .header__inline-menu .mega-menu__container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: min(1200px, 90vw);
     }
   }
 </style>
@@ -556,9 +490,9 @@
     
     <!-- Navigation Menu - Left Side -->
     <div class="header__nav-menu" style="flex:1;display:flex;justify-content:flex-start;">
-      <ul class="primary-nav" role="menubar" style="height:100%;">
+      <ul class="primary-nav" role="menubar" style="display:flex;align-items:center;margin:0;padding:0;list-style:none;gap:40px;height:100%;">
         {%- for link in menu.links -%}
-          <li class="primary-nav__item">
+          <li class="primary-nav__item" style="font-size:15px;position:relative;display:flex;align-items:center;height:100%;">
             {%- if link.links != blank -%}
               <header-menu>
                 <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu" aria-haspopup="true" aria-expanded="false" style="height:100%;display:flex;">
@@ -584,7 +518,7 @@
                     role="menu"
                     aria-labelledby="HeaderMenu-{{ link.handle }}"
                   >
-                    <div class="mega-menu__container">
+                    <div class="mega-menu__container" style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;gap:40px;">
                       <!-- Menu Content with Category Titles -->
                       <div class="mega-menu__content" style="display:flex;gap:32px;flex:1;">
                         {%- for childlink in link.links -%}
@@ -803,7 +737,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (trigger && panel) {
       // Handle hover events
       menu.addEventListener('mouseenter', function() {
-        console.log('Mouse enter on menu:', menu); // Debug log
+        console.log('Mouse enter on menu:', menu); // Debug
         
         // Clear any pending close timeout
         if (hoverTimeout) {
@@ -815,15 +749,19 @@ document.addEventListener('DOMContentLoaded', function() {
         megaMenus.forEach(otherMenu => {
           if (otherMenu !== menu) {
             otherMenu.removeAttribute('open');
-            otherMenu.classList.remove('active');
           }
         });
         
-        // Open this mega menu with both methods
+        // Open this mega menu
         menu.setAttribute('open', '');
-        menu.classList.add('active');
         
-        console.log('Menu opened:', menu); // Debug log
+        // Force panel to show with direct styling as backup
+        if (panel) {
+          panel.style.display = 'flex';
+          panel.style.visibility = 'visible';
+          panel.style.opacity = '1';
+          console.log('Panel forced to show:', panel); // Debug
+        }
         
         // Update position
         setTimeout(() => {
@@ -832,59 +770,54 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       
       menu.addEventListener('mouseleave', function() {
-        console.log('Mouse leave on menu:', menu); // Debug log
+        console.log('Mouse leave on menu:', menu); // Debug
         
         // Close mega menu quickly when mouse leaves
         hoverTimeout = setTimeout(() => {
           menu.removeAttribute('open');
-          menu.classList.remove('active');
-          console.log('Menu closed:', menu); // Debug log
+          
+          // Force panel to hide
+          if (panel) {
+            panel.style.display = 'none';
+            panel.style.visibility = 'hidden';
+            panel.style.opacity = '0';
+            console.log('Panel forced to hide:', panel); // Debug
+          }
         }, 150); // Fast close - 150ms delay
       });
       
       // Keep existing click handler as backup
       trigger.addEventListener('click', function(e) {
         e.preventDefault();
-        console.log('Click on trigger:', trigger); // Debug log
         
-        if (menu.hasAttribute('open') || menu.classList.contains('active')) {
+        if (menu.hasAttribute('open')) {
           menu.removeAttribute('open');
-          menu.classList.remove('active');
         } else {
           // Close other open menus first
           megaMenus.forEach(otherMenu => {
             if (otherMenu !== menu) {
               otherMenu.removeAttribute('open');
-              otherMenu.classList.remove('active');
             }
           });
           menu.setAttribute('open', '');
-          menu.classList.add('active');
         }
         
         setTimeout(() => {
           updateStickyPosition();
         }, 10);
       });
-    } else {
-      console.log('Missing trigger or panel for menu:', menu); // Debug log
     }
   });
   
   // Close mega menu when clicking outside (but not when just hovering)
   document.addEventListener('click', function(e) {
     if (!e.target.closest('.mega-menu')) {
-      const openMenus = document.querySelectorAll('.mega-menu[open], .mega-menu.active');
+      const openMenus = document.querySelectorAll('.mega-menu[open]');
       openMenus.forEach(menu => {
         menu.removeAttribute('open');
-        menu.classList.remove('active');
       });
     }
   });
-  
-  // Debug: Log when DOM is ready
-  console.log('Mega menu JavaScript initialized');
-  console.log('Found mega menus:', document.querySelectorAll('.mega-menu').length);
 });
 
 // Function to handle search icon click
