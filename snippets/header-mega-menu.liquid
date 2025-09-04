@@ -94,6 +94,10 @@
   /* Capitalize menu text (first letter uppercase) */
   .primary-nav__text {
     text-transform: capitalize;
+    white-space: nowrap; /* Prevent text wrapping in menu labels */
+    font-size: 15px;
+    line-height: 1.2;
+    display: inline-block;
   }
   
   /* Hide right icons by default, show only when sticky */
@@ -166,9 +170,8 @@
   .header__inline-menu .mega-menu__panel {
     position: fixed; /* EMERGENCY FIX: Use fixed instead of absolute to escape stacking context */
     top: calc(100% + 60px); /* Position below navbar, accounting for navbar height */
-    left: 0;
-    right: 0;
-    transform: none;
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
     z-index: 9999 !important; /* EMERGENCY FIX: Force above all elements */
     background: #fff;
     border: none;
@@ -178,7 +181,9 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     padding: 32px 0;
     margin-top: 0;
-    width: 100vw;
+    width: max-content;
+    max-width: min(1200px, 90vw);
+    min-width: 800px;
     display: none !important;
     visibility: hidden;
     opacity: 0;
@@ -231,7 +236,7 @@
   }
   
   .header__inline-menu .primary-nav__trigger {
-    padding: 16px 24px;
+    padding: 16px 20px; /* Reduced horizontal padding */
     border-radius: 0;
     transition: all 0.3s ease;
     color: rgba(0, 0, 0, 0.7);
@@ -243,6 +248,11 @@
     border-bottom: 3px solid transparent; /* Individual menu underline */
     font-size: 15px;
     text-transform: uppercase;
+    white-space: nowrap; /* Prevent text wrapping */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: max-content; /* Ensure enough width for text */
   }
   
   .header__inline-menu .primary-nav__trigger:hover,
@@ -492,7 +502,7 @@
     
     <!-- Navigation Menu - Left Side -->
     <div class="header__nav-menu" style="flex:1;display:flex;justify-content:flex-start;">
-      <ul class="primary-nav" role="menubar" style="display:flex;align-items:center;margin:0;padding:0;list-style:none;gap:40px;height:100%;">
+      <ul class="primary-nav" role="menubar" style="display:flex;align-items:center;margin:0;padding:0;list-style:none;gap:24px;height:100%;">
         {%- for link in menu.links -%}
           <li class="primary-nav__item" style="font-size:15px;position:relative;display:flex;align-items:center;height:100%;">
             {%- if link.links != blank -%}
@@ -763,19 +773,22 @@ document.addEventListener('DOMContentLoaded', function() {
           panel.style.visibility = 'visible';
           panel.style.opacity = '1';
           
-          // EMERGENCY FIX: Calculate and set position dynamically
+          // EMERGENCY FIX: Calculate and set position dynamically - CENTERED
           const navbar = document.querySelector('.header__inline-menu');
           const navbarRect = navbar.getBoundingClientRect();
-          const navbarBottom = navbarRect.bottom + window.pageYOffset;
           
           panel.style.position = 'fixed';
           panel.style.top = navbarRect.bottom + 'px';
-          panel.style.left = '0';
-          panel.style.right = '0';
+          panel.style.left = '50%';
+          panel.style.transform = 'translateX(-50%)';
+          panel.style.width = 'max-content';
+          panel.style.maxWidth = 'min(1200px, 90vw)';
+          panel.style.minWidth = '800px';
           panel.style.zIndex = '99999';
           
-          console.log('Panel forced to show with position:', {
+          console.log('Panel forced to show with centered position:', {
             top: navbarRect.bottom,
+            positioning: 'centered',
             zIndex: 99999,
             panel: panel
           });
