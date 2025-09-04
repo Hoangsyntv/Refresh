@@ -178,16 +178,24 @@
       {%- endif -%}
       {% unless forloop.last %} | {% endunless %}
     {%- endfor -%}<br>
-    {%- comment -%} Show Danh mục children {%- endcomment -%}
+    
+    {%- comment -%} Debug ALL menu structure {%- endcomment -%}
+    <strong>Full Menu Structure:</strong><br>
     {%- for link in main_menu.links -%}
-      {%- if link.title == 'Danh mục' -%}
-        <strong>Danh mục children:</strong>
-        {%- for childlink in link.links limit: 5 -%}
+      <strong>{{ link.title }}</strong> ({{ link.url }})
+      {%- if link.links.size > 0 -%}
+        <br>&nbsp;&nbsp;Children: 
+        {%- for childlink in link.links limit: 3 -%}
           {{ childlink.title }}{% unless forloop.last %} | {% endunless %}
         {%- endfor -%}
-        {%- break -%}
+        {%- if link.links.size > 3 %} + {{ link.links.size | minus: 3 }} more{% endif -%}
+      {%- else -%}
+        (no children)
       {%- endif -%}
+      <br>
     {%- endfor -%}
+    
+    <strong>Looking for:</strong> {{ menu_path | split: '|' | join: ' → ' }}
   </div>
 
   <ol class="breadcrumb__list">
