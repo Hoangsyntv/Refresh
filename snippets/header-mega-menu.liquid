@@ -176,18 +176,9 @@
     top: 60px; /* Fixed position when sticky */
   }
   
-  /* Overlay for mega menu */
+  /* Overlay for mega menu - DISABLED to allow navigation between menus */
   .header__inline-menu .mega-menu[open]::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
-    z-index: 999998; /* Just below mega menu panel */
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
+    display: none; /* Bỏ overlay để có thể di chuyển giữa các menu */
   }
   
   .header__inline-menu .mega-menu[open] .mega-menu__panel {
@@ -707,11 +698,25 @@ document.addEventListener('DOMContentLoaded', function() {
   megaMenus.forEach(menu => {
     const trigger = menu.querySelector('.primary-nav__trigger');
     const panel = menu.querySelector('.mega-menu__panel');
+    let hoverTimeout;
     
     if (trigger && panel) {
       // Handle hover events
       menu.addEventListener('mouseenter', function() {
-        // Open mega menu on hover
+        // Clear any pending close timeout
+        if (hoverTimeout) {
+          clearTimeout(hoverTimeout);
+          hoverTimeout = null;
+        }
+        
+        // Close other open menus immediately
+        megaMenus.forEach(otherMenu => {
+          if (otherMenu !== menu) {
+            otherMenu.removeAttribute('open');
+          }
+        });
+        
+        // Open this mega menu
         menu.setAttribute('open', '');
         
         // Update position
@@ -721,8 +726,10 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       
       menu.addEventListener('mouseleave', function() {
-        // Close mega menu when mouse leaves
-        menu.removeAttribute('open');
+        // Close mega menu quickly when mouse leaves
+        hoverTimeout = setTimeout(() => {
+          menu.removeAttribute('open');
+        }, 150); // Fast close - 150ms delay
       });
       
       // Keep existing click handler as backup
@@ -756,31 +763,6 @@ document.addEventListener('DOMContentLoaded', function() {
         menu.removeAttribute('open');
       });
     }
-  });
-  
-  // Prevent menu from closing when moving mouse within the menu area
-  document.addEventListener('mousemove', function(e) {
-    const hoveredMenu = e.target.closest('.mega-menu');
-    const openMenus = document.querySelectorAll('.mega-menu[open]');
-    
-    openMenus.forEach(menu => {
-      if (menu !== hoveredMenu) {
-        // Only close if mouse is not over this menu
-        const menuRect = menu.getBoundingClientRect();
-        const mouseX = e.clientX;
-        const mouseY = e.clientY;
-        
-        if (mouseX < menuRect.left || mouseX > menuRect.right || 
-            mouseY < menuRect.top || mouseY > menuRect.bottom) {
-          // Mouse is outside this menu, close it after a small delay
-          setTimeout(() => {
-            if (!menu.matches(':hover')) {
-              menu.removeAttribute('open');
-            }
-          }, 100);
-        }
-      }
-    });
   });
 });
 
