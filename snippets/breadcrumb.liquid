@@ -8,11 +8,37 @@
   comment 'Build menu path for products and collections'
   endcomment
   if request.page_type == 'product' and product and main_menu
-    comment 'Get target collection for hierarchy detection'
+    comment 'Get target collection for hierarchy detection - prefer most specific collection'
     endcomment
     assign target_collection = collection
     if target_collection == blank and product.collections.size > 0
-      assign target_collection = product.collections.first
+      comment 'Find the most specific collection (longest hierarchy)'
+      endcomment
+      assign best_collection = blank
+      assign best_hierarchy_length = 0
+      
+      for prod_collection in product.collections
+        assign hierarchy_length = 0
+        case prod_collection.handle
+          when 'ban-lam-viec', 'ban-giam-doc', 'ban-chan-sat', 'ban-may-tinh'
+            assign hierarchy_length = 3
+          when 'ghe-giam-doc', 'ghe-xoay-van-phong', 'ghe-chan-quy'
+            assign hierarchy_length = 3
+          when 'tu-ho-so-giam-doc', 'tu-tai-lieu'
+            assign hierarchy_length = 3
+          when 'ban-van-phong', 'ghe-van-phong', 'tu-van-phong'
+            assign hierarchy_length = 2
+          when 'noi-that-van-phong'
+            assign hierarchy_length = 1
+        endcase
+        
+        if hierarchy_length > best_hierarchy_length
+          assign best_collection = prod_collection
+          assign best_hierarchy_length = hierarchy_length
+        endif
+      endfor
+      
+      assign target_collection = best_collection | default: product.collections.first
     endif
     
     if target_collection
