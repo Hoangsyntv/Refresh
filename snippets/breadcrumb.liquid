@@ -194,23 +194,11 @@
             
             <!-- DEBUG per level -->
             <div style="background: yellow; padding: 2px; font-size: 10px;">
-              Level: {{ level }} | URL: {{ level_url }} | Index: {{ forloop.index0 }}
+              Level: {{ level }} | URL: {{ level_url }} | Index: {{ forloop.index0 }} | URL_LENGTH: {{ level_url.size }}
             </div>
             
-            {%- comment -%} Force create links regardless {%- endcomment -%}
-            {%- if level_url != blank and level_url != '#' and level_url != '' -%}
-              <a href="{{ level_url }}" class="breadcrumb__link" style="color: red !important; text-decoration: underline !important; font-weight: bold !important;">{{ level | escape }}</a>
-            {%- else -%}
-              {%- comment -%} Fallback: Create links anyway using collection handles {%- endcomment -%}
-              {%- case level -%}
-                {%- when 'Nội thất văn phòng' -%}
-                  <a href="/collections/noi-that-van-phong" class="breadcrumb__link" style="color: green !important; text-decoration: underline !important; font-weight: bold !important;">{{ level | escape }}</a>
-                {%- when 'Bàn văn phòng' -%}
-                  <a href="/collections/ban-van-phong" class="breadcrumb__link" style="color: green !important; text-decoration: underline !important; font-weight: bold !important;">{{ level | escape }}</a>
-                {%- else -%}
-                  <span style="color: gray;">{{ level | escape }}</span>
-              {%- endcase -%}
-            {%- endif -%}
+            {%- comment -%} NUCLEAR: ALWAYS CREATE LINKS {%- endcomment -%}
+            <a href="{{ level_url }}" class="breadcrumb__link" style="color: red !important; text-decoration: underline !important; font-weight: bold !important; background: lime !important;">{{ level | escape }}</a>
           </li>
           {%- unless forloop.last -%}
             <li class="breadcrumb__separator" aria-hidden="true">></li>
