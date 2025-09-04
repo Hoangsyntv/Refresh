@@ -294,22 +294,32 @@
               {%- comment -%} Placeholder link - try to find collection by handle {%- endcomment -%}
               {%- assign collection_handle = level | handle -%}
               {%- assign fallback_collection = collections[collection_handle] -%}
+              
+              {%- comment -%} DEBUG: Show fallback attempts {%- endcomment -%}
+              <!-- 🔄 FALLBACK: {{ level }} → {{ collection_handle }} → {{ fallback_collection.url | default: 'NOT FOUND' }} -->
+              
               {%- if fallback_collection -%}
-                <a href="{{ fallback_collection.url }}" class="breadcrumb__link">{{ level | escape }}</a>
+                <a href="{{ fallback_collection.url }}" class="breadcrumb__link">{{ level | escape }} ✅</a>
               {%- else -%}
                 {%- comment -%} Try common variations {%- endcomment -%}
                 {%- assign alt_handle_1 = level | replace: ' ', '-' | downcase -%}
                 {%- assign alt_handle_2 = level | replace: ' văn phòng', '' | handle -%}
                 {%- assign alt_handle_3 = 'noi-that-van-phong' -%}
+                {%- assign alt_handle_4 = 'noi-that' -%}
+                
+                <!-- 🔄 ALT HANDLES: {{ alt_handle_1 }} | {{ alt_handle_2 }} | {{ alt_handle_3 }} | {{ alt_handle_4 }} -->
                 
                 {%- if collections[alt_handle_1] -%}
-                  <a href="{{ collections[alt_handle_1].url }}" class="breadcrumb__link">{{ level | escape }}</a>
+                  <a href="{{ collections[alt_handle_1].url }}" class="breadcrumb__link">{{ level | escape }} 🎯</a>
                 {%- elsif collections[alt_handle_2] -%}
-                  <a href="{{ collections[alt_handle_2].url }}" class="breadcrumb__link">{{ level | escape }}</a>
+                  <a href="{{ collections[alt_handle_2].url }}" class="breadcrumb__link">{{ level | escape }} 🎯</a>
                 {%- elsif collections[alt_handle_3] -%}
-                  <a href="{{ collections[alt_handle_3].url }}" class="breadcrumb__link">{{ level | escape }}</a>
+                  <a href="{{ collections[alt_handle_3].url }}" class="breadcrumb__link">{{ level | escape }} 🎯</a>
+                {%- elsif collections[alt_handle_4] -%}
+                  <a href="{{ collections[alt_handle_4].url }}" class="breadcrumb__link">{{ level | escape }} 🎯</a>
                 {%- else -%}
-                  <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);" title="Placeholder link (#)">{{ level | escape }} 📂</span>
+                  <!-- ❌ NO FALLBACK FOUND for {{ level }} -->
+                  <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);" title="Placeholder link (#) - No collection found">{{ level | escape }} 📂</span>
                 {%- endif -%}
               {%- endif -%}
             {%- else -%}
