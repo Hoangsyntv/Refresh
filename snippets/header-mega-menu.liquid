@@ -210,16 +210,31 @@
   }
   
   /* Hover effect for mega menu */
-  .header__inline-menu .mega-menu:hover .mega-menu__panel {
+  .header__inline-menu .mega-menu:hover .mega-menu__panel,
+  .header__inline-menu .mega-menu[open] .mega-menu__panel,
+  .mega-menu__panel {
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
     z-index: 999999 !important; /* NUCLEAR HOVER FIX 😂 */
+    position: fixed !important; /* Force fixed positioning */
   }
   
   /* NUCLEAR BREADCRUMB DESTROYER 😂 */
-  .breadcrumb {
-    z-index: 1 !important; /* Force breadcrumb to bottom */
+  .breadcrumb,
+  .breadcrumb *,
+  nav.breadcrumb,
+  [class*="breadcrumb"] {
+    z-index: -999 !important; /* SUPER NEGATIVE Z-INDEX 😂 */
+    position: relative !important;
+  }
+  
+  /* GLOBAL MEGA MENU SUPREMACY 😂 */
+  .mega-menu__panel,
+  [class*="mega-menu"] .mega-menu__panel,
+  div.mega-menu__panel {
+    z-index: 9999999 !important; /* HIGHEST POSSIBLE 😂 */
+    position: fixed !important;
   }
   
   .header__inline-menu .mega-menu:hover .primary-nav__trigger {
