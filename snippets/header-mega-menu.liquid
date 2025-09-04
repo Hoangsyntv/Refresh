@@ -150,8 +150,8 @@
   }
   
   .header__inline-menu .mega-menu__panel {
-    position: fixed;
-    top: 60px; /* Default height of menu bar */
+    position: absolute; /* Changed to absolute for better positioning */
+    top: 100%; /* Directly below the navbar */
     left: 0;
     right: 0;
     transform: none;
@@ -171,9 +171,10 @@
     transition: all 0.3s ease;
   }
   
-  /* When menu is sticky, adjust panel position to be directly under */
+  /* When menu is sticky, use fixed positioning */
   .header__inline-menu.is-sticky .mega-menu__panel {
-    top: 60px; /* Exactly under the sticky navbar */
+    position: fixed;
+    top: 60px; /* Exactly under the sticky navbar height */
   }
   
   /* Overlay for mega menu - DISABLED to allow navigation between menus */
@@ -613,7 +614,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // Function to update sticky position
   function updateStickyPosition() {
     const headerHeight = headerContainer ? headerContainer.offsetHeight : 0;
-    const megaMenuPanels = document.querySelectorAll('.mega-menu__panel');
     const navbarHeight = headerMenu.offsetHeight; // Get actual navbar height
     
     // Update menu offset top when window resizes and not sticky
@@ -622,16 +622,13 @@ document.addEventListener('DOMContentLoaded', function() {
       initialMenuOffsetTop = menuOffsetTop;
     }
     
-    megaMenuPanels.forEach(panel => {
-      if (isSticky) {
-        // When sticky, position directly under the fixed navbar
+    // For sticky navbar, ensure mega menu panels are positioned correctly
+    if (isSticky) {
+      const megaMenuPanels = document.querySelectorAll('.mega-menu__panel');
+      megaMenuPanels.forEach(panel => {
         panel.style.top = navbarHeight + 'px';
-      } else {
-        // When not sticky, position under the navbar at its current position
-        const navbarBottom = headerMenu.offsetTop + navbarHeight;
-        panel.style.top = navbarBottom + 'px';
-      }
-    });
+      });
+    }
   }
   
   // Sticky scroll handler
