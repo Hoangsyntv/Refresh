@@ -271,7 +271,7 @@
   }
   
   .header__inline-menu .primary-nav__link {
-    padding: 16px 24px;
+    padding: 16px 20px; /* Match trigger padding for consistent alignment */
     color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
     text-decoration: none;
@@ -279,9 +279,13 @@
     transition: all 0.3s ease;
     position: relative;
     border-bottom: 3px solid transparent; /* Individual link underline */
-    display: block;
+    display: flex; /* Match trigger display type */
+    align-items: center; /* Match trigger alignment */
+    justify-content: center; /* Match trigger justification */
     font-size: 15px;
     text-transform: uppercase;
+    white-space: nowrap; /* Prevent text wrapping */
+    min-width: max-content; /* Match trigger width behavior */
   }
   
   .header__inline-menu .primary-nav__link:hover {
@@ -514,7 +518,7 @@
                     aria-controls="MegaMenu-Content-{{ forloop.index }}"
                     aria-label="Mở menu {{ link.title }}"
                     tabindex="0"
-                    style="display:flex;align-items:center;gap:8px;list-style:none;height:100%;padding:0 16px;"
+                    style="display:flex;align-items:center;gap:8px;list-style:none;height:100%;"
                   >
                     <span class="primary-nav__text">{{- link.title | escape -}}</span>
                     <span class="primary-nav__icon" aria-hidden="true">
@@ -587,7 +591,7 @@
                 href="{{ link.url }}"
                 class="primary-nav__link"
                 {% if link.current %} aria-current="page"{% endif %}
-                style="display:flex;align-items:center;height:100%;"
+                style="display:flex;align-items:center;height:100%;justify-content:center;"
               >
                 <span class="primary-nav__text">{{- link.title | escape -}}</span>
               </a>
