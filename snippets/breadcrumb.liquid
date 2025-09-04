@@ -199,7 +199,10 @@
           <li class="breadcrumb__item">
             {%- assign level_url = url_array[forloop.index0] | strip -%}
             
-            {%- if level_url == '#' or level_url contains '#' -%}
+            {%- comment -%} ALWAYS create links - URLs are correct {%- endcomment -%}
+            {%- if level_url != blank and level_url != '#' -%}
+              <a href="{{ level_url }}" class="breadcrumb__link" style="color: blue !important; text-decoration: underline !important;">{{ level | escape }}</a>
+            {%- else -%}
               {%- comment -%} Fallback URL mapping {%- endcomment -%}
               {%- assign collection_handle = level | handle -%}
               {%- if collections[collection_handle] -%}
@@ -218,8 +221,6 @@
                     <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);">{{ level | escape }}</span>
                 {%- endcase -%}
               {%- endif -%}
-            {%- else -%}
-              <a href="{{ level_url }}" class="breadcrumb__link" style="color: blue !important; text-decoration: underline !important;">{{ level | escape }}</a>
             {%- endif -%}
           </li>
           {%- unless forloop.last -%}
