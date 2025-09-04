@@ -172,7 +172,7 @@
     top: calc(100% + 60px); /* Position below navbar, accounting for navbar height */
     left: 50%;
     transform: translateX(-50%); /* Center horizontally */
-    z-index: 9999 !important; /* EMERGENCY FIX: Force above all elements */
+    z-index: 999999 !important; /* NUCLEAR FIX: Ultra high z-index 😂 */
     background: #fff;
     border: none;
     border-top: none;
@@ -196,7 +196,7 @@
   .header__inline-menu.is-sticky .mega-menu__panel {
     position: fixed;
     top: 60px; /* Below sticky navbar height */
-    z-index: 99999 !important; /* EMERGENCY FIX: Force above all elements when sticky */
+    z-index: 9999999 !important; /* NUCLEAR FIX: Even higher for sticky 😂 */
   }
   
   /* Overlay for mega menu - DISABLED to allow navigation between menus */
@@ -213,6 +213,12 @@
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
+    z-index: 999999 !important; /* NUCLEAR HOVER FIX 😂 */
+  }
+  
+  /* NUCLEAR BREADCRUMB DESTROYER 😂 */
+  .breadcrumb {
+    z-index: 1 !important; /* Force breadcrumb to bottom */
   }
   
   .header__inline-menu .mega-menu:hover .primary-nav__trigger {
@@ -788,12 +794,12 @@ document.addEventListener('DOMContentLoaded', function() {
           panel.style.width = 'max-content';
           panel.style.maxWidth = 'min(1200px, 90vw)';
           panel.style.minWidth = '800px';
-          panel.style.zIndex = '99999';
+          panel.style.zIndex = '999999'; /* NUCLEAR JS FIX 😂 */
           
-          console.log('Panel forced to show with centered position:', {
+          console.log('Panel forced to show with NUCLEAR z-index:', {
             top: navbarRect.bottom,
             positioning: 'centered',
-            zIndex: 99999,
+            zIndex: 999999,
             panel: panel
           });
         }
