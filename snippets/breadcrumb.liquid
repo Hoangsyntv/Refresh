@@ -18,21 +18,28 @@
     if target_collection
       comment 'Find collection hierarchy in menu'
       endcomment
+      assign debug_matching = 'MATCHING: ' | append: target_collection.url | append: ' | '
       for link in main_menu.links
+        assign debug_matching = debug_matching | append: 'L1:' | append: link.url | append: '=='
         if link.url == target_collection.url
           assign menu_path = link.title
+          assign debug_matching = debug_matching | append: 'MATCH! '
           break
         endif
         if link.links != blank
           for childlink in link.links
+            assign debug_matching = debug_matching | append: 'L2:' | append: childlink.url | append: '=='
             if childlink.url == target_collection.url
               assign menu_path = link.title | append: '|' | append: childlink.title
+              assign debug_matching = debug_matching | append: 'MATCH! '
               break
             endif
             if childlink.links != blank
               for grandchildlink in childlink.links
+                assign debug_matching = debug_matching | append: 'L3:' | append: grandchildlink.url | append: '=='
                 if grandchildlink.url == target_collection.url
                   assign menu_path = link.title | append: '|' | append: childlink.title | append: '|' | append: grandchildlink.title
+                  assign debug_matching = debug_matching | append: 'MATCH! '
                   break
                 endif
               endfor
@@ -211,7 +218,7 @@
   comment 'DEBUG: Show detected hierarchy + collection info'
   endcomment
   assign debug_collection = target_collection | default: collection
-  assign debug_info = 'DETECTED PATH: ' | append: menu_path | append: ' | LEVELS: ' | append: menu_levels.size | append: ' | COLLECTION: ' | append: debug_collection.title | append: ' | COLLECTION_URL: ' | append: debug_collection.url | append: ' | PRODUCT_COLLECTIONS: ' | append: product.collections.size
+  assign debug_info = 'DETECTED PATH: ' | append: menu_path | append: ' | LEVELS: ' | append: menu_levels.size | append: ' | COLLECTION: ' | append: debug_collection.title | append: ' | COLLECTION_URL: ' | append: debug_collection.url | append: ' | PRODUCT_COLLECTIONS: ' | append: product.collections.size | append: ' | ' | append: debug_matching
 -%}
 
 <!-- DEBUG INFO -->
