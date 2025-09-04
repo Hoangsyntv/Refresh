@@ -3,6 +3,7 @@
   endcomment
   
   comment '1) Determine crumb_collection with priority order'
+  endcomment
   assign primary_collection = product.metafields.custom.primary_collection
   
   if collection
@@ -20,6 +21,7 @@
   endif
   
   comment '2) Build ancestor chain from parent metafields'
+  endcomment
   assign ancestors = '' | split: ''
   assign current_collection = crumb_collection
   assign max_depth = 3
