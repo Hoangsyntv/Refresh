@@ -284,8 +284,16 @@
             <!-- 🔍 LEVEL {{ forloop.index }}: "{{ level }}" → URL: "{{ level_url | default: 'BLANK' }}" -->
             
             {%- comment -%} Render breadcrumb item {%- endcomment -%}
-            {%- if forloop.last -%}
-              {%- comment -%} Last level is current page, not clickable {%- endcomment -%}
+            {%- comment -%} Check if this level represents the current page {%- endcomment -%}
+            {%- assign is_current_page = false -%}
+            {%- if forloop.last and request.page_type == 'product' and level == product.title -%}
+              {%- assign is_current_page = true -%}
+            {%- elsif forloop.last and request.page_type == 'collection' and level == collection.title -%}
+              {%- assign is_current_page = true -%}
+            {%- endif -%}
+            
+            {%- if is_current_page -%}
+              {%- comment -%} This level is the actual current page, not clickable {%- endcomment -%}
               <span class="breadcrumb__current">{{ level | escape }}</span>
             {%- elsif level_url != blank and level_url != '#' -%}
               {%- comment -%} Valid URL found, create link {%- endcomment -%}
