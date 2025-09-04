@@ -6,18 +6,33 @@
   endcomment
   assign primary_collection = product.metafields.custom.primary_collection
   
-  if collection
-    assign crumb_collection = collection
-    assign collection_source = 'URL context'
-  elsif primary_collection
-    assign crumb_collection = primary_collection
-    assign collection_source = 'Primary metafield'
-  elsif product.collections.size > 0
-    assign crumb_collection = product.collections | first
-    assign collection_source = 'First collection'
+  if request.page_type == 'product'
+    if collection
+      assign crumb_collection = collection
+      assign collection_source = 'URL context'
+    elsif primary_collection
+      assign crumb_collection = primary_collection
+      assign collection_source = 'Primary metafield'
+    elsif product.collections.size > 0
+      assign crumb_collection = product.collections | first
+      assign collection_source = 'First collection'
+    else
+      assign crumb_collection = nil
+      assign collection_source = 'None'
+    endif
+  elsif request.page_type == 'collection'
+    comment 'For collection pages, find parent collection if any'
+    assign parent_collection = collection.metafields.custom.parent_collection
+    if parent_collection
+      assign crumb_collection = parent_collection
+      assign collection_source = 'Parent collection'
+    else
+      assign crumb_collection = nil
+      assign collection_source = 'Root collection'
+    endif
   else
     assign crumb_collection = nil
-    assign collection_source = 'None'
+    assign collection_source = 'Not applicable'
   endif
   
   comment '2) Build ancestor chain from parent metafields'
@@ -98,6 +113,7 @@
   <!-- DEBUG: Collection Resolution -->
   <div style="background: #f0f8ff; padding: 8px; margin: 8px 0; font-size: 11px; border: 1px solid #ddd;">
     <strong>🎯 COLLECTION RESOLVER:</strong><br>
+    Page Type: {{ request.page_type }}<br>
     Source: {{ collection_source | default: 'None' }}<br>
     Collection Context: {{ collection.title | default: 'None' }}<br>
     Primary Metafield: {{ primary_collection.title | default: 'None' }}<br>
@@ -117,7 +133,14 @@
     {%- if crumb_collection -%}
       → {{ crumb_collection.title }}
     {%- endif -%}
-    → {{ product.title }}
+    {%- case request.page_type -%}
+      {%- when 'product' -%}
+        → {{ product.title }}
+      {%- when 'collection' -%}
+        → {{ collection.title }}
+      {%- when 'page' -%}
+        → {{ page.title }}
+    {%- endcase -%}
   </div>
 
   <ol class="breadcrumb__list">
@@ -147,7 +170,7 @@
         <li class="breadcrumb__separator" aria-hidden="true">></li>
       {%- endif -%}
       
-      {%- comment -%} Render current page {%- endcomment -%}
+      {%- comment -%} Render current page based on page type {%- endcomment -%}
       {%- case request.page_type -%}
         {%- when 'product' -%}
           <li class="breadcrumb__item">
@@ -155,9 +178,12 @@
           </li>
           
         {%- when 'collection' -%}
-          <li class="breadcrumb__item">
-            <span class="breadcrumb__current" aria-current="page">{{ collection.title | escape }}</span>
-          </li>
+          {%- comment -%} For collection pages, don't duplicate the collection link {%- endcomment -%}
+          {%- unless crumb_collection and crumb_collection.id == collection.id -%}
+            <li class="breadcrumb__item">
+              <span class="breadcrumb__current" aria-current="page">{{ collection.title | escape }}</span>
+            </li>
+          {%- endunless -%}
           
         {%- when 'page' -%}
           <li class="breadcrumb__item">
