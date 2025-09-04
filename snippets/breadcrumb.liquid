@@ -210,16 +210,23 @@
           {%- endunless -%}
         {%- endfor -%}
         
-        {%- comment -%} Add current page {%- endcomment -%}
-        <li class="breadcrumb__separator" aria-hidden="true">></li>
-        <li class="breadcrumb__item">
-          {%- case request.page_type -%}
-            {%- when 'product' -%}
+        {%- comment -%} Add current page only if not already in path {%- endcomment -%}
+        {%- case request.page_type -%}
+          {%- when 'product' -%}
+            <li class="breadcrumb__separator" aria-hidden="true">></li>
+            <li class="breadcrumb__item">
               <span class="breadcrumb__current" aria-current="page">{{ product.title | escape }}</span>
-            {%- when 'collection' -%}
-              <span class="breadcrumb__current" aria-current="page">{{ collection.title | escape }}</span>
-          {%- endcase -%}
-        </li>
+            </li>
+          {%- when 'collection' -%}
+            {%- comment -%} For collection pages, check if collection is already the last item in menu path {%- endcomment -%}
+            {%- assign last_level = menu_levels | last -%}
+            {%- unless last_level == collection.title -%}
+              <li class="breadcrumb__separator" aria-hidden="true">></li>
+              <li class="breadcrumb__item">
+                <span class="breadcrumb__current" aria-current="page">{{ collection.title | escape }}</span>
+              </li>
+            {%- endunless -%}
+        {%- endcase -%}
         
       {%- else -%}
         {%- comment -%} Fallback breadcrumb {%- endcomment -%}
