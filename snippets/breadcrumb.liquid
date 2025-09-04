@@ -198,7 +198,16 @@
   endif
   
   assign menu_levels = menu_path | split: '|'
+  
+  comment 'DEBUG: Show detected hierarchy'
+  endcomment
+  assign debug_info = 'DETECTED PATH: ' | append: menu_path | append: ' | LEVELS: ' | append: menu_levels.size
 -%}
+
+<!-- DEBUG INFO -->
+<div style="background: #e8f4fd; padding: 8px; margin: 8px 0; border: 1px solid #b8daff; font-size: 12px;">
+  {{ debug_info }}
+</div>
 
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol class="breadcrumb__list">
@@ -249,13 +258,7 @@
           {%- endunless -%}
         {%- endfor -%}
         
-        {%- case request.page_type -%}
-          {%- when 'product' -%}
-            <li class="breadcrumb__separator" aria-hidden="true">></li>
-            <li class="breadcrumb__item">
-              <a href="{{ collection.url }}" class="breadcrumb__link">{{ product.title | escape }}</a>
-            </li>
-        {%- endcase -%}
+        {%- comment -%} For products: No need to show product title, hierarchy ends at containing collection {%- endcomment -%}
       {%- else -%}
         {%- case request.page_type -%}
           {%- when 'collection' -%}
@@ -263,17 +266,10 @@
               <a href="{{ collection.url }}" class="breadcrumb__link">{{ collection.title | escape }}</a>
             </li>
           {%- when 'product' -%}
+            {%- comment -%} For products without menu hierarchy, show only collection {%- endcomment -%}
             {%- if collection -%}
               <li class="breadcrumb__item">
                 <a href="{{ collection.url }}" class="breadcrumb__link">{{ collection.title | escape }}</a>
-              </li>
-              <li class="breadcrumb__separator" aria-hidden="true">></li>
-              <li class="breadcrumb__item">
-                <a href="{{ collection.url }}" class="breadcrumb__link">{{ product.title | escape }}</a>
-              </li>
-            {%- else -%}
-              <li class="breadcrumb__item">
-                <a href="{{ routes.root_url }}" class="breadcrumb__link">{{ product.title | escape }}</a>
               </li>
             {%- endif -%}
         {%- endcase -%}
