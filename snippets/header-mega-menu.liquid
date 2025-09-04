@@ -237,6 +237,10 @@
     border-bottom: 3px solid transparent; /* Individual menu underline */
     font-size: 15px;
     text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    box-sizing: border-box; /* Đảm bảo padding không ảnh hưởng vị trí underline */
   }
   
   .header__inline-menu .primary-nav__trigger:hover,
@@ -266,6 +270,10 @@
     display: block;
     font-size: 15px;
     text-transform: uppercase;
+    height: 100%;
+    box-sizing: border-box; /* Đảm bảo padding không ảnh hưởng vị trí underline */
+    display: flex;
+    align-items: center;
   }
   
   .header__inline-menu .primary-nav__link:hover {
@@ -273,6 +281,24 @@
     color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
     border-bottom-color: #ff6b35; /* Orange underline on individual link hover */
+  }
+  
+  /* Ensure all navigation items have consistent positioning and underline behavior */
+  .header__inline-menu .primary-nav__item {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    position: relative;
+  }
+  
+  /* Make sure all menu triggers and links align properly */
+  .header__inline-menu .primary-nav__trigger,
+  .header__inline-menu .primary-nav__link {
+    min-height: 60px; /* Match navbar height */
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
   }
   
   /* Remove any special styling for current page - all menus should behave the same */
