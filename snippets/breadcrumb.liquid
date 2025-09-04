@@ -209,13 +209,25 @@
           <li class="breadcrumb__item">
             {%- assign level_url = url_array[forloop.index0] | strip -%}
             
-            {%- if level_url == '#' -%}
-              {%- comment -%} Fallback URL mapping {%- endcomment -%}
+            {%- if level_url == '#' or level_url contains '#' -%}
+              {%- comment -%} Fallback URL mapping for invalid/placeholder URLs {%- endcomment -%}
               {%- assign collection_handle = level | handle -%}
               {%- if collections[collection_handle] -%}
                 <a href="{{ collections[collection_handle].url }}" class="breadcrumb__link">{{ level | escape }}</a>
               {%- else -%}
-                <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);">{{ level | escape }}</span>
+                {%- comment -%} Try alternative collection handles {%- endcomment -%}
+                {%- case level -%}
+                  {%- when 'Nội thất văn phòng' -%}
+                    {%- if collections['noi-that-van-phong'] -%}
+                      <a href="{{ collections['noi-that-van-phong'].url }}" class="breadcrumb__link">{{ level | escape }}</a>
+                    {%- elsif collections['van-phong'] -%}
+                      <a href="{{ collections['van-phong'].url }}" class="breadcrumb__link">{{ level | escape }}</a>
+                    {%- else -%}
+                      <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);">{{ level | escape }}</span>
+                    {%- endif -%}
+                  {%- else -%}
+                    <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);">{{ level | escape }}</span>
+                {%- endcase -%}
               {%- endif -%}
             {%- else -%}
               <a href="{{ level_url }}" class="breadcrumb__link">{{ level | escape }}</a>
