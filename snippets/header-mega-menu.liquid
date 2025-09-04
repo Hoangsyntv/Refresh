@@ -25,13 +25,10 @@
     transition: all 0.3s ease;
     width: 100%;
     border-top: 1px solid #f0f0f0;
-    border-bottom: 3px solid #f0f0f0; /* NAVBAR underline - will change to orange on hover */
+    border-bottom: 1px solid #f0f0f0; /* Navbar border (not the underline we want) */
   }
   
-  /* Change NAVBAR underline to orange when any menu is hovered */
-  .header__inline-menu:has(.mega-menu:hover) {
-    border-bottom-color: #ff6b35; /* Orange underline for entire navbar */
-  }
+  /* Remove navbar-wide underline change on hover */
   
   /* When sticky is active */
   .header__inline-menu.is-sticky {
@@ -166,14 +163,14 @@
   
   .header__inline-menu .mega-menu__panel {
     position: absolute;
-    top: calc(100% - 1px); /* Overlap slightly with the navbar border to create seamless connection */
+    top: 100%; /* Position directly below the menu item (including its underline) */
     left: 0;
     right: 0;
     transform: none;
     z-index: 250; /* Layer 3: Overlays - Above navbar but below sticky */
     background: #fff;
     border: none;
-    border-top: 1px solid #ff6b35; /* Match the orange underline color for seamless connection */
+    border-top: none;
     border-bottom: 1px solid #e5e7eb;
     border-radius: 0;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -189,7 +186,7 @@
   /* When menu is sticky, use higher z-index and fixed positioning */
   .header__inline-menu.is-sticky .mega-menu__panel {
     position: fixed;
-    top: calc(60px - 1px); /* Overlap with sticky navbar border */
+    top: 60px; /* Below sticky navbar height */
     z-index: 360; /* Above sticky navbar */
   }
   
@@ -211,17 +208,12 @@
     background: rgba(0, 0, 0, 0.02);
     color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
-    /* Navbar underline will change via :has() selector above */
+    border-bottom-color: #ff6b35; /* Orange underline on menu hover */
   }
   
   .header__inline-menu .mega-menu:hover .primary-nav__icon {
     transform: rotate(180deg);
     opacity: 1;
-  }
-  
-  /* Alternative fallback for browsers without :has() support */
-  .header__inline-menu .mega-menu:hover {
-    /* This will be handled by JavaScript fallback */
   }
   
   .header__inline-menu .mega-menu__labels {
@@ -242,7 +234,7 @@
     border: none;
     cursor: pointer;
     position: relative;
-    border-bottom: none; /* Remove individual menu underline */
+    border-bottom: 3px solid transparent; /* Individual menu underline */
     font-size: 15px;
     text-transform: uppercase;
   }
@@ -252,14 +244,14 @@
     background: rgba(0, 0, 0, 0.02);
     color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
-    /* No individual underline - navbar underline will change */
+    border-bottom-color: #ff6b35; /* Orange underline on individual menu hover */
   }
   
   .header__inline-menu .mega-menu[open] .primary-nav__trigger {
     background: rgba(0, 0, 0, 0.03);
     color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
-    /* No individual underline - navbar underline will change */
+    border-bottom-color: #ff6b35; /* Orange underline when menu is open */
   }
   
   .header__inline-menu .primary-nav__link {
@@ -270,7 +262,7 @@
     border-radius: 0;
     transition: all 0.3s ease;
     position: relative;
-    border-bottom: none; /* Remove individual link underline */
+    border-bottom: 3px solid transparent; /* Individual link underline */
     display: block;
     font-size: 15px;
     text-transform: uppercase;
@@ -280,7 +272,7 @@
     background: rgba(0, 0, 0, 0.02);
     color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
-    /* No individual underline - navbar underline will change */
+    border-bottom-color: #ff6b35; /* Orange underline on individual link hover */
   }
   
   .header__inline-menu .primary-nav__icon {
@@ -724,7 +716,6 @@ document.addEventListener('DOMContentLoaded', function() {
   megaMenus.forEach(menu => {
     const trigger = menu.querySelector('.primary-nav__trigger');
     const panel = menu.querySelector('.mega-menu__panel');
-    const navbar = document.querySelector('.header__inline-menu');
     let hoverTimeout;
     
     if (trigger && panel) {
@@ -746,11 +737,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Open this mega menu
         menu.setAttribute('open', '');
         
-        // Change navbar underline color (fallback for browsers without :has())
-        if (navbar) {
-          navbar.style.borderBottomColor = '#ff6b35';
-        }
-        
         // Update position
         setTimeout(() => {
           updateStickyPosition();
@@ -761,12 +747,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Close mega menu quickly when mouse leaves
         hoverTimeout = setTimeout(() => {
           menu.removeAttribute('open');
-          
-          // Reset navbar underline color if no menus are hovered
-          const hoveredMenus = document.querySelectorAll('.mega-menu:hover');
-          if (hoveredMenus.length === 0 && navbar) {
-            navbar.style.borderBottomColor = '#f0f0f0';
-          }
         }, 150); // Fast close - 150ms delay
       });
       
