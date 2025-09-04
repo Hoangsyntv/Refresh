@@ -281,10 +281,12 @@
         
         {%- for level in menu_levels -%}
           <li class="breadcrumb__item">
-            {%- assign level_url = url_array[forloop.index0] -%}
+            {%- assign level_url_raw = url_array[forloop.index0] -%}
+            {%- assign level_url = level_url_raw | strip -%}
             
-            <!-- 🎯 DIRECT MAPPING: Level {{ forloop.index }} "{{ level }}" → "{{ level_url }}" -->
-            <!-- 🔬 CONDITIONS: level_url='{{ level_url }}' | blank={{ level_url == blank }} | hash={{ level_url == '#' }} -->
+            <!-- 🎯 DIRECT MAPPING: Level {{ forloop.index }} "{{ level }}" → RAW: "{{ level_url_raw }}" CLEAN: "{{ level_url }}" -->
+            <!-- 🔬 CONDITIONS: level_url='{{ level_url }}' | blank={{ level_url == blank }} | hash={{ level_url == '#' }} | length={{ level_url.size }} -->
+            <!-- 🧪 EXACT CHECK: not_blank={{ level_url != blank }} | not_hash={{ level_url != '#' }} | combined={{ level_url != blank and level_url != '#' }} -->
             
             {%- comment -%} Render breadcrumb item {%- endcomment -%}
             {%- comment -%} Check if this level represents the current page {%- endcomment -%}
