@@ -143,16 +143,20 @@
     {%- for ancestor in ancestors reversed -%}
       → {{ ancestor.title }}
     {%- endfor -%}
-    {%- if crumb_collection -%}
-      → {{ crumb_collection.title }}
-    {%- endif -%}
     {%- case request.page_type -%}
       {%- when 'product' -%}
+        {%- if crumb_collection -%}
+          → {{ crumb_collection.title }}
+        {%- endif -%}
         → {{ product.title }}
       {%- when 'collection' -%}
         → {{ collection.title }}
       {%- when 'page' -%}
         → {{ page.title }}
+      {%- else -%}
+        {%- if crumb_collection -%}
+          → {{ crumb_collection.title }}
+        {%- endif -%}
     {%- endcase -%}
   </div>
 
