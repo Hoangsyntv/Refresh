@@ -199,8 +199,12 @@
           <li class="breadcrumb__item">
             {%- assign level_url = url_array[forloop.index0] | strip -%}
             
+            <!-- Debug level URL -->
+            <small style="font-size: 8px; color: blue;">{{ level }}: [{{ level_url }}]</small><br>
+            
             {%- if level_url == '#' or level_url contains '#' -%}
               {%- comment -%} Fallback URL mapping for invalid/placeholder URLs {%- endcomment -%}
+              <small style="color: red;">FALLBACK</small><br>
               {%- assign collection_handle = level | handle -%}
               {%- if collections[collection_handle] -%}
                 <a href="{{ collections[collection_handle].url }}" class="breadcrumb__link">{{ level | escape }}</a>
@@ -220,6 +224,7 @@
                 {%- endcase -%}
               {%- endif -%}
             {%- else -%}
+              <small style="color: green;">DIRECT LINK</small><br>
               <a href="{{ level_url }}" class="breadcrumb__link">{{ level | escape }}</a>
             {%- endif -%}
           </li>
