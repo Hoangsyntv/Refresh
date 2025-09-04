@@ -128,29 +128,178 @@
   }
 </style>
 
+{%- liquid
+  comment 'Dynamic breadcrumb with working links using CSS classes'
+  endcomment
+  assign menu_handle = 'main-menu'
+  assign main_menu = linklists[menu_handle]
+  assign menu_path = blank
+
+  comment 'Build menu path for products and collections'
+  endcomment
+  if request.page_type == 'product' and product and main_menu
+    for link in main_menu.links
+      if link.url == collection.url or link.title contains 'Nội thất văn phòng'
+        for childlink in link.links
+          if childlink.url == collection.url
+            assign menu_path = link.title | append: '|' | append: childlink.title
+            break
+          endif
+          if childlink.links != blank
+            for grandchildlink in childlink.links
+              if grandchildlink.url == collection.url
+                assign menu_path = link.title | append: '|' | append: childlink.title | append: '|' | append: grandchildlink.title
+                break
+              endif
+            endfor
+            if menu_path != blank
+              break
+            endif
+          endif
+        endfor
+        if menu_path != blank
+          break
+        endif
+      endif
+    endfor
+  elsif request.page_type == 'collection' and collection and main_menu
+    for link in main_menu.links
+      if link.url == collection.url
+        assign menu_path = link.title
+        break
+      endif
+      if link.links != blank
+        for childlink in link.links
+          if childlink.url == collection.url
+            assign menu_path = link.title | append: '|' | append: childlink.title
+            break
+          endif
+          if childlink.links != blank
+            for grandchildlink in childlink.links
+              if grandchildlink.url == collection.url
+                assign menu_path = link.title | append: '|' | append: childlink.title | append: '|' | append: grandchildlink.title
+                break
+              endif
+            endfor
+            if menu_path != blank
+              break
+            endif
+          endif
+        endfor
+        if menu_path != blank
+          break
+        endif
+      endif
+    endfor
+  endif
+  
+  assign menu_levels = menu_path | split: '|'
+-%}
+
+<style>
+  .breadcrumb-link {
+    color: #0066cc !important;
+    text-decoration: underline !important;
+    cursor: pointer !important;
+    transition: color 0.2s ease !important;
+  }
+  .breadcrumb-link:hover {
+    color: #004499 !important;
+  }
+</style>
+
+<script>
+  function breadcrumbNavigate(url) {
+    window.location.href = url;
+  }
+</script>
+
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol class="breadcrumb__list">
-    <!-- SUPER SIMPLE: Just add onclick to spans -->
     <li class="breadcrumb__item">
-      <span onclick="window.location.href='/'" style="color: blue; text-decoration: underline; cursor: pointer;">
+      <span class="breadcrumb-link" onclick="breadcrumbNavigate('{{ routes.root_url }}')">
         🏠 Trang chủ
       </span>
     </li>
-    <li class="breadcrumb__separator" aria-hidden="true">></li>
-    <li class="breadcrumb__item">
-      <span onclick="window.location.href='/collections/noi-that-van-phong'" style="color: blue; text-decoration: underline; cursor: pointer;">
-        Nội thất văn phòng
-      </span>
-    </li>
-    <li class="breadcrumb__separator" aria-hidden="true">></li>
-    <li class="breadcrumb__item">
-      <span onclick="window.location.href='/collections/ban-van-phong'" style="color: blue; text-decoration: underline; cursor: pointer;">
-        Bàn văn phòng
-      </span>
-    </li>
-    <li class="breadcrumb__separator" aria-hidden="true">></li>
-    <li class="breadcrumb__item">
-      <span style="color: black; font-weight: bold;">Bàn làm việc</span>
-    </li>
+
+    {%- if request.page_type != 'index' -%}
+      <li class="breadcrumb__separator" aria-hidden="true">></li>
+      
+      {%- if menu_path != blank and menu_levels.size > 0 -%}
+        {%- for level in menu_levels -%}
+          {%- assign found_url = blank -%}
+          {%- for link in main_menu.links -%}
+            {%- if link.title == level -%}
+              {%- assign found_url = link.url -%}
+              {%- break -%}
+            {%- endif -%}
+            {%- if link.links != blank -%}
+              {%- for childlink in link.links -%}
+                {%- if childlink.title == level -%}
+                  {%- assign found_url = childlink.url -%}
+                  {%- break -%}
+                {%- endif -%}
+                {%- if childlink.links != blank -%}
+                  {%- for grandchildlink in childlink.links -%}
+                    {%- if grandchildlink.title == level -%}
+                      {%- assign found_url = grandchildlink.url -%}
+                      {%- break -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endif -%}
+                {%- if found_url != blank -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+            {%- if found_url != blank -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+          
+          <li class="breadcrumb__item">
+            {%- unless forloop.last -%}
+              <span class="breadcrumb-link" onclick="breadcrumbNavigate('{{ found_url }}')">
+                {{ level | escape }}
+              </span>
+            {%- else -%}
+              <span class="breadcrumb__current" aria-current="page">{{ level | escape }}</span>
+            {%- endunless -%}
+          </li>
+          {%- unless forloop.last -%}
+            <li class="breadcrumb__separator" aria-hidden="true">></li>
+          {%- endunless -%}
+        {%- endfor -%}
+        
+        {%- case request.page_type -%}
+          {%- when 'product' -%}
+            <li class="breadcrumb__separator" aria-hidden="true">></li>
+            <li class="breadcrumb__item">
+              <span class="breadcrumb__current" aria-current="page">{{ product.title | escape }}</span>
+            </li>
+        {%- endcase -%}
+      {%- else -%}
+        {%- case request.page_type -%}
+          {%- when 'collection' -%}
+            <li class="breadcrumb__item">
+              <span class="breadcrumb__current" aria-current="page">{{ collection.title | escape }}</span>
+            </li>
+          {%- when 'product' -%}
+            {%- if collection -%}
+              <li class="breadcrumb__item">
+                <span class="breadcrumb-link" onclick="breadcrumbNavigate('{{ collection.url }}')">{{ collection.title | escape }}</span>
+              </li>
+              <li class="breadcrumb__separator" aria-hidden="true">></li>
+              <li class="breadcrumb__item">
+                <span class="breadcrumb__current" aria-current="page">{{ product.title | escape }}</span>
+              </li>
+            {%- else -%}
+              <li class="breadcrumb__item">
+                <span class="breadcrumb__current" aria-current="page">{{ product.title | escape }}</span>
+              </li>
+            {%- endif -%}
+        {%- endcase -%}
+      {%- endif -%}
+    {%- endif -%}
   </ol>
 </nav>
