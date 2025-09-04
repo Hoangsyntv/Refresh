@@ -231,61 +231,53 @@
       {%- if menu_path != blank and menu_levels.size > 0 -%}
         
         {%- comment -%} Build breadcrumb with proper URLs for each level {%- endcomment -%}
+        {%- comment -%} PRE-BUILD URL MAPPING for all levels {%- endcomment -%}
+        {%- assign level_urls = '' -%}
+        {%- for level in menu_levels -%}
+          {%- assign found_url = blank -%}
+          {%- for link in main_menu.links -%}
+            {%- if link.title == level -%}
+              {%- assign found_url = link.url -%}
+              {%- break -%}
+            {%- endif -%}
+            {%- if link.links != blank -%}
+              {%- for childlink in link.links -%}
+                {%- if childlink.title == level -%}
+                  {%- assign found_url = childlink.url -%}
+                  {%- break -%}
+                {%- endif -%}
+                {%- if childlink.links != blank -%}
+                  {%- for grandchildlink in childlink.links -%}
+                    {%- if grandchildlink.title == level -%}
+                      {%- assign found_url = grandchildlink.url -%}
+                      {%- break -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endif -%}
+                {%- if found_url != blank -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+            {%- if found_url != blank -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if forloop.first -%}
+            {%- assign level_urls = found_url | default: '#' -%}
+          {%- else -%}
+            {%- assign level_urls = level_urls | append: '|' | append: found_url | default: '#' -%}
+          {%- endif -%}
+        {%- endfor -%}
+        
+        <!-- �️ URL MAPPING: {{ level_urls }} -->
+        {%- assign url_array = level_urls | split: '|' -%}
+        
         {%- for level in menu_levels -%}
           <li class="breadcrumb__item">
-            {%- assign level_url = blank -%}
-            {%- assign level_index = forloop.index0 -%}
+            {%- assign level_url = url_array[forloop.index0] -%}
             
-            {%- comment -%} DEBUG: Show search process {%- endcomment -%}
-            {%- comment -%} Try to find URL by searching through entire menu structure {%- endcomment -%}
-            {%- assign search_debug = 'Searching for: ' | append: level | append: ' | ' -%}
-            {%- for link in main_menu.links -%}
-              {%- comment -%} Check if this is the level we're looking for {%- endcomment -%}
-              {%- if link.title == level -%}
-                {%- assign level_url = link.url -%}
-                {%- assign search_debug = search_debug | append: 'Found at top level: ' | append: link.title | append: ' → ' | append: link.url | append: ' | ' -%}
-                {%- break -%}
-              {%- endif -%}
-              
-              {%- comment -%} Search in children {%- endcomment -%}
-              {%- if link.links != blank -%}
-                {%- for childlink in link.links -%}
-                  {%- if childlink.title == level -%}
-                    {%- assign level_url = childlink.url -%}
-                    {%- assign search_debug = search_debug | append: 'Found in ' | append: link.title | append: ': ' | append: childlink.title | append: ' → ' | append: childlink.url | append: ' | ' -%}
-                    {%- break -%}
-                  {%- endif -%}
-                  
-                  {%- comment -%} Search in grandchildren {%- endcomment -%}
-                  {%- if childlink.links != blank -%}
-                    {%- for grandchildlink in childlink.links -%}
-                      {%- if grandchildlink.title == level -%}
-                        {%- assign level_url = grandchildlink.url -%}
-                        {%- assign search_debug = search_debug | append: 'Found in ' | append: link.title | append: '→' | append: childlink.title | append: ': ' | append: grandchildlink.title | append: ' → ' | append: grandchildlink.url | append: ' | ' -%}
-                        {%- break -%}
-                      {%- endif -%}
-                    {%- endfor -%}
-                  {%- endif -%}
-                  {%- if level_url != blank -%}
-                    {%- break -%}
-                  {%- endif -%}
-                {%- endfor -%}
-              {%- endif -%}
-              {%- if level_url != blank -%}
-                {%- break -%}
-              {%- endif -%}
-            {%- endfor -%}
-            
-            {%- if level_url == blank -%}
-              {%- assign search_debug = search_debug | append: 'NOT FOUND!' -%}
-            {%- endif -%}
-            
-            {%- comment -%} VERIFY: Assignment persistence check {%- endcomment -%}
-            <!-- 🔬 ASSIGNMENT CHECK: level_url = "{{ level_url | default: 'BLANK_AFTER_SEARCH' }}" for "{{ level }}" -->
-            
-            {%- comment -%} DEBUG: Show what URL was found {%- endcomment -%}
-            <!-- 🔍 LEVEL {{ forloop.index }}: "{{ level }}" → URL: "{{ level_url | default: 'BLANK' }}" -->
-            <!-- 📊 PAGE TYPE: {{ request.page_type }} | PRODUCT: {{ product.title | default: 'N/A' }} | COLLECTION: {{ collection.title | default: 'N/A' }} -->
+            <!-- 🎯 DIRECT MAPPING: Level {{ forloop.index }} "{{ level }}" → "{{ level_url }}" -->
             
             {%- comment -%} Render breadcrumb item {%- endcomment -%}
             {%- comment -%} Check if this level represents the current page {%- endcomment -%}
