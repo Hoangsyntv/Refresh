@@ -1,10 +1,12 @@
 {%- liquid
   comment 'Breadcrumb navigation with working hierarchy and URL mapping'
+  endcomment
   assign menu_handle = 'main-menu'
   assign main_menu = linklists[menu_handle]
   assign menu_path = blank
 
   comment 'Build menu path for products and collections'
+  endcomment
   if request.page_type == 'product' and product and main_menu
     for link in main_menu.links
       if link.url == collection.url or link.title contains 'Nội thất văn phòng'
@@ -32,6 +34,7 @@
     endfor
   elsif request.page_type == 'collection' and collection and main_menu
     comment 'Find collection in menu hierarchy'
+    endcomment
     for link in main_menu.links
       if link.url == collection.url
         assign menu_path = link.title
