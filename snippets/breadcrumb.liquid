@@ -281,7 +281,7 @@
             {%- endif -%}
             
             {%- comment -%} DEBUG: Show what URL was found {%- endcomment -%}
-            {%- comment -%} {{ search_debug }} {%- endcomment -%}
+            <!-- 🔍 LEVEL {{ forloop.index }}: "{{ level }}" → URL: "{{ level_url | default: 'BLANK' }}" -->
             
             {%- comment -%} Render breadcrumb item {%- endcomment -%}
             {%- if forloop.last -%}
@@ -289,7 +289,8 @@
               <span class="breadcrumb__current">{{ level | escape }}</span>
             {%- elsif level_url != blank and level_url != '#' -%}
               {%- comment -%} Valid URL found, create link {%- endcomment -%}
-              <a href="{{ level_url }}" class="breadcrumb__link">{{ level | escape }}</a>
+              <!-- ✅ VALID URL: {{ level_url }} -->
+              <a href="{{ level_url }}" class="breadcrumb__link">{{ level | escape }} 🔗</a>
             {%- elsif level_url == '#' -%}
               {%- comment -%} Placeholder link - try to find collection by handle {%- endcomment -%}
               {%- assign collection_handle = level | handle -%}
@@ -324,6 +325,7 @@
               {%- endif -%}
             {%- else -%}
               {%- comment -%} No URL found, display as text only with debug {%- endcomment -%}
+              <!-- ❌ NO URL: "{{ level }}" → level_url = "{{ level_url | default: 'BLANK' }}" -->
               <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);" title="{{ search_debug }}">{{ level | escape }} ❌</span>
             {%- endif -%}
           </li>
