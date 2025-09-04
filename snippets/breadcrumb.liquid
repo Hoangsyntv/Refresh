@@ -2,15 +2,26 @@
   comment 'Breadcrumb navigation following proper spec'
   endcomment
   
-  comment '0) Get main menu for hierarchy detection'
+  comment '0) Get main menu for hierarchy detection - try multiple menu handles'
   endcomment
   assign main_menu = blank
+  assign menu_handle_used = 'none'
+  
   if linklists['main-menu'] != blank
     assign main_menu = linklists['main-menu']
+    assign menu_handle_used = 'main-menu'
   elsif linklists['header'] != blank  
     assign main_menu = linklists['header']
+    assign menu_handle_used = 'header'
   elsif linklists['primary'] != blank
     assign main_menu = linklists['primary']
+    assign menu_handle_used = 'primary'
+  elsif linklists['navigation'] != blank
+    assign main_menu = linklists['navigation']
+    assign menu_handle_used = 'navigation'
+  elsif linklists['main'] != blank
+    assign main_menu = linklists['main']
+    assign menu_handle_used = 'main'
   endif
   
   comment '1) Determine crumb_collection with priority order'
@@ -204,6 +215,7 @@
     
     <strong>🍔 MENU HIERARCHY:</strong><br>
     Menu Available: {{ main_menu != blank }}<br>
+    Menu Handle Used: {{ menu_handle_used }}<br>
     Target Collection: {{ target_collection.title | default: 'None' }}<br>
     Target Collection URL: {{ target_collection.url | default: 'None' }}<br>
     Menu Found: {{ menu_found | default: 'false' }}<br>
@@ -215,15 +227,22 @@
     {%- endfor -%}<br>
     
     <strong>🔍 MENU STRUCTURE DEBUG:</strong><br>
+    <strong>ALL AVAILABLE MENUS:</strong><br>
+    {%- for linklist in linklists -%}
+      <strong>{{ linklist[0] }}</strong>: {{ linklist[1].handle }} ({{ linklist[1].links.size }} links)<br>
+    {%- endfor -%}
+    
     {%- if main_menu -%}
-      {%- for link in main_menu.links limit: 3 -%}
-        <strong>L1:</strong> {{ link.title }} ({{ link.url }})<br>
+      <strong>CURRENT MENU ({{ main_menu.handle }}):</strong><br>
+      {%- for link in main_menu.links limit: 5 -%}
+        <strong>L1:</strong> {{ link.title }} ({{ link.url }})
+        {%- if link.url == target_collection.url -%} <span style="color: red;">← MATCH!</span>{%- endif -%}<br>
         {%- if link.links.size > 0 -%}
-          {%- for childlink in link.links limit: 3 -%}
+          {%- for childlink in link.links limit: 5 -%}
             &nbsp;&nbsp;<strong>L2:</strong> {{ childlink.title }} ({{ childlink.url }})
             {%- if childlink.url == target_collection.url -%} <span style="color: red;">← MATCH!</span>{%- endif -%}<br>
             {%- if childlink.links.size > 0 -%}
-              {%- for grandchildlink in childlink.links limit: 3 -%}
+              {%- for grandchildlink in childlink.links limit: 5 -%}
                 &nbsp;&nbsp;&nbsp;&nbsp;<strong>L3:</strong> {{ grandchildlink.title }} ({{ grandchildlink.url }})
                 {%- if grandchildlink.url == target_collection.url -%} <span style="color: red;">← MATCH!</span>{%- endif -%}<br>
               {%- endfor -%}
