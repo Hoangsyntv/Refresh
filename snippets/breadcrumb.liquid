@@ -8,7 +8,7 @@
   comment 'Build menu path for products and collections'
   endcomment
   if request.page_type == 'product' and product and main_menu
-    comment 'Try to find collection - first from current context, then from product collections'
+    comment 'Get target collection for hierarchy detection'
     endcomment
     assign target_collection = collection
     if target_collection == blank and product.collections.size > 0
@@ -16,24 +16,59 @@
     endif
     
     if target_collection
-      comment 'Find collection hierarchy in menu'
+      comment 'Manual mapping for known collection hierarchies'
       endcomment
-      for link in main_menu.links
-        if link.url == target_collection.url
-          assign menu_path = link.title
-          break
-        endif
-        if link.links != blank
-          for childlink in link.links
-            if childlink.url == target_collection.url
-              assign menu_path = link.title | append: '|' | append: childlink.title
+      case target_collection.handle
+        when 'ban-lam-viec'
+          assign menu_path = 'Nội thất văn phòng|Bàn văn phòng|Bàn làm việc'
+        when 'ban-giam-doc'
+          assign menu_path = 'Nội thất văn phòng|Bàn văn phòng|Bàn giám đốc'
+        when 'ban-chan-sat'
+          assign menu_path = 'Nội thất văn phòng|Bàn văn phòng|Bàn chân sắt'
+        when 'ban-may-tinh'
+          assign menu_path = 'Nội thất văn phòng|Bàn văn phòng|Bàn máy tính'
+        when 'ban-van-phong'
+          assign menu_path = 'Nội thất văn phòng|Bàn văn phòng'
+        when 'ghe-giam-doc'
+          assign menu_path = 'Nội thất văn phòng|Ghế văn phòng|Ghế giám đốc'
+        when 'ghe-xoay-van-phong'
+          assign menu_path = 'Nội thất văn phòng|Ghế văn phòng|Ghế xoay văn phòng'
+        when 'ghe-chan-quy'
+          assign menu_path = 'Nội thất văn phòng|Ghế văn phòng|Ghế chân quỳ'
+        when 'ghe-van-phong'
+          assign menu_path = 'Nội thất văn phòng|Ghế văn phòng'
+        when 'tu-ho-so-giam-doc'
+          assign menu_path = 'Nội thất văn phòng|Tủ văn phòng|Tủ hồ sơ giám đốc'
+        when 'tu-tai-lieu'
+          assign menu_path = 'Nội thất văn phòng|Tủ văn phòng|Tủ tài liệu'
+        when 'tu-van-phong'
+          assign menu_path = 'Nội thất văn phòng|Tủ văn phòng'
+        when 'noi-that-van-phong'
+          assign menu_path = 'Nội thất văn phòng'
+        else
+          comment 'Fallback: Try dynamic detection'
+          endcomment
+          for link in main_menu.links
+            if link.url == target_collection.url
+              assign menu_path = link.title
               break
             endif
-            if childlink.links != blank
-              for grandchildlink in childlink.links
-                if grandchildlink.url == target_collection.url
-                  assign menu_path = link.title | append: '|' | append: childlink.title | append: '|' | append: grandchildlink.title
+            if link.links != blank
+              for childlink in link.links
+                if childlink.url == target_collection.url
+                  assign menu_path = link.title | append: '|' | append: childlink.title
                   break
+                endif
+                if childlink.links != blank
+                  for grandchildlink in childlink.links
+                    if grandchildlink.url == target_collection.url
+                      assign menu_path = link.title | append: '|' | append: childlink.title | append: '|' | append: grandchildlink.title
+                      break
+                    endif
+                  endfor
+                  if menu_path != blank
+                    break
+                  endif
                 endif
               endfor
               if menu_path != blank
@@ -41,11 +76,7 @@
               endif
             endif
           endfor
-          if menu_path != blank
-            break
-          endif
-        endif
-      endfor
+      endcase
     endif
   elsif request.page_type == 'collection' and collection and main_menu
     comment 'Find collection in menu hierarchy'
