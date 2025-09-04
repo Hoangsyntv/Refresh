@@ -220,15 +220,6 @@
     position: fixed !important; /* Force fixed positioning */
   }
   
-  /* BREADCRUMB ALLOWED TO EXIST */
-  .breadcrumb,
-  .breadcrumb *,
-  nav.breadcrumb,
-  [class*="breadcrumb"] {
-    z-index: 1000 !important; /* POSITIVE Z-INDEX FOR BREADCRUMB */
-    position: relative !important;
-  }
-  
   /* GLOBAL MEGA MENU SUPREMACY 😂 */
   .mega-menu__panel,
   [class*="mega-menu"] .mega-menu__panel,
@@ -680,13 +671,6 @@ document.addEventListener('DOMContentLoaded', function() {
       panel.style.zIndex = '2147483647';
       console.log('NUCLEAR Z-INDEX FORCED ON LOAD:', panel); // Debug
     });
-    
-    // Allow breadcrumb to exist
-    const breadcrumbs = document.querySelectorAll('.breadcrumb');
-    breadcrumbs.forEach(breadcrumb => {
-      breadcrumb.style.zIndex = '1000';
-      console.log('BREADCRUMB ALLOWED TO LIVE:', breadcrumb); // Debug
-    });
   }
   
   // Force nuclear z-index immediately
@@ -824,12 +808,6 @@ document.addEventListener('DOMContentLoaded', function() {
           // FORCE NUCLEAR Z-INDEX EVERY TIME 😂
           panel.style.zIndex = '2147483647';
           
-          // Also destroy breadcrumb every hover
-          const breadcrumbs = document.querySelectorAll('.breadcrumb');
-          breadcrumbs.forEach(breadcrumb => {
-            breadcrumb.style.zIndex = '1';
-          });
-          
           // EMERGENCY FIX: Calculate and set position dynamically - CENTERED
           const navbar = document.querySelector('.header__inline-menu');
           const navbarRect = navbar.getBoundingClientRect();
@@ -948,14 +926,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (panel.style.zIndex !== '2147483647') {
               panel.style.zIndex = '2147483647';
               console.log('NUCLEAR Z-INDEX RE-APPLIED DUE TO DOM CHANGE:', panel);
-            }
-          });
-          
-          const breadcrumbs = document.querySelectorAll('.breadcrumb');
-          breadcrumbs.forEach(breadcrumb => {
-            if (breadcrumb.style.zIndex !== '1000') {
-              breadcrumb.style.zIndex = '1000';
-              console.log('BREADCRUMB ALLOWED TO LIVE AGAIN DUE TO DOM CHANGE:', breadcrumb);
             }
           });
         }, 50);
