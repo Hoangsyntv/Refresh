@@ -197,8 +197,21 @@
               Level: {{ level }} | URL: {{ level_url }} | Index: {{ forloop.index0 }} | URL_LENGTH: {{ level_url.size }}
             </div>
             
-            {%- comment -%} NUCLEAR: ALWAYS CREATE LINKS {%- endcomment -%}
-            <a href="{{ level_url }}" class="breadcrumb__link" style="color: red !important; text-decoration: underline !important; font-weight: bold !important; background: lime !important;">{{ level | escape }}</a>
+            {%- comment -%} MEGA NUCLEAR: HARDCORE LINK WITH ALL POSSIBLE OVERRIDES {%- endcomment -%}
+            <a href="{{ level_url }}" 
+               class="FORCE-LINK" 
+               style="color: red !important; 
+                      text-decoration: underline !important; 
+                      font-weight: bold !important; 
+                      background: yellow !important;
+                      display: inline !important;
+                      pointer-events: auto !important;
+                      cursor: pointer !important;
+                      z-index: 999999 !important;
+                      position: relative !important;"
+               onclick="window.location.href='{{ level_url }}'; return true;">
+              <strong style="color: blue !important;">{{ level | escape }}</strong>
+            </a>
           </li>
           {%- unless forloop.last -%}
             <li class="breadcrumb__separator" aria-hidden="true">></li>
