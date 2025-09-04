@@ -282,6 +282,7 @@
             
             {%- comment -%} DEBUG: Show what URL was found {%- endcomment -%}
             <!-- 🔍 LEVEL {{ forloop.index }}: "{{ level }}" → URL: "{{ level_url | default: 'BLANK' }}" -->
+            <!-- 📊 PAGE TYPE: {{ request.page_type }} | PRODUCT: {{ product.title | default: 'N/A' }} | COLLECTION: {{ collection.title | default: 'N/A' }} -->
             
             {%- comment -%} Render breadcrumb item {%- endcomment -%}
             {%- comment -%} Check if this level represents the current page {%- endcomment -%}
@@ -292,8 +293,11 @@
               {%- assign is_current_page = true -%}
             {%- endif -%}
             
+            <!-- 🧪 CURRENT PAGE CHECK: forloop.last={{ forloop.last }} | is_current_page={{ is_current_page }} | level="{{ level }}" -->
+            
             {%- if is_current_page -%}
               {%- comment -%} This level is the actual current page, not clickable {%- endcomment -%}
+              <!-- 📌 CURRENT PAGE: No link for {{ level }} -->
               <span class="breadcrumb__current">{{ level | escape }}</span>
             {%- elsif level_url != blank and level_url != '#' -%}
               {%- comment -%} Valid URL found, create link {%- endcomment -%}
