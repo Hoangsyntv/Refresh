@@ -66,7 +66,10 @@
   endif
   
   assign menu_levels = menu_path | split: '|'
--%}
+  
+  comment 'Initialize level_urls for URL mapping'
+  endcomment
+  assign level_urls = ''
 -%}
 
 <style>
@@ -143,8 +146,7 @@
       <li class="breadcrumb__separator" aria-hidden="true">></li>
       
       {%- if menu_path != blank and menu_levels.size > 0 -%}
-        {%- comment -%} Pre-build URL mapping {%- endcomment -%}
-        {%- assign level_urls = '' -%}
+        {%- comment -%} Build URL mapping using existing level_urls variable {%- endcomment -%}
         {%- for level in menu_levels -%}
           {%- assign found_url = blank -%}
           {%- for link in main_menu.links -%}
