@@ -184,6 +184,8 @@
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     transition: all 0.3s ease;
+    /* Fix positioning to prevent layout issues */
+    margin-left: calc(-50vw + 50%);
   }
   
   /* When menu is sticky, use higher z-index and fixed positioning */
@@ -225,6 +227,15 @@
   
   .header__inline-menu .mega-menu__content {
     width: 100%;
+  }
+  
+  /* Mega menu container styling */
+  .header__inline-menu .mega-menu__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    gap: 40px;
   }
   
   .header__inline-menu .primary-nav__trigger {
@@ -516,13 +527,18 @@
     }
   }
   
-  /* Ensure mega menu is always centered on larger screens */
+  /* Ensure mega menu is properly positioned on larger screens */
   @media (min-width: 1025px) {
     .header__inline-menu .mega-menu__panel {
-      left: 50%;
-      transform: translateX(-50%);
-      width: max-content;
-      max-width: min(1200px, 90vw);
+      /* Keep full width but center the content inside */
+      width: 100vw;
+      margin-left: calc(-50vw + 50%);
+    }
+    
+    .header__inline-menu .mega-menu__container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
     }
   }
 </style>
@@ -563,7 +579,7 @@
                     role="menu"
                     aria-labelledby="HeaderMenu-{{ link.handle }}"
                   >
-                    <div class="mega-menu__container" style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;gap:40px;">
+                    <div class="mega-menu__container">
                       <!-- Menu Content with Category Titles -->
                       <div class="mega-menu__content" style="display:flex;gap:32px;flex:1;">
                         {%- for childlink in link.links -%}
