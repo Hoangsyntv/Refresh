@@ -170,32 +170,14 @@
     Menu: {{ menu_handle | default: 'None' }} | 
     Found: {{ main_menu.title | default: 'None' }} | 
     Path: {{ menu_path | default: 'None' }}<br>
-    <strong>Menu Links:</strong>
-    {%- for link in main_menu.links limit: 3 -%}
+    <strong>All Menu Links:</strong>
+    {%- for link in main_menu.links -%}
       {{ link.title }}
       {%- if link.links.size > 0 -%}
         ({{ link.links.size }} children)
       {%- endif -%}
       {% unless forloop.last %} | {% endunless %}
-    {%- endfor -%}<br>
-    
-    {%- comment -%} Debug ALL menu structure {%- endcomment -%}
-    <strong>Full Menu Structure:</strong><br>
-    {%- for link in main_menu.links -%}
-      <strong>{{ link.title }}</strong> ({{ link.url }})
-      {%- if link.links.size > 0 -%}
-        <br>&nbsp;&nbsp;Children: 
-        {%- for childlink in link.links limit: 3 -%}
-          {{ childlink.title }}{% unless forloop.last %} | {% endunless %}
-        {%- endfor -%}
-        {%- if link.links.size > 3 %} + {{ link.links.size | minus: 3 }} more{% endif -%}
-      {%- else -%}
-        (no children)
-      {%- endif -%}
-      <br>
     {%- endfor -%}
-    
-    <strong>Looking for:</strong> {{ menu_path | split: '|' | join: ' → ' }}
   </div>
 
   <ol class="breadcrumb__list">
