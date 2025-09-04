@@ -275,6 +275,16 @@
     border-bottom-color: #ff6b35; /* Orange underline on individual link hover */
   }
   
+  /* Remove any special styling for current page - all menus should behave the same */
+  .header__inline-menu .primary-nav__link[aria-current="page"] {
+    border-bottom-color: transparent; /* No permanent underline for current page */
+  }
+  
+  /* Current page only shows orange underline on hover, like other menus */
+  .header__inline-menu .primary-nav__link[aria-current="page"]:hover {
+    border-bottom-color: #ff6b35;
+  }
+  
   .header__inline-menu .primary-nav__icon {
     transition: transform 0.3s ease;
     width: 12px;
@@ -566,9 +576,11 @@
                 <span class="primary-nav__text">{{- link.title | escape -}}</span>
               </a>
             {%- endif -%}
+            {%- comment -%}
             {%- if link.current %}
               <span class="primary-nav__active" style="position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(0,0,0,0.8);"></span>
             {%- endif -%}
+            {%- endcomment -%}
           </li>
         {%- endfor -%}
       </ul>
