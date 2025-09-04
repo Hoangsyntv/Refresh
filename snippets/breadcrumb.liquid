@@ -130,17 +130,23 @@
 
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol class="breadcrumb__list">
-    <!-- ULTIMATE TEST: Raw HTML without any Liquid logic -->
+    <!-- SIMPLE: Use buttons with onclick instead of <a> tags -->
     <li class="breadcrumb__item">
-      <a href="/" style="color: red; text-decoration: underline; background: yellow; padding: 4px; border: 2px solid blue;">🏠 Trang chủ</a>
+      <button type="button" onclick="window.location.href='/'" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer; font: inherit;">
+        🏠 Trang chủ
+      </button>
     </li>
     <li class="breadcrumb__separator" aria-hidden="true">></li>
     <li class="breadcrumb__item">
-      <a href="/collections/noi-that-van-phong" style="color: red; text-decoration: underline; background: yellow; padding: 4px; border: 2px solid blue;">Nội thất văn phòng</a>
+      <button type="button" onclick="window.location.href='/collections/noi-that-van-phong'" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer; font: inherit;">
+        Nội thất văn phòng
+      </button>
     </li>
     <li class="breadcrumb__separator" aria-hidden="true">></li>
     <li class="breadcrumb__item">
-      <a href="/collections/ban-van-phong" style="color: red; text-decoration: underline; background: yellow; padding: 4px; border: 2px solid blue;">Bàn văn phòng</a>
+      <button type="button" onclick="window.location.href='/collections/ban-van-phong'" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer; font: inherit;">
+        Bàn văn phòng
+      </button>
     </li>
     <li class="breadcrumb__separator" aria-hidden="true">></li>
     <li class="breadcrumb__item">
