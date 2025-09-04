@@ -205,6 +205,7 @@
     <strong>🍔 MENU HIERARCHY:</strong><br>
     Menu Available: {{ main_menu != blank }}<br>
     Target Collection: {{ target_collection.title | default: 'None' }}<br>
+    Target Collection URL: {{ target_collection.url | default: 'None' }}<br>
     Menu Found: {{ menu_found | default: 'false' }}<br>
     Menu Ancestors: 
     {%- for menu_ancestor in menu_ancestors -%}
@@ -212,6 +213,27 @@
     {%- else -%}
       None
     {%- endfor -%}<br>
+    
+    <strong>🔍 MENU STRUCTURE DEBUG:</strong><br>
+    {%- if main_menu -%}
+      {%- for link in main_menu.links limit: 3 -%}
+        <strong>L1:</strong> {{ link.title }} ({{ link.url }})<br>
+        {%- if link.links.size > 0 -%}
+          {%- for childlink in link.links limit: 3 -%}
+            &nbsp;&nbsp;<strong>L2:</strong> {{ childlink.title }} ({{ childlink.url }})
+            {%- if childlink.url == target_collection.url -%} <span style="color: red;">← MATCH!</span>{%- endif -%}<br>
+            {%- if childlink.links.size > 0 -%}
+              {%- for grandchildlink in childlink.links limit: 3 -%}
+                &nbsp;&nbsp;&nbsp;&nbsp;<strong>L3:</strong> {{ grandchildlink.title }} ({{ grandchildlink.url }})
+                {%- if grandchildlink.url == target_collection.url -%} <span style="color: red;">← MATCH!</span>{%- endif -%}<br>
+              {%- endfor -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- else -%}
+      No menu available
+    {%- endif -%}
     
     <strong>🔍 PARENT CHAIN DEBUG:</strong><br>
     Current Collection: {{ collection.title | default: 'None' }}<br>
