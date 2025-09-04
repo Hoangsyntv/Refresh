@@ -338,7 +338,8 @@
             {%- else -%}
               {%- comment -%} No URL found, display as text only with debug {%- endcomment -%}
               <!-- ❌ NO URL: "{{ level }}" → level_url = "{{ level_url | default: 'BLANK' }}" -->
-              <span class="breadcrumb__link" style="color: rgba(0, 0, 0, 0.5);" title="{{ search_debug }}">{{ level | escape }} ❌</span>
+              <!-- 🚨 FORCE LINK TEST: Creating link anyway for debugging -->
+              <a href="/collections/test-{{ level | handle }}" class="breadcrumb__link" style="border: 2px dashed red;">{{ level | escape }} 🧪</a>
             {%- endif -%}
           </li>
           {%- unless forloop.last -%}
