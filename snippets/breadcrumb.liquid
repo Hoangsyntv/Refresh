@@ -18,28 +18,21 @@
     if target_collection
       comment 'Find collection hierarchy in menu'
       endcomment
-      assign debug_matching = 'MATCHING: ' | append: target_collection.url | append: ' | '
       for link in main_menu.links
-        assign debug_matching = debug_matching | append: 'L1:' | append: link.url | append: '=='
         if link.url == target_collection.url
           assign menu_path = link.title
-          assign debug_matching = debug_matching | append: 'MATCH! '
           break
         endif
         if link.links != blank
           for childlink in link.links
-            assign debug_matching = debug_matching | append: 'L2:' | append: childlink.url | append: '=='
             if childlink.url == target_collection.url
               assign menu_path = link.title | append: '|' | append: childlink.title
-              assign debug_matching = debug_matching | append: 'MATCH! '
               break
             endif
             if childlink.links != blank
               for grandchildlink in childlink.links
-                assign debug_matching = debug_matching | append: 'L3:' | append: grandchildlink.url | append: '=='
                 if grandchildlink.url == target_collection.url
                   assign menu_path = link.title | append: '|' | append: childlink.title | append: '|' | append: grandchildlink.title
-                  assign debug_matching = debug_matching | append: 'MATCH! '
                   break
                 endif
               endfor
@@ -214,31 +207,7 @@
   endif
   
   assign menu_levels = menu_path | split: '|'
-  
-  comment 'DEBUG: Show detected hierarchy + collection info'
-  endcomment
-  assign debug_collection = target_collection | default: collection
-  assign debug_info = 'DETECTED PATH: ' | append: menu_path | append: ' | LEVELS: ' | append: menu_levels.size | append: ' | COLLECTION: ' | append: debug_collection.title | append: ' | COLLECTION_URL: ' | append: debug_collection.url | append: ' | PRODUCT_COLLECTIONS: ' | append: product.collections.size | append: ' | ' | append: debug_matching
 -%}
-
-<!-- DEBUG INFO -->
-<div style="background: #e8f4fd; padding: 8px; margin: 8px 0; border: 1px solid #b8daff; font-size: 12px;">
-  {{ debug_info }}
-</div>
-
-<!-- MENU DEBUG: Show all menu links for debugging -->
-<div style="background: #fff3cd; padding: 8px; margin: 8px 0; border: 1px solid #ffeaa7; font-size: 10px;">
-  <strong>MENU DEBUG:</strong><br>
-  {%- for link in main_menu.links -%}
-    L1: {{ link.title }} → {{ link.url }}<br>
-    {%- for childlink in link.links -%}
-      &nbsp;&nbsp;L2: {{ childlink.title }} → {{ childlink.url }}<br>
-      {%- for grandchildlink in childlink.links -%}
-        &nbsp;&nbsp;&nbsp;&nbsp;L3: {{ grandchildlink.title }} → {{ grandchildlink.url }}<br>
-      {%- endfor -%}
-    {%- endfor -%}
-  {%- endfor -%}
-</div>
 
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol class="breadcrumb__list">
@@ -297,10 +266,11 @@
               <a href="{{ collection.url }}" class="breadcrumb__link">{{ collection.title | escape }}</a>
             </li>
           {%- when 'product' -%}
-            {%- comment -%} For products without menu hierarchy, show only collection {%- endcomment -%}
-            {%- if collection -%}
+            {%- comment -%} For products without menu hierarchy, show collection from target_collection {%- endcomment -%}
+            {%- assign fallback_collection = target_collection | default: collection -%}
+            {%- if fallback_collection -%}
               <li class="breadcrumb__item">
-                <a href="{{ collection.url }}" class="breadcrumb__link">{{ collection.title | escape }}</a>
+                <a href="{{ fallback_collection.url }}" class="breadcrumb__link">{{ fallback_collection.title | escape }}</a>
               </li>
             {%- endif -%}
         {%- endcase -%}
