@@ -57,7 +57,7 @@
   endif
   
   # Debug: Output menu info
-  comment
+  {% comment %}
     DEBUG INFO:
     debug_info: {{ debug_info }}
     menu_handle: {{ menu_handle }}
@@ -65,7 +65,7 @@
     main_menu.links.size: {{ main_menu.links.size }}
     request.page_type: {{ request.page_type }}
     Available linklists: {% for linklist in linklists %}{{ linklist[0] }}{% unless forloop.last %}, {% endunless %}{% endfor %}
-  endcomment
+  {% endcomment %}
   
   if request.page_type == 'product' and product and main_menu != blank
     for link in main_menu.links
@@ -146,13 +146,13 @@
   assign menu_levels = menu_path | split: '|'
   
   # Debug: Output final menu path
-  comment
+  {% comment %}
     FINAL DEBUG:
     menu_path: {{ menu_path }}
     menu_levels: {{ menu_levels | join: ', ' }}
     collection.url: {{ collection.url }}
     product.collections: {% for coll in product.collections %}{{ coll.handle }}{% unless forloop.last %}, {% endunless %}{% endfor %}
-  endcomment
+  {% endcomment %}
 -%}
 
 <style>
