@@ -334,8 +334,10 @@
   }
   
   .header__inline-menu .mega-menu__column {
-    flex: 1;
-    min-width: 220px; /* Increased from 180px to accommodate longer menu labels */
+    flex: 0 1 auto; /* Don't grow, can shrink, auto width */
+    width: max-content; /* Auto-fit to content width */
+    max-width: 300px; /* Prevent overly wide columns */
+    min-width: 120px; /* Minimum width for readability */
     padding: 0 20px;
     position: relative;
   }
@@ -548,11 +550,11 @@
                     role="menu"
                     aria-labelledby="HeaderMenu-{{ link.handle }}"
                   >
-                    <div class="mega-menu__container" style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;gap:40px;">
+                    <div class="mega-menu__container" style="max-width:1400px;margin:0 auto;padding:0 24px;display:flex;gap:20px;justify-content:flex-start;">
                       <!-- Menu Content with Category Titles -->
-                      <div class="mega-menu__content" style="display:flex;gap:32px;flex:1;">
+                      <div class="mega-menu__content" style="display:flex;gap:20px;flex:1;justify-content:flex-start;">
                         {%- for childlink in link.links -%}
-                          <div class="mega-menu__column" role="group" aria-labelledby="menu-category-{{ forloop.index }}" style="flex:1;min-width:220px;">
+                          <div class="mega-menu__column" role="group" aria-labelledby="menu-category-{{ forloop.index }}" style="flex:0 1 auto;width:max-content;max-width:300px;min-width:120px;">
                             <!-- Category Title as first item -->
                             <a href="{{ childlink.url }}" class="mega-menu__title" style="text-decoration:none;">
                               {{ childlink.title | escape }}
