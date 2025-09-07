@@ -197,6 +197,61 @@
                     {{ product.description }}
                   </div>
                 {%- endif -%}
+              {%- when 'metafields' -%}
+                <div class="product__metafields" {{ block.shopify_attributes }}>
+                  {%- if block.settings.metafield_namespace and block.settings.metafield_key -%}
+                    {%- assign metafield_value = product.metafields[block.settings.metafield_namespace][block.settings.metafield_key] -%}
+                    {%- if metafield_value != blank -%}
+                      <div class="product__metafield-item">
+                        {%- if block.settings.show_label and block.settings.label != blank -%}
+                          <span class="product__metafield-label{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}">
+                            {{ block.settings.label }}:
+                          </span>
+                        {%- endif -%}
+                        <span class="product__metafield-value{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}">
+                          {%- if metafield_value.type == 'url' -%}
+                            <a href="{{ metafield_value }}" target="_blank" rel="noopener">{{ metafield_value }}</a>
+                          {%- elsif metafield_value.type == 'file_reference' -%}
+                            <a href="{{ metafield_value | file_url }}" target="_blank" rel="noopener">{{ metafield_value.alt | default: 'Download' }}</a>
+                          {%- elsif metafield_value.type == 'list.file_reference' -%}
+                            {%- for file in metafield_value.value -%}
+                              <a href="{{ file | file_url }}" target="_blank" rel="noopener">{{ file.alt | default: 'Download' }}</a>
+                              {%- unless forloop.last -%}, {%- endunless -%}
+                            {%- endfor -%}
+                          {%- elsif metafield_value.type == 'rating' -%}
+                            {{ metafield_value.value.rating }} / {{ metafield_value.value.scale_max }}
+                          {%- elsif metafield_value.type == 'date' -%}
+                            {{ metafield_value | date: '%B %d, %Y' }}
+                          {%- elsif metafield_value.type == 'date_time' -%}
+                            {{ metafield_value | date: '%B %d, %Y at %I:%M %p' }}
+                          {%- elsif metafield_value.type == 'color' -%}
+                            <span class="color-swatch" style="background-color: {{ metafield_value }}"></span>
+                            {{ metafield_value }}
+                          {%- elsif metafield_value.type == 'dimension' -%}
+                            {{ metafield_value.value }} {{ metafield_value.unit }}
+                          {%- elsif metafield_value.type == 'weight' -%}
+                            {{ metafield_value.value }} {{ metafield_value.unit }}
+                          {%- elsif metafield_value.type == 'volume' -%}
+                            {{ metafield_value.value }} {{ metafield_value.unit }}
+                          {%- elsif metafield_value.type == 'money' -%}
+                            {{ metafield_value | money }}
+                          {%- elsif metafield_value.type == 'boolean' -%}
+                            {{ metafield_value | capitalize }}
+                          {%- elsif metafield_value.type == 'rich_text_field' -%}
+                            <div class="rte">{{ metafield_value }}</div>
+                          {%- elsif metafield_value.type contains 'list.' -%}
+                            {%- for item in metafield_value.value -%}
+                              {{ item }}
+                              {%- unless forloop.last -%}, {%- endunless -%}
+                            {%- endfor -%}
+                          {%- else -%}
+                            {{ metafield_value }}
+                          {%- endif -%}
+                        </span>
+                      </div>
+                    {%- endif -%}
+                  {%- endif -%}
+                </div>
               {%- when 'sku' -%}
                 <p
                   class="product__sku{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.sku.size == 0 %} visibility-hidden{% endif %}"
@@ -932,6 +987,56 @@
       "type": "description",
       "name": "t:sections.main-product.blocks.description.name",
       "limit": 1
+    },
+    {
+      "type": "metafields",
+      "name": "Product Metafield",
+      "settings": [
+        {
+          "type": "text",
+          "id": "metafield_namespace",
+          "label": "Metafield Namespace",
+          "info": "Enter the namespace of the metafield (e.g., 'custom' or 'my_fields')"
+        },
+        {
+          "type": "text",
+          "id": "metafield_key",
+          "label": "Metafield Key",
+          "info": "Enter the key of the metafield (e.g., 'material' or 'care_instructions')"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Display Label",
+          "info": "Optional: Enter a custom label to display (e.g., 'Material', 'Care Instructions')"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_label",
+          "label": "Show Label",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "text_style",
+          "options": [
+            {
+              "value": "body",
+              "label": "Body"
+            },
+            {
+              "value": "subtitle",
+              "label": "Subtitle"
+            },
+            {
+              "value": "uppercase",
+              "label": "Uppercase"
+            }
+          ],
+          "default": "body",
+          "label": "Text Style"
+        }
+      ]
     },
     {
       "type": "share",

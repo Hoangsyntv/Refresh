@@ -1492,3 +1492,57 @@ a.product__text {
     border: none;
   }
 }
+
+/* Product Metafields Styling */
+.product__metafields {
+  margin: 1.5rem 0;
+}
+
+.product__metafield-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.product__metafield-label {
+  font-weight: 600;
+  color: rgb(var(--color-foreground));
+  min-width: fit-content;
+}
+
+.product__metafield-value {
+  color: rgb(var(--color-foreground));
+}
+
+.product__metafield-value a {
+  color: rgb(var(--color-link));
+  text-decoration: underline;
+}
+
+.product__metafield-value a:hover {
+  color: rgb(var(--color-link-hover));
+}
+
+.product__metafield-value .color-swatch {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--color-foreground), 0.2);
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.product__metafield-value .rte {
+  margin: 0;
+}
+
+@media screen and (max-width: 749px) {
+  .product__metafield-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+}
