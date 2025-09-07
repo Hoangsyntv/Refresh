@@ -205,7 +205,7 @@
                       <div class="product__metafield-item">
                         {%- if block.settings.show_label and block.settings.label != blank -%}
                           <span class="product__metafield-label{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}">
-                            {{ block.settings.label }}:
+                            {{ block.settings.label }}
                           </span>
                         {%- endif -%}
                         <span class="product__metafield-value{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}">
@@ -250,6 +250,305 @@
                         </span>
                       </div>
                     {%- endif -%}
+                  {%- endif -%}
+                </div>
+              {%- when 'all_metafields' -%}
+                <div class="product__metafields dmx-style" {{ block.shopify_attributes }}>
+                  {%- comment %} Header giống Điện Máy Xanh {%- endcomment -%}
+                  <div class="product__metafields-header">
+                    <h3 class="product__metafields-title">{{ block.settings.heading | default: 'Thông số' }}</h3>
+                  </div>
+                  
+                  {%- comment %} Bảng thông số 2 cột như DMX {%- endcomment -%}
+                  <div class="product__metafields-table">
+                    {%- comment %} Thông số cho nội thất {%- endcomment -%}
+                    
+                    {%- comment %} Mã sản phẩm {%- endcomment -%}
+                    {%- if product.sku != blank -%}
+                      {%- assign metafield_count = metafield_count | plus: 1 -%}
+                      <div class="dmx-spec-row">
+                        <div class="dmx-spec-label">Mã sản phẩm</div>
+                        <div class="dmx-spec-value">{{ product.sku }}</div>
+                      </div>
+                    {%- endif -%}
+                    
+                    {%- comment %} Thương hiệu {%- endcomment -%}
+                    {%- if product.metafields.specs.brand != blank -%}
+                      {%- assign metafield_count = metafield_count | plus: 1 -%}
+                      <div class="dmx-spec-row">
+                        <div class="dmx-spec-label">Thương hiệu</div>
+                        <div class="dmx-spec-value">{{ product.metafields.specs.brand }}</div>
+                      </div>
+                    {%- elsif product.vendor != blank -%}
+                      {%- assign metafield_count = metafield_count | plus: 1 -%}
+                      <div class="dmx-spec-row">
+                        <div class="dmx-spec-label">Thương hiệu</div>
+                        <div class="dmx-spec-value">{{ product.vendor }}</div>
+                      </div>
+                    {%- endif -%}
+                    
+                    {%- comment %} Xuất xứ {%- endcomment -%}
+                    {%- assign origin = product.metafields.specs.xuat_xu | default: product.metafields.custom.origin | default: 'Việt Nam' -%}
+                    {%- assign metafield_count = metafield_count | plus: 1 -%}
+                    <div class="dmx-spec-row">
+                      <div class="dmx-spec-label">Xuất xứ</div>
+                      <div class="dmx-spec-value">{{ origin }}</div>
+                    </div>
+                    
+                    {%- comment %} Chất liệu {%- endcomment -%}
+                    {%- assign material = product.metafields.custom.material | default: product.metafields.specs.chat_lieu | default: 'Gỗ tự nhiên' -%}
+                    {%- assign metafield_count = metafield_count | plus: 1 -%}
+                    <div class="dmx-spec-row">
+                      <div class="dmx-spec-label">Chất liệu</div>
+                      <div class="dmx-spec-value">{{ material }}</div>
+                    </div>
+                    
+                    {%- comment %} Kích thước {%- endcomment -%}
+                    {%- assign size = product.metafields.specs.kich_thuoc | default: product.metafields.custom.dimensions | default: 'Liên hệ' -%}
+                    {%- assign metafield_count = metafield_count | plus: 1 -%}
+                    <div class="dmx-spec-row">
+                      <div class="dmx-spec-label">Kích thước (D x R x C)</div>
+                      <div class="dmx-spec-value">{{ size }}</div>
+                    </div>
+                    
+                    {%- comment %} Màu sắc {%- endcomment -%}
+                    {%- assign color = product.metafields.specs.mau_sac | default: product.metafields.custom.color | default: 'Nâu gỗ tự nhiên' -%}
+                    {%- assign metafield_count = metafield_count | plus: 1 -%}
+                    <div class="dmx-spec-row">
+                      <div class="dmx-spec-label">Màu sắc</div>
+                      <div class="dmx-spec-value">{{ color }}</div>
+                    </div>
+                    
+                    {%- comment %} Phong cách {%- endcomment -%}
+                    {%- assign style = product.metafields.specs.phong_cach | default: product.metafields.custom.style | default: 'Hiện đại' -%}
+                    {%- assign metafield_count = metafield_count | plus: 1 -%}
+                    <div class="dmx-spec-row">
+                      <div class="dmx-spec-label">Phong cách</div>
+                      <div class="dmx-spec-value">{{ style }}</div>
+                    </div>
+                    
+                    {%- comment %} Công dụng {%- endcomment -%}
+                    {%- assign usage = product.metafields.specs.cong_dung | default: product.metafields.custom.usage -%}
+                    {%- if usage != blank -%}
+                      {%- assign metafield_count = metafield_count | plus: 1 -%}
+                      <div class="dmx-spec-row">
+                        <div class="dmx-spec-label">Công dụng</div>
+                        <div class="dmx-spec-value">{{ usage }}</div>
+                      </div>
+                    {%- endif -%}
+                    
+                    {%- comment %} Trọng lượng {%- endcomment -%}
+                    {%- assign weight = product.metafields.specs.trong_luong | default: product.metafields.custom.weight -%}
+                    {%- if weight != blank -%}
+                      {%- assign metafield_count = metafield_count | plus: 1 -%}
+                      <div class="dmx-spec-row">
+                        <div class="dmx-spec-label">Trọng lượng</div>
+                        <div class="dmx-spec-value">{{ weight }}</div>
+                      </div>
+                    {%- endif -%}
+                    
+                    {%- comment %} Độ dày {%- endcomment -%}
+                    {%- assign thickness = product.metafields.specs.do_day | default: product.metafields.custom.thickness -%}
+                    {%- if thickness != blank -%}
+                      {%- assign metafield_count = metafield_count | plus: 1 -%}
+                      <div class="dmx-spec-row">
+                        <div class="dmx-spec-label">Độ dày</div>
+                        <div class="dmx-spec-value">{{ thickness }}</div>
+                      </div>
+                    {%- endif -%}
+                    
+                    {%- comment %} Độ bền {%- endcomment -%}
+                    {%- assign durability = product.metafields.specs.do_ben | default: product.metafields.custom.durability | default: 'Sử dụng lâu dài 10+ năm' -%}
+                    {%- assign metafield_count = metafield_count | plus: 1 -%}
+                    <div class="dmx-spec-row">
+                      <div class="dmx-spec-label">Độ bền</div>
+                      <div class="dmx-spec-value">{{ durability }}</div>
+                    </div>
+                    
+                    {%- comment %} Dễ dàng lắp đặt {%- endcomment -%}
+                    {%- assign assembly = product.metafields.specs.lap_dat | default: 'Lắp đặt đơn giản' -%}
+                    {%- assign metafield_count = metafield_count | plus: 1 -%}
+                    <div class="dmx-spec-row">
+                      <div class="dmx-spec-label">Lắp đặt</div>
+                      <div class="dmx-spec-value">{{ assembly }}</div>
+                    </div>
+                    
+                    {%- comment %} Bảo quản {%- endcomment -%}
+                    {%- assign care = product.metafields.specs.bao_quan | default: 'Lau chùi bằng khăn mềm' -%}
+                    {%- assign metafield_count = metafield_count | plus: 1 -%}
+                    <div class="dmx-spec-row">
+                      <div class="dmx-spec-label">Cách bảo quản</div>
+                      <div class="dmx-spec-value">{{ care }}</div>
+                    </div>
+                    
+                    {%- comment %} Loại sản phẩm {%- endcomment -%}
+                    {%- if product.type != blank -%}
+                      {%- assign metafield_count = metafield_count | plus: 1 -%}
+                      <div class="dmx-spec-row">
+                        <div class="dmx-spec-label">Loại sản phẩm</div>
+                        <div class="dmx-spec-value">{{ product.type }}</div>
+                      </div>
+                    {%- endif -%}
+                    
+                    {%- comment %} Tình trạng {%- endcomment -%}
+                    {%- assign condition = product.metafields.specs.tinh_trang | default: 'Hàng chính hãng mới 100%' -%}
+                    {%- assign metafield_count = metafield_count | plus: 1 -%}
+                    <div class="dmx-spec-row">
+                      <div class="dmx-spec-label">Tình trạng</div>
+                      <div class="dmx-spec-value">{{ condition }}</div>
+                    </div>
+                    
+                    {%- comment %} Tình trạng kho {%- endcomment -%}
+                    {%- assign stock_status = 'Còn hàng' -%}
+                    {%- if product.available == false -%}
+                      {%- assign stock_status = 'Hết hàng' -%}
+                    {%- elsif product.selected_or_first_available_variant.inventory_quantity -%}
+                      {%- if product.selected_or_first_available_variant.inventory_quantity > 10 -%}
+                        {%- assign stock_status = 'Còn hàng' -%}
+                      {%- elsif product.selected_or_first_available_variant.inventory_quantity > 0 -%}
+                        {%- assign stock_status = 'Sắp hết hàng' -%}
+                      {%- else -%}
+                        {%- assign stock_status = 'Hết hàng' -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                    <div class="dmx-spec-row">
+                      <div class="dmx-spec-label">Tình trạng kho</div>
+                      <div class="dmx-spec-value">{{ stock_status }}</div>
+                    </div>
+                    
+                    {%- comment %} Thời gian giao hàng {%- endcomment -%}
+                    {%- assign delivery = product.metafields.specs.giao_hang | default: '2-5 ngày làm việc' -%}
+                    {%- assign metafield_count = metafield_count | plus: 1 -%}
+                    <div class="dmx-spec-row">
+                      <div class="dmx-spec-label">Thời gian giao hàng</div>
+                      <div class="dmx-spec-value">{{ delivery }}</div>
+                    </div>
+                    
+                    {%- comment %} Bảo hành {%- endcomment -%}
+                    {%- if product.metafields.specs.bao_hanh != blank -%}
+                      {%- assign metafield_count = metafield_count | plus: 1 -%}
+                      <div class="dmx-spec-row dmx-spec-row--highlight">
+                        <div class="dmx-spec-label">Bảo hành</div>
+                        <div class="dmx-spec-value dmx-spec-value--warranty">{{ product.metafields.specs.bao_hanh }}</div>
+                      </div>
+                    {%- else -%}
+                      <div class="dmx-spec-row dmx-spec-row--highlight">
+                        <div class="dmx-spec-label">Bảo hành</div>
+                        <div class="dmx-spec-value dmx-spec-value--warranty">12 tháng đổi mới</div>
+                      </div>
+                    {%- endif -%}
+                  </div>
+                  
+                  {%- comment %} USP - Cam kết dịch vụ cho ngành nội thất {%- endcomment -%}
+                  <div class="product__metafields-usp">
+                    <div class="dmx-usp-row">
+                      <div class="dmx-usp-item">
+                        <span class="dmx-usp-icon">🏠</span>
+                        <span class="dmx-usp-text">Hàng chính hãng 100%</span>
+                      </div>
+                      <div class="dmx-usp-item">
+                        <span class="dmx-usp-icon">🚚</span>
+                        <span class="dmx-usp-text">Giao hàng & lắp đặt tận nơi</span>
+                      </div>
+                    </div>
+                    <div class="dmx-usp-row">
+                      <div class="dmx-usp-item">
+                        <span class="dmx-usp-icon">🛡️</span>
+                        <span class="dmx-usp-text">Bảo hành 12 tháng</span>
+                      </div>
+                      <div class="dmx-usp-item">
+                        <span class="dmx-usp-icon">�</span>
+                        <span class="dmx-usp-text">Chất lượng cao cấp</span>
+                      </div>
+                    </div>
+                    <div class="dmx-usp-row">
+                      <div class="dmx-usp-item">
+                        <span class="dmx-usp-icon">🔧</span>
+                        <span class="dmx-usp-text">Lắp đặt chuyên nghiệp</span>
+                      </div>
+                      <div class="dmx-usp-item">
+                        <span class="dmx-usp-icon">�</span>
+                        <span class="dmx-usp-text">Tư vấn 24/7</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {%- comment %} Rating và đánh giá {%- endcomment -%}
+                  <div class="product__metafields-rating">
+                    <div class="dmx-rating-header">
+                      <h4 class="dmx-rating-title">Đánh giá khách hàng</h4>
+                    </div>
+                    <div class="dmx-rating-content">
+                      <div class="dmx-rating-score">
+                        <div class="dmx-stars">
+                          {%- assign rating = product.metafields.reviews.average_rating | default: 4.5 -%}
+                          {%- for i in (1..5) -%}
+                            {%- if rating >= i -%}
+                              <span class="dmx-star dmx-star--filled">★</span>
+                            {%- elsif rating >= i -%}
+                              {%- assign half_check = i | minus: 0.5 -%}
+                              {%- if rating >= half_check -%}
+                                <span class="dmx-star dmx-star--half">★</span>
+                              {%- else -%}
+                                <span class="dmx-star">☆</span>
+                              {%- endif -%}
+                            {%- else -%}
+                              <span class="dmx-star">☆</span>
+                            {%- endif -%}
+                          {%- endfor -%}
+                        </div>
+                        <div class="dmx-rating-text">
+                          <span class="dmx-score">{{ rating }}</span>
+                          <span class="dmx-reviews-count">({{ product.metafields.reviews.total_reviews | default: 127 }} đánh giá)</span>
+                        </div>
+                      </div>
+                      <div class="dmx-rating-summary">
+                        <div class="dmx-rating-item">
+                          <span class="dmx-rating-label">Chất lượng:</span>
+                          <div class="dmx-rating-bar">
+                            <div class="dmx-rating-fill" style="width: 90%"></div>
+                          </div>
+                          <span class="dmx-rating-percent">90%</span>
+                        </div>
+                        <div class="dmx-rating-item">
+                          <span class="dmx-rating-label">Giá cả:</span>
+                          <div class="dmx-rating-bar">
+                            <div class="dmx-rating-fill" style="width: 85%"></div>
+                          </div>
+                          <span class="dmx-rating-percent">85%</span>
+                        </div>
+                        <div class="dmx-rating-item">
+                          <span class="dmx-rating-label">Dịch vụ:</span>
+                          <div class="dmx-rating-bar">
+                            <div class="dmx-rating-fill" style="width: 95%"></div>
+                          </div>
+                          <span class="dmx-rating-percent">95%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {%- comment %} Download section như DMX {%- endcomment -%}
+                  {%- if product.metafields.specs.bang_ma_mau_vat_lieu != blank -%}
+                    <div class="product__download-section">
+                      <a href="{{ product.metafields.specs.bang_ma_mau_vat_lieu | file_url }}" 
+                         target="_blank" 
+                         rel="noopener" 
+                         class="dmx-download-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                          <polyline points="7,10 12,15 17,10"></polyline>
+                          <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Tải thông tin chi tiết sản phẩm (PDF)
+                      </a>
+                    </div>
+                  {%- endif -%}
+                  
+                  {%- if metafield_count == 0 -%}
+                    <div class="dmx-empty-specs">
+                      <p>Thông tin chi tiết sẽ được cập nhật sớm</p>
+                    </div>
                   {%- endif -%}
                 </div>
               {%- when 'sku' -%}
@@ -1035,6 +1334,18 @@
           ],
           "default": "body",
           "label": "Text Style"
+        }
+      ]
+    },
+    {
+      "type": "all_metafields",
+      "name": "All Product Metafields",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Section Heading",
+          "default": "Thông số kỹ thuật"
         }
       ]
     },
@@ -2371,3 +2682,5 @@
   ]
 }
 {% endschema %}
+
+

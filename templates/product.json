@@ -49,34 +49,10 @@
           "settings": {
           }
         },
-        "metafield_material": {
-          "type": "metafields",
+        "all_metafields": {
+          "type": "all_metafields",
           "settings": {
-            "metafield_namespace": "custom",
-            "metafield_key": "material",
-            "label": "Material",
-            "show_label": true,
-            "text_style": "body"
-          }
-        },
-        "metafield_care": {
-          "type": "metafields",
-          "settings": {
-            "metafield_namespace": "custom",
-            "metafield_key": "care_instructions",
-            "label": "Care Instructions",
-            "show_label": true,
-            "text_style": "body"
-          }
-        },
-        "metafield_origin": {
-          "type": "metafields",
-          "settings": {
-            "metafield_namespace": "custom",
-            "metafield_key": "country_of_origin",
-            "label": "Made in",
-            "show_label": true,
-            "text_style": "body"
+            "heading": "Thông số kỹ thuật"
           }
         },
         "share": {
@@ -95,9 +71,7 @@
         "quantity_selector",
         "buy_buttons",
         "description",
-        "metafield_material",
-        "metafield_care",
-        "metafield_origin",
+        "all_metafields",
         "share"
       ],
       "settings": {
@@ -114,6 +88,11 @@
         "enable_video_looping": false,
         "padding_top": 60,
         "padding_bottom": 60
+      }
+    },
+    "test_dmx": {
+      "type": "test-dmx-specs",
+      "settings": {
       }
     },
     "related-products": {
@@ -137,6 +116,7 @@
   },
   "order": [
     "main",
+    "test_dmx",
     "related-products"
   ]
 }
