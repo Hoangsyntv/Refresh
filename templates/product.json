@@ -6,7 +6,7 @@
         "vendor": {
           "type": "text",
           "settings": {
-            "text": "{{ product.vendor }}",
+            "text": "VENDOR_LINK_PLACEHOLDER",
             "text_style": "body"
           }
         },
@@ -23,9 +23,8 @@
           }
         },
         "sku": {
-          "type": "text",
+          "type": "sku",
           "settings": {
-            "text": "SKU code will be shown here",
             "text_style": "body"
           }
         },
@@ -77,10 +76,10 @@
         }
       },
       "block_order": [
-        "vendor",
         "title",
         "meta_description",
         "sku",
+        "vendor",
         "rating",
         "price",
         "variant_picker",

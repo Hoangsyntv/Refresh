@@ -1,0 +1,32 @@
+{% comment %}
+  Quick debug snippet to verify thumbnail gallery setup
+  Add this temporarily to main-product.liquid to test
+{% endcomment %}
+
+<div style="background:#f0f0f0;padding:15px;border:2px solid #333;margin:20px 0;font-family:monospace;">
+  <h3 style="margin:0 0 10px 0;color:#333;">🔧 Thumbnail Gallery Debug</h3>
+  
+  <p><strong>Gallery Layout Setting:</strong> 
+    <span style="background:{% if section.settings.gallery_layout == 'thumbnail' %}green{% else %}red{% endif %};color:white;padding:2px 5px;">
+      {{ section.settings.gallery_layout | default: 'NOT SET' }}
+    </span>
+  </p>
+  
+  <p><strong>Product Images:</strong> {{ product.images.size }} images found</p>
+  
+  <p><strong>Section ID:</strong> {{ section.id }}</p>
+  
+  <p><strong>Should Render Thumbnail Gallery:</strong>
+    {% if section.settings.gallery_layout == 'thumbnail' %}
+      <span style="color:green;">✅ YES - Thumbnail gallery should appear</span>
+    {% else %}
+      <span style="color:red;">❌ NO - Set gallery_layout to "thumbnail"</span>
+    {% endif %}
+  </p>
+  
+  {% if section.settings.gallery_layout == 'thumbnail' %}
+    <div style="border:2px solid green;padding:10px;margin:10px 0;">
+      <strong>✅ Thumbnail Gallery Renders Below:</strong>
+    </div>
+  {% endif %}
+</div>

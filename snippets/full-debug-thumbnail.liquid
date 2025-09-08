@@ -1,0 +1,127 @@
+{% comment %}
+  COMPREHENSIVE DEBUG TOOL FOR THUMBNAIL GALLERY
+  Add this to your main-product.liquid temporarily to diagnose issues
+{% endcomment %}
+
+<div style="background:#000;color:#0f0;padding:20px;margin:20px 0;font-family:monospace;border:3px solid #0f0;">
+  <h2 style="color:#0f0;margin:0 0 15px 0;">🔧 THUMBNAIL GALLERY DIAGNOSTIC TOOL</h2>
+  
+  <!-- STEP 1: CHECK SETTINGS -->
+  <div style="border:1px solid #0f0;padding:10px;margin:10px 0;">
+    <h3 style="color:#ff0;margin:0 0 10px 0;">1️⃣ SETTINGS CHECK</h3>
+    <p><strong>Gallery Layout:</strong> 
+      <span style="background:{% if section.settings.gallery_layout == 'thumbnail' %}#0f0;color:#000{% else %}#f00;color:#fff{% endif %};padding:3px 8px;">
+        {{ section.settings.gallery_layout | default: 'UNDEFINED' }}
+      </span>
+      {% if section.settings.gallery_layout == 'thumbnail' %}
+        ✅ CORRECT
+      {% else %}
+        ❌ WRONG - Should be "thumbnail"
+      {% endif %}
+    </p>
+    
+    <p><strong>Image Zoom:</strong> {{ section.settings.image_zoom | default: 'UNDEFINED' }}</p>
+    <p><strong>Section ID:</strong> {{ section.id }}</p>
+  </div>
+
+  <!-- STEP 2: CHECK PRODUCT DATA -->
+  <div style="border:1px solid #0f0;padding:10px;margin:10px 0;">
+    <h3 style="color:#ff0;margin:0 0 10px 0;">2️⃣ PRODUCT DATA CHECK</h3>
+    <p><strong>Product ID:</strong> {{ product.id }}</p>
+    <p><strong>Product Images Count:</strong> {{ product.images.size }}</p>
+    <p><strong>Product Title:</strong> {{ product.title }}</p>
+    {% if product.images.size > 0 %}
+      <p style="color:#0f0;">✅ Product has images</p>
+      {% for image in product.images limit: 3 %}
+        <p style="font-size:12px;">Image {{ forloop.index }}: {{ image.alt | default: 'No alt text' }}</p>
+      {% endfor %}
+    {% else %}
+      <p style="color:#f00;">❌ No product images found!</p>
+    {% endif %}
+  </div>
+
+  <!-- STEP 3: CHECK FILE LOADING -->
+  <div style="border:1px solid #0f0;padding:10px;margin:10px 0;">
+    <h3 style="color:#ff0;margin:0 0 10px 0;">3️⃣ FILE LOADING CHECK</h3>
+    <p><strong>CSS File URL:</strong> {{ 'product-thumbnail-gallery.css' | asset_url }}</p>
+    <p><strong>JS File URL:</strong> {{ 'product-thumbnail-gallery.js' | asset_url }}</p>
+    
+    <!-- Test if CSS should load -->
+    {% if section.settings.gallery_layout == 'thumbnail' %}
+      <p style="color:#0f0;">✅ CSS should be loading</p>
+      <p style="color:#0f0;">✅ JS should be loading</p>
+    {% else %}
+      <p style="color:#f00;">❌ Files won't load (gallery_layout not "thumbnail")</p>
+    {% endif %}
+  </div>
+
+  <!-- STEP 4: CHECK SNIPPET RENDERING -->
+  <div style="border:1px solid #0f0;padding:10px;margin:10px 0;">
+    <h3 style="color:#ff0;margin:0 0 10px 0;">4️⃣ SNIPPET RENDERING TEST</h3>
+    {% if section.settings.gallery_layout == 'thumbnail' %}
+      <p style="color:#0f0;">✅ Attempting to render thumbnail gallery...</p>
+      <div style="border:2px dashed #0f0;padding:10px;margin:10px 0;">
+        <p><strong>THUMBNAIL GALLERY SHOULD RENDER BELOW:</strong></p>
+        {% render 'product-thumbnail-gallery', 
+           product: product, 
+           section_id: section.id,
+           enable_zoom: section.settings.image_zoom %}
+      </div>
+    {% else %}
+      <p style="color:#f00;">❌ Thumbnail gallery won't render</p>
+      <p>Current setting: {{ section.settings.gallery_layout }}</p>
+      <p><strong>FIX:</strong> Go to Theme Customizer → Product Information → Gallery Layout → Select "Thumbnail"</p>
+    {% endif %}
+  </div>
+
+  <!-- STEP 5: JAVASCRIPT TEST -->
+  <div style="border:1px solid #0f0;padding:10px;margin:10px 0;">
+    <h3 style="color:#ff0;margin:0 0 10px 0;">5️⃣ JAVASCRIPT TEST</h3>
+    <p>Open browser console (F12) and paste this:</p>
+    <code style="background:#333;color:#0f0;padding:5px;display:block;margin:5px 0;">
+console.log('CSS loaded:', !!document.querySelector('link[href*="product-thumbnail-gallery.css"]'));
+console.log('JS loaded:', typeof window.ProductThumbnailGallery);
+console.log('Gallery containers:', document.querySelectorAll('[data-product-gallery]').length);
+    </code>
+  </div>
+
+  <!-- STEP 6: QUICK FIXES -->
+  <div style="border:1px solid #0f0;padding:10px;margin:10px 0;">
+    <h3 style="color:#ff0;margin:0 0 10px 0;">6️⃣ QUICK FIXES</h3>
+    <p style="color:#ff0;"><strong>If nothing appears above:</strong></p>
+    <ol style="color:#fff;">
+      <li>Files not uploaded to Shopify</li>
+      <li>Gallery layout not set to "thumbnail"</li>
+      <li>Code changes not made in main-product.liquid</li>
+    </ol>
+    
+    <p style="color:#ff0;"><strong>If gallery appears but doesn't work:</strong></p>
+    <ol style="color:#fff;">
+      <li>JavaScript file not loading</li>
+      <li>CSS file not loading</li>
+      <li>Browser cache issue - try incognito mode</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+// Additional JavaScript debug
+console.log('🔧 Thumbnail Gallery Debug Script Running');
+console.log('Gallery layout setting:', '{{ section.settings.gallery_layout }}');
+console.log('Product images count:', {{ product.images.size }});
+
+// Check if files are loaded
+setTimeout(function() {
+  console.log('CSS loaded:', !!document.querySelector('link[href*="product-thumbnail-gallery.css"]'));
+  console.log('JS class available:', typeof window.ProductThumbnailGallery !== 'undefined');
+  console.log('Gallery containers found:', document.querySelectorAll('[data-product-gallery]').length);
+  
+  if (document.querySelectorAll('[data-product-gallery]').length === 0) {
+    console.error('❌ No gallery containers found. Check if snippet is rendering.');
+  }
+  
+  if (typeof window.ProductThumbnailGallery === 'undefined') {
+    console.error('❌ JavaScript not loaded. Check if JS file is uploaded and loading.');
+  }
+}, 1000);
+</script>

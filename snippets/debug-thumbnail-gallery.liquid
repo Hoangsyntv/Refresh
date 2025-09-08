@@ -1,0 +1,45 @@
+{% comment %}
+  Debug snippet to test thumbnail gallery
+  Add this temporarily to your product template to verify files are working
+{% endcomment %}
+
+<div style="background: #f0f0f0; padding: 10px; margin: 10px 0; border: 1px solid #ccc;">
+  <h3>🔧 Thumbnail Gallery Debug</h3>
+  
+  <!-- Check if gallery_layout setting exists -->
+  <p><strong>Gallery Layout Setting:</strong> {{ section.settings.gallery_layout | default: 'not set' }}</p>
+  
+  <!-- Check if thumbnail gallery should render -->
+  <p><strong>Should Render Thumbnail:</strong> 
+    {% if section.settings.gallery_layout == 'thumbnail' %}
+      ✅ YES
+    {% else %}
+      ❌ NO (Current: {{ section.settings.gallery_layout }})
+    {% endif %}
+  </p>
+  
+  <!-- Check product images -->
+  <p><strong>Product Images Count:</strong> {{ product.images.size }}</p>
+  
+  <!-- Check section ID -->
+  <p><strong>Section ID:</strong> {{ section.id }}</p>
+  
+  <!-- File existence check -->
+  <p><strong>CSS File:</strong> {{ 'product-thumbnail-gallery.css' | asset_url }}</p>
+  <p><strong>JS File:</strong> {{ 'product-thumbnail-gallery.js' | asset_url }}</p>
+  
+  <!-- Test basic render -->
+  {% if section.settings.gallery_layout == 'thumbnail' %}
+    <div style="border: 2px solid green; padding: 5px; margin: 5px 0;">
+      <strong>✅ Thumbnail Gallery Should Render Here:</strong>
+      {% render 'product-thumbnail-gallery', 
+         product: product, 
+         section_id: section.id,
+         enable_zoom: section.settings.image_zoom %}
+    </div>
+  {% else %}
+    <div style="border: 2px solid red; padding: 5px; margin: 5px 0;">
+      <strong>❌ Regular Gallery Renders Instead</strong>
+    </div>
+  {% endif %}
+</div>

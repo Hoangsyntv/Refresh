@@ -1,0 +1,57 @@
+{% comment %}
+  Vendor Link Snippet
+  
+  Automatically creates clickable links from vendor names to collections.
+  Falls back to plain text if collection doesn't exist.
+  
+  Usage:
+  {% render 'vendor-link', vendor: product.vendor, class: 'vendor-link' %}
+  
+  Parameters:
+  - vendor: {String} The vendor name
+  - class: {String} Additional CSS classes (optional)
+  - text_style: {String} Text styling class (optional) - 'body', 'subtitle', 'uppercase'
+{% endcomment %}
+
+{% liquid
+  # Initialize variables
+  assign vendor_name = vendor | strip
+  assign collection_handle = vendor_name | handleize
+  assign collection_exists = false
+  assign link_class = class | default: 'vendor-link'
+  assign text_class = ''
+  
+  # Set text styling class
+  case text_style
+    when 'subtitle'
+      assign text_class = 'subtitle'
+    when 'uppercase'
+      assign text_class = 'caption-with-letter-spacing'
+    else
+      assign text_class = 'body'
+  endcase
+  
+  # Check if collection exists by trying to access it
+  assign test_collection = collections[collection_handle]
+  if test_collection.id != blank
+    assign collection_exists = true
+  endif
+%}
+
+{% comment %} Render vendor link or plain text {% endcomment %}
+{%- if vendor_name != blank -%}
+  Vendor: {% if collection_exists -%}
+    <a 
+      href="{{ routes.collections_url }}/{{ collection_handle }}" 
+      class="{{ link_class }} {{ text_class }}"
+      title="{{ 'products.product.view_collection' | t: vendor: vendor_name }}"
+      data-vendor="{{ vendor_name | escape }}"
+    >
+      {{- vendor_name -}}
+    </a>
+  {%- else -%}
+    <span class="{{ link_class }} {{ text_class }} vendor-link--no-collection" data-vendor="{{ vendor_name | escape }}">
+      {{- vendor_name -}}
+    </span>
+  {%- endif -%}
+{%- endif -%}

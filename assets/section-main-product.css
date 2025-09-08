@@ -18,6 +18,75 @@ product-info {
   }
 }
 
+/* Vendor Link Styling */
+.product__vendor {
+  margin: 0.5rem 0 1rem 0;
+}
+
+.vendor-link {
+  color: inherit;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  display: inline-block;
+}
+
+.vendor-link:hover {
+  color: rgb(var(--color-foreground));
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+}
+
+.vendor-link:focus {
+  outline: 2px solid rgb(var(--color-base-accent-1));
+  outline-offset: 0.2rem;
+  border-radius: 0.2rem;
+}
+
+/* Vendor link when collection exists */
+.product__vendor-link {
+  font-weight: 500;
+  color: rgb(var(--color-base-accent-1));
+}
+
+.product__vendor-link:hover {
+  color: rgb(var(--color-base-accent-2));
+  transform: translateY(-1px);
+}
+
+/* Vendor link when no collection exists */
+.vendor-link--no-collection {
+  color: rgb(var(--color-foreground), 0.7);
+  cursor: default;
+}
+
+.vendor-link--no-collection:hover {
+  text-decoration: none;
+  transform: none;
+}
+
+/* Card product vendor links */
+.card-product__vendor-link {
+  font-size: inherit;
+  color: rgb(var(--color-base-accent-1));
+  font-weight: 500;
+}
+
+.card-product__vendor-link:hover {
+  color: rgb(var(--color-base-accent-2));
+}
+
+/* Mobile responsiveness */
+@media screen and (max-width: 749px) {
+  .product__vendor {
+    margin: 0.25rem 0 0.75rem 0;
+  }
+  
+  .vendor-link {
+    font-size: 0.9rem;
+  }
+}
+
 /* SKU Styling */
 .sku-text {
   color: #666 !important;
