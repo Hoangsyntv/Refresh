@@ -26,55 +26,7 @@
 
 {%- if product.images.size > 0 -%}
   <div class="product-gallery" data-product-gallery data-section-id="{{ section_id }}">
-    
-    <!-- Main Image Display -->
-    <div class="product-gallery__main" data-main-image-container>
-      <div class="product-gallery__main-inner">
-        {%- for image in product.images -%}
-          <div 
-            class="product-gallery__main-image{% if forloop.first %} active{% endif %}" 
-            data-main-image
-            data-image-index="{{ forloop.index0 }}"
-            {% unless forloop.first %}style="display: none;"{% endunless %}
-          >
-            <img
-              src="{{ image | image_url: width: 800 }}"
-              srcset="
-                {{ image | image_url: width: 400 }} 400w,
-                {{ image | image_url: width: 600 }} 600w,
-                {{ image | image_url: width: 800 }} 800w,
-                {{ image | image_url: width: 1000 }} 1000w,
-                {{ image | image_url: width: 1200 }} 1200w
-              "
-              sizes="(min-width: 750px) 50vw, 90vw"
-              alt="{{ image.alt | escape }}"
-              width="{{ image.width }}"
-              height="{{ image.height }}"
-              loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
-              class="product-gallery__image"
-              data-zoom-image="{{ image | image_url: width: 1600 }}"
-            >
-            
-            {%- if enable_zoom -%}
-              <button 
-                type="button" 
-                class="product-gallery__zoom-btn"
-                data-zoom-trigger
-                aria-label="{{ 'products.product.zoom_image' | t }}"
-              >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M9 2C13.418 2 17 5.582 17 10C17 14.418 13.418 18 9 18C4.582 18 1 14.418 1 10C1 5.582 4.582 2 9 2Z" stroke="currentColor" stroke-width="2"/>
-                  <path d="M15 15L19 19" stroke="currentColor" stroke-width="2"/>
-                  <path d="M6 10H12M9 7V13" stroke="currentColor" stroke-width="1.5"/>
-                </svg>
-              </button>
-            {%- endif -%}
-          </div>
-        {%- endfor -%}
-      </div>
-    </div>
-
-    <!-- Thumbnail Navigation -->
+    <!-- Thumbnail Navigation (bên trái) -->
     {%- if product.images.size > 1 -%}
       <div class="product-gallery__thumbnails" data-thumbnails>
         <div class="product-gallery__thumbnails-wrapper">
@@ -88,10 +40,10 @@
               {% if forloop.first %}aria-current="true"{% endif %}
             >
               <img
-                src="{{ image | image_url: width: 150 }}"
+                src="{{ image | image_url: width: 100, height: 75, crop: 'center' }}"
                 alt="{{ image.alt | escape }}"
-                width="150"
-                height="150"
+                width="100"
+                height="75"
                 loading="{% if forloop.index <= 4 %}eager{% else %}lazy{% endif %}"
                 class="product-gallery__thumbnail-image"
               >
@@ -128,6 +80,53 @@
         {%- endif -%}
       </div>
     {%- endif -%}
+    
+    <!-- Main Image Display (bên phải) -->
+    <div class="product-gallery__main" data-main-image-container>
+      <div class="product-gallery__main-inner">
+        {%- for image in product.images -%}
+          <div 
+            class="product-gallery__main-image{% if forloop.first %} active{% endif %}" 
+            data-main-image
+            data-image-index="{{ forloop.index0 }}"
+            {% unless forloop.first %}style="display: none;"{% endunless %}
+          >
+            <img
+              src="{{ image | image_url: width: 800 }}"
+              srcset="
+                {{ image | image_url: width: 400 }} 400w,
+                {{ image | image_url: width: 600 }} 600w,
+                {{ image | image_url: width: 800 }} 800w,
+                {{ image | image_url: width: 1000 }} 1000w,
+                {{ image | image_url: width: 1200 }} 1200w
+              "
+              sizes="(min-width: 1024px) 50vw, (min-width: 768px) 75vw, 90vw"
+              alt="{{ image.alt | escape }}"
+              width="800"
+              height="{{ image.height | divided_by: image.width | times: 800 | round }}"
+              loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+              class="product-gallery__image"
+              data-zoom-image="{{ image | image_url: width: 1600 }}"
+            >
+            
+            {%- if enable_zoom -%}
+              <button 
+                type="button" 
+                class="product-gallery__zoom-btn"
+                data-zoom-trigger
+                aria-label="{{ 'products.product.zoom_image' | t }}"
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M9 2C13.418 2 17 5.582 17 10C17 14.418 13.418 18 9 18C4.582 18 1 14.418 1 10C1 5.582 4.582 2 9 2Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M15 15L19 19" stroke="currentColor" stroke-width="2"/>
+                  <path d="M6 10H12M9 7V13" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+              </button>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
   </div>
 
   <!-- Zoom Modal (if enabled) -->
