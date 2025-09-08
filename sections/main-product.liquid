@@ -91,11 +91,14 @@
                 {% render block %}
               {%- when 'text' -%}
                 <p
-                  class="product__text inline-richtext{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}"
+                  class="product__text inline-richtext{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if block.settings.text contains 'Meta description' %} meta-desc-text{% endif %}"
                   {{ block.shopify_attributes }}
-                  {% if block.settings.text contains 'meta_description' %}data-meta-description="true"{% endif %}
                 >
-                  {{- block.settings.text -}}
+                  {%- if block.settings.text contains 'Meta description' -%}
+                    {{ product.description | strip_html | truncate: 160 }}
+                  {%- else -%}
+                    {{- block.settings.text -}}
+                  {%- endif -%}
                 </p>
               {%- when 'title' -%}
                 <div class="product__title" {{ block.shopify_attributes }}>
@@ -106,12 +109,6 @@
                     </h2>
                   </a>
                 </div>
-              {%- when 'meta_description' -%}
-                {%- if product.description != blank -%}
-                  <div class="product__meta-description" {{ block.shopify_attributes }}>
-                    <p class="product__text meta-desc-text">{{ product.description | strip_html | truncate: 160 }}</p>
-                  </div>
-                {%- endif -%}
               {%- when 'price' -%}
                 <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
                   {%- render 'price',

@@ -16,8 +16,10 @@
           }
         },
         "meta_description": {
-          "type": "meta_description",
+          "type": "text",
           "settings": {
+            "text": "Meta description will be shown here",
+            "text_style": "body"
           }
         },
         "rating": {
