@@ -106,6 +106,12 @@
                     </h2>
                   </a>
                 </div>
+              {%- when 'meta_description' -%}
+                {%- if product.description != blank -%}
+                  <div class="product__meta-description" {{ block.shopify_attributes }}>
+                    <p class="product__text meta-desc-text">{{ product.description | strip_html | truncate: 160 }}</p>
+                  </div>
+                {%- endif -%}
               {%- when 'price' -%}
                 <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
                   {%- render 'price',

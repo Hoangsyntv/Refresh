@@ -16,10 +16,8 @@
           }
         },
         "meta_description": {
-          "type": "text",
+          "type": "meta_description",
           "settings": {
-            "text": "{{ product.description | strip_html }}",
-            "text_style": "body"
           }
         },
         "rating": {
