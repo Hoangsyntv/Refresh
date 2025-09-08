@@ -1,0 +1,3 @@
+This file is created to trigger GitHub sync with Shopify
+Timestamp: 2025-01-08 - Thumbnail gallery deployment
+Please check if sync works after this commit.
