@@ -15,6 +15,20 @@
           "settings": {
           }
         },
+        "meta_description": {
+          "type": "text",
+          "settings": {
+            "text": "Meta description will be shown here",
+            "text_style": "body"
+          }
+        },
+        "sku": {
+          "type": "text",
+          "settings": {
+            "text": "SKU code will be shown here",
+            "text_style": "body"
+          }
+        },
         "rating": {
           "type": "rating",
           "settings": {
@@ -65,6 +79,8 @@
       "block_order": [
         "vendor",
         "title",
+        "meta_description",
+        "sku",
         "rating",
         "price",
         "variant_picker",
