@@ -63,7 +63,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     mainImages.forEach((img, i) => {
       img.classList.toggle('active', i === index);
-      img.style.display = i === index ? '' : 'none';
+      // Remove conflicting display style - let CSS handle visibility
+      img.style.display = '';
     });
     activeIndex = index;
   }
