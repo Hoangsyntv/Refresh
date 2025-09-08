@@ -58,7 +58,52 @@ class ProductThumbnailGallery {
     if (this.navNext) {
       this.navNext.addEventListener('click', () => this.navigateNext());
     }
+document.addEventListener('DOMContentLoaded', function () {
+  const thumbnails = document.querySelectorAll('.product-thumbnail');
+  const mainImage = document.getElementById('product-main-image');
+  let activeIndex = 0;
 
+  function setActiveThumbnail(index) {
+    thumbnails.forEach((thumb, i) => {
+      thumb.classList.toggle('active', i === index);
+      thumb.setAttribute('aria-selected', i === index ? 'true' : 'false');
+      thumb.setAttribute('tabindex', i === index ? '0' : '-1');
+    });
+    activeIndex = index;
+  }
+
+  function changeMainImage(index) {
+    const imgTag = thumbnails[index].querySelector('img');
+    if (imgTag && mainImage) {
+      mainImage.style.opacity = '0.5';
+      setTimeout(() => {
+        mainImage.src = imgTag.src.replace(/width=80/, 'width=800');
+        mainImage.alt = imgTag.alt;
+        mainImage.style.opacity = '1';
+      }, 150);
+    }
+    setActiveThumbnail(index);
+  }
+
+  thumbnails.forEach((thumb, i) => {
+    thumb.addEventListener('click', () => changeMainImage(i));
+    thumb.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        changeMainImage(i);
+      }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        const next = (i + 1) % thumbnails.length;
+        thumbnails[next].focus();
+      }
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        const prev = (i - 1 + thumbnails.length) % thumbnails.length;
+        thumbnails[prev].focus();
+      }
+    });
+  });
+
+  setActiveThumbnail(0);
+});
     // Touch/swipe support for mobile
     if (this.thumbnailsWrapper) {
       this.thumbnailsWrapper.addEventListener('touchstart', this.handleTouchStart.bind(this));
