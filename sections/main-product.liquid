@@ -95,7 +95,7 @@
                   {{ block.shopify_attributes }}
                 >
                   {%- if block.settings.text contains 'Meta description' -%}
-                    {{ product.description | strip_html | truncate: 160 }}
+                    {{ page_description | default: product.description | strip_html | truncate: 160 }}
                   {%- else -%}
                     {{- block.settings.text -}}
                   {%- endif -%}
