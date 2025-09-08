@@ -40,9 +40,9 @@
               {% if forloop.first %}aria-current="true"{% endif %}
             >
               <img
-                src="{{ image | image_url: width: 100, height: 75, crop: 'center' }}"
+                src="{{ image | image_url: width: 75, height: 75, crop: 'center' }}"
                 alt="{{ image.alt | escape }}"
-                width="100"
+                width="75"
                 height="75"
                 loading="{% if forloop.index <= 4 %}eager{% else %}lazy{% endif %}"
                 class="product-gallery__thumbnail-image"
@@ -92,18 +92,18 @@
             {% unless forloop.first %}style="display: none;"{% endunless %}
           >
             <img
-              src="{{ image | image_url: width: 800 }}"
+              src="{{ image | image_url: width: 900 }}"
               srcset="
-                {{ image | image_url: width: 400 }} 400w,
+                {{ image | image_url: width: 450 }} 450w,
                 {{ image | image_url: width: 600 }} 600w,
-                {{ image | image_url: width: 800 }} 800w,
-                {{ image | image_url: width: 1000 }} 1000w,
+                {{ image | image_url: width: 750 }} 750w,
+                {{ image | image_url: width: 900 }} 900w,
                 {{ image | image_url: width: 1200 }} 1200w
               "
-              sizes="(min-width: 1024px) 50vw, (min-width: 768px) 75vw, 90vw"
+              sizes="(min-width: 1024px) 900px, (min-width: 768px) 75vw, 90vw"
               alt="{{ image.alt | escape }}"
-              width="800"
-              height="{{ image.height | divided_by: image.width | times: 800 | round }}"
+              width="900"
+              height="{{ image.height | divided_by: image.width | times: 900 | round }}"
               loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
               class="product-gallery__image"
               data-zoom-image="{{ image | image_url: width: 1600 }}"

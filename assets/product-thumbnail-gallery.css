@@ -3,7 +3,7 @@
    ========================================================================== */
 .product-gallery {
   display: grid;
-  grid-template-columns: 100px 1fr 400px;
+  grid-template-columns: 75px 1fr 400px;
   gap: 2rem;
   max-width: 1600px;
   width: 100%;
@@ -14,12 +14,12 @@
   grid-column: 1;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  width: 100px;
+  gap: 10px;
+  width: 75px;
   z-index: 2;
 }
 .product-gallery__thumbnail {
-  width: 100px;
+  width: 75px;
   height: 75px;
   border: 2px solid transparent;
   border-radius: 8px;
@@ -60,7 +60,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  max-width: 100%;
+  max-width: 900px;
   min-width: 0;
   height: 600px;
   padding: 0 1rem;
@@ -118,11 +118,12 @@
 /* Responsive: Tablet */
 @media (max-width: 1024px) {
   .product-gallery {
-    grid-template-columns: 100px 1fr;
+    grid-template-columns: 75px 1fr;
     max-width: 100vw;
   }
   .product-gallery__main {
     height: 400px;
+    max-width: 100%;
   }
   .product-gallery__main-inner {
     max-height: 400px;
