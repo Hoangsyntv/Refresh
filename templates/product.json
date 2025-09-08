@@ -15,6 +15,13 @@
           "settings": {
           }
         },
+        "meta_description": {
+          "type": "text",
+          "settings": {
+            "text": "{{ page_description }}",
+            "text_style": "body"
+          }
+        },
         "rating": {
           "type": "rating",
           "settings": {
@@ -59,6 +66,7 @@
       "block_order": [
         "vendor",
         "title",
+        "meta_description",
         "rating",
         "price",
         "variant_picker",

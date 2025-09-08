@@ -2,6 +2,22 @@ product-info {
   display: block;
 }
 
+/* Meta Description Styling */
+.product__text[data-meta-description="true"] {
+  color: #5f6368;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0.5rem 0 1rem 0;
+  font-style: italic;
+}
+
+@media screen and (max-width: 749px) {
+  .product__text[data-meta-description="true"] {
+    font-size: 13px;
+    margin: 0.25rem 0 0.75rem 0;
+  }
+}
+
 .product {
   margin: 0;
 }
