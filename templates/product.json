@@ -18,7 +18,7 @@
         "meta_description": {
           "type": "text",
           "settings": {
-            "text": "{{ page_description }}",
+            "text": "{{ product.metafields.custom.meta_description | default: product.description | strip_html | truncate: 160 }}",
             "text_style": "body"
           }
         },
