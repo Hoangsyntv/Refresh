@@ -18,6 +18,24 @@ product-info {
   }
 }
 
+/* SKU Styling */
+.sku-text {
+  color: #666 !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  margin: 0.25rem 0 0.75rem 0 !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+@media screen and (max-width: 749px) {
+  .sku-text {
+    font-size: 12px !important;
+    margin: 0.2rem 0 0.5rem 0 !important;
+  }
+}
+
 .product {
   margin: 0;
 }
