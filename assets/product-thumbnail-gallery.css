@@ -15,10 +15,10 @@
   flex: 0 0 30% !important;
 }
 .product-gallery {
-  display: grid !important;
-  grid-template-columns: 75px 1fr !important;
+  display: grid;
+  grid-template-columns: 75px 65% 35%;
   gap: 2rem;
-  max-width: 1200px;
+  max-width: 1600px;
   width: 100%;
   position: relative;
   align-items: stretch;
