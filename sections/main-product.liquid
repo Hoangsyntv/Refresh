@@ -497,6 +497,17 @@
     window.addEventListener('load', function() {
       setTimeout(runDiagnostics, 200);
       setTimeout(ultraAggressiveFix, 1000);
+      
+      // Force height fix after everything fully loaded
+      setTimeout(function() {
+        const main = document.querySelector('.product-gallery__main');
+        const img = document.querySelector('.product-gallery__image');
+        if (main && img && img.complete && img.offsetHeight > 0) {
+          const targetHeight = img.offsetHeight + 20;
+          main.style.setProperty('height', targetHeight + 'px', 'important');
+          console.log('🎯 Window load height fix applied:', targetHeight + 'px');
+        }
+      }, 1500);
     });
     
     window.addEventListener('resize', function() {
