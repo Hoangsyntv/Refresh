@@ -4,6 +4,60 @@
 
 console.log('🔧 MAIN IMAGE WHITESPACE FIX - Debug Script');
 
+// Auto-apply fix on page load
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('🚀 Auto-applying main image fix on page load...');
+  
+  // Wait for elements to be ready
+  setTimeout(() => {
+    const main = document.querySelector('.product-gallery__main');
+    if (main) {
+      const mainWidth = main.offsetWidth;
+      const mediaWrapper = document.querySelector('.product__media-wrapper');
+      const mediaWidth = mediaWrapper ? mediaWrapper.offsetWidth : 0;
+      
+      // Check if fix is needed (less than 90% utilization)
+      if (mediaWidth > 0) {
+        const expectedWidth = mediaWidth - 75 - 16; // thumbnails + gap
+        const utilization = Math.round((mainWidth / expectedWidth) * 100);
+        
+        console.log(`📊 Page load check: ${utilization}% utilization (${mainWidth}px/${expectedWidth}px)`);
+        
+        if (utilization < 90) {
+          console.log('⚠️ Auto-applying whitespace fix...');
+          fixMainImageWhitespace();
+        } else {
+          console.log('✅ No fix needed - already optimal');
+        }
+      }
+    }
+  }, 1000);
+});
+
+// Also apply when window resizes
+window.addEventListener('resize', function() {
+  clearTimeout(window.resizeTimeout);
+  window.resizeTimeout = setTimeout(() => {
+    console.log('📐 Window resized - checking layout...');
+    const main = document.querySelector('.product-gallery__main');
+    if (main) {
+      const mainWidth = main.offsetWidth;
+      const mediaWrapper = document.querySelector('.product__media-wrapper');
+      const mediaWidth = mediaWrapper ? mediaWrapper.offsetWidth : 0;
+      
+      if (mediaWidth > 0) {
+        const expectedWidth = mediaWidth - 75 - 16;
+        const utilization = Math.round((mainWidth / expectedWidth) * 100);
+        
+        if (utilization < 90) {
+          console.log('⚠️ Applying fix after resize...');
+          fixMainImageWhitespace();
+        }
+      }
+    }
+  }, 500);
+});
+
 // Function to apply aggressive main image fix
 function fixMainImageWhitespace() {
   console.log('=== APPLYING AGGRESSIVE MAIN IMAGE WHITESPACE FIX ===');
