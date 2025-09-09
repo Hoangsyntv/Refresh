@@ -47,30 +47,49 @@
       max-width: none !important;
       width: calc(100% - 75px - 1rem) !important;
       min-width: calc(100% - 75px - 1rem) !important;
+      height: auto !important;
+      min-height: auto !important;
+      max-height: none !important;
       padding: 0 !important;
       margin: 0 !important;
       flex-basis: calc(100% - 75px - 1rem) !important;
       flex-grow: 0 !important;
       flex-shrink: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
     }
     
     html body div.page-width div.product.grid.grid--2-col-tablet div.grid__item.product__media-wrapper .product-gallery__main-inner {
       max-width: none !important;
       width: 100% !important;
       min-width: 0 !important;
+      height: auto !important;
+      min-height: auto !important;
+      max-height: none !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
     }
     
     html body div.page-width div.product.grid.grid--2-col-tablet div.grid__item.product__media-wrapper .product-gallery__main-image,
     html body div.page-width div.product.grid.grid--2-col-tablet div.grid__item.product__media-wrapper .product-gallery__main-image.active {
       max-width: none !important;
       width: 100% !important;
+      height: auto !important;
+      min-height: auto !important;
+      max-height: none !important;
+      position: relative !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
     }
     
     html body div.page-width div.product.grid.grid--2-col-tablet div.grid__item.product__media-wrapper .product-gallery__image {
       max-width: none !important;
       width: 100% !important;
-      height: 100% !important;
-      object-fit: cover !important;
+      height: auto !important;
+      object-fit: contain !important;
       object-position: center !important;
     }
     
@@ -253,11 +272,17 @@
         main.style.setProperty('max-width', 'none', 'important');
         main.style.setProperty('width', 'calc(100% - 75px - 1rem)', 'important');
         main.style.setProperty('min-width', 'calc(100% - 75px - 1rem)', 'important');
+        main.style.setProperty('height', 'auto', 'important');
+        main.style.setProperty('min-height', 'auto', 'important');
+        main.style.setProperty('max-height', 'none', 'important');
         main.style.setProperty('padding', '0', 'important');
         main.style.setProperty('margin', '0', 'important');
         main.style.setProperty('flex-basis', 'calc(100% - 75px - 1rem)', 'important');
         main.style.setProperty('flex-grow', '0', 'important');
         main.style.setProperty('flex-shrink', '0', 'important');
+        main.style.setProperty('display', 'flex', 'important');
+        main.style.setProperty('align-items', 'center', 'important');
+        main.style.setProperty('justify-content', 'center', 'important');
         
         // Apply to all nested elements
         const allElements = main.querySelectorAll('*');
@@ -265,11 +290,21 @@
           if (el.tagName === 'IMG' || el.className.includes('image')) {
             el.style.setProperty('max-width', 'none', 'important');
             el.style.setProperty('width', '100%', 'important');
-            el.style.setProperty('height', '100%', 'important');
-            el.style.setProperty('object-fit', 'cover', 'important');
-          } else if (el.className.includes('inner') || el.className.includes('container')) {
+            el.style.setProperty('height', 'auto', 'important');
+            el.style.setProperty('object-fit', 'contain', 'important');
+            el.style.setProperty('object-position', 'center', 'important');
+          } else if (el.className.includes('inner') || el.className.includes('container') || el.className.includes('main-image')) {
             el.style.setProperty('max-width', 'none', 'important');
             el.style.setProperty('width', '100%', 'important');
+            el.style.setProperty('height', 'auto', 'important');
+            el.style.setProperty('min-height', 'auto', 'important');
+            el.style.setProperty('max-height', 'none', 'important');
+            if (el.className.includes('main-image')) {
+              el.style.setProperty('position', 'relative', 'important');
+              el.style.setProperty('display', 'flex', 'important');
+              el.style.setProperty('align-items', 'center', 'important');
+              el.style.setProperty('justify-content', 'center', 'important');
+            }
           }
         });
         
