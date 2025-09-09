@@ -18,6 +18,42 @@
   
   {{ 'product-thumbnail-gallery.css' | asset_url | stylesheet_tag }}
 
+  {%- comment -%} Inline CSS fix for main image whitespace issue {%- endcomment -%}
+  <style>
+    /* Force main image area to use full available width */
+    .product__media-wrapper .product-gallery {
+      display: grid !important;
+      grid-template-columns: 75px 1fr !important;
+      gap: 1rem !important;
+      max-width: none !important;
+      width: 100% !important;
+    }
+    .product__media-wrapper .product-gallery__main {
+      max-width: none !important;
+      width: calc(100% - 75px - 1rem) !important;
+      min-width: calc(100% - 75px - 1rem) !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+    .product__media-wrapper .product-gallery__main-inner {
+      max-width: none !important;
+      width: 100% !important;
+      min-width: 0 !important;
+    }
+    .product__media-wrapper .product-gallery__main-image,
+    .product__media-wrapper .product-gallery__main-image.active {
+      max-width: none !important;
+      width: 100% !important;
+    }
+    .product__media-wrapper .product-gallery__image {
+      max-width: none !important;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      object-position: center !important;
+    }
+  </style>
+
   {% unless product.has_only_default_variant %}
     {{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
     {{ 'component-swatch-input.css' | asset_url | stylesheet_tag }}
