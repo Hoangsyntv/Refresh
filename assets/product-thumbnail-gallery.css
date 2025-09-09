@@ -574,3 +574,40 @@ img.product-gallery__image,
   max-height: none !important;
   aspect-ratio: auto !important;
 }
+
+/* SINGLE IMAGE DISPLAY - Only show active image */
+.product-gallery__main-image {
+  display: none !important; /* Hide all images by default */
+}
+
+.product-gallery__main-image.active {
+  display: block !important; /* Only show active image */
+}
+
+/* Ensure only one image controls container height */
+.product-gallery__main {
+  position: relative !important;
+}
+
+.product-gallery__main-image:not(.active) {
+  display: none !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+}
+
+/* Active image fills container */
+.product-gallery__main-image.active {
+  display: block !important;
+  visibility: visible !important;
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
+}
+
+.product-gallery__main-image.active .product-gallery__image {
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+}
