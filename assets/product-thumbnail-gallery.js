@@ -233,3 +233,16 @@ window.addEventListener('error', function(e) {
     console.error('🚨 Product Gallery Error:', e.error);
   }
 });
+
+// --- ULTRA-AGGRESSIVE INLINE STYLE OVERRIDE ---
+document.addEventListener('DOMContentLoaded', function() {
+  const mediaWrapper = document.querySelector('.product__media-wrapper');
+  const infoWrapper = document.querySelector('.product__info-wrapper');
+  if (mediaWrapper) {
+    mediaWrapper.style.width = '100%';
+    mediaWrapper.style.maxWidth = '600px';
+  }
+  if (infoWrapper) {
+    infoWrapper.style.width = '100%';
+  }
+});
