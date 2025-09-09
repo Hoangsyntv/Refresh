@@ -20,6 +20,20 @@
 
   {%- comment -%} Ultra-aggressive inline fix for main image whitespace issue {%- endcomment -%}
   <style>
+    /* Fix .product-page container that's limiting width */
+    .product__media-wrapper .product-page {
+      max-width: none !important;
+      width: 100% !important;
+      display: block !important;
+      grid-template-columns: 1fr !important;
+    }
+    
+    /* Fix media wrapper */
+    .product__media-wrapper {
+      max-width: none !important;
+      width: 100% !important;
+    }
+    
     /* Ultra-specific selectors to force main image area to use full width */
     html body div.page-width div.product.grid.grid--2-col-tablet div.grid__item.product__media-wrapper .product-gallery {
       display: grid !important;
@@ -209,6 +223,24 @@
         }
         
         console.log('DOM path:', parents.map(p => p.tagName + '.' + p.className).join(' > '));
+        
+        // Fix the parent .product-page container first
+        const productPage = document.querySelector('.product-page');
+        if (productPage) {
+          console.log('🔧 Fixing .product-page container...');
+          productPage.style.setProperty('max-width', 'none', 'important');
+          productPage.style.setProperty('width', '100%', 'important');
+          productPage.style.setProperty('grid-template-columns', '1fr', 'important');
+          productPage.style.setProperty('display', 'block', 'important');
+        }
+        
+        // Fix the media wrapper
+        const mediaWrapper = document.querySelector('.product__media-wrapper');
+        if (mediaWrapper) {
+          console.log('🔧 Fixing media wrapper...');
+          mediaWrapper.style.setProperty('max-width', 'none', 'important');
+          mediaWrapper.style.setProperty('width', '100%', 'important');
+        }
         
         // Apply fixes to gallery
         gallery.style.setProperty('display', 'grid', 'important');
