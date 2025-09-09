@@ -261,9 +261,9 @@
 }
 .product-page {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 60% 40%;
   gap: 1rem;
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
   align-items: start;
 }
