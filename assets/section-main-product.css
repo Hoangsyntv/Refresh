@@ -2,6 +2,36 @@ product-info {
   display: block;
 }
 
+/* Ultra-specific CSS selectors for media wrapper and info wrapper */
+.page-width .product.grid .grid__item.product__media-wrapper[data-compact-layout] {
+  width: 75% !important;
+  max-width: 75% !important;
+  flex: 0 0 75% !important;
+  padding-right: 1rem !important;
+}
+
+.page-width .product.grid .product__info-wrapper.grid__item[data-compact-layout] {
+  width: 25% !important;
+  max-width: 25% !important;
+  flex: 0 0 25% !important;
+  padding-left: 1rem !important;
+}
+
+/* Additional overrides for responsive behavior */
+@media screen and (min-width: 750px) {
+  .page-width .product.grid .grid__item.product__media-wrapper[data-compact-layout] {
+    width: 75% !important;
+    max-width: 75% !important;
+    flex: 0 0 75% !important;
+  }
+  
+  .page-width .product.grid .product__info-wrapper.grid__item[data-compact-layout] {
+    width: 25% !important;
+    max-width: 25% !important;
+    flex: 0 0 25% !important;
+  }
+}
+
 /* Meta Description Styling */
 .meta-desc-text {
   color: #5f6368 !important;
