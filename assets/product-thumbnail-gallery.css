@@ -498,3 +498,79 @@ img.product-gallery__image,
   box-sizing: border-box !important;
   display: block !important;
 }
+
+/* IMAGE-FIRST APPROACH - Let images control container size */
+.product-gallery__main {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: visible !important;
+}
+
+.product-gallery__main-inner {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.product-gallery__main-image {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.product-gallery__image {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+  min-width: 100% !important;
+  max-height: none !important;
+  min-height: auto !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  display: block !important;
+  vertical-align: top !important;
+}
+
+/* Override ALL possible container constraints */
+*[class*="product"] .product-gallery__main,
+*[class*="media"] .product-gallery__main,
+.page-width .product-gallery__main,
+.grid .product-gallery__main {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+}
+
+*[class*="product"] .product-gallery__main-inner,
+*[class*="media"] .product-gallery__main-inner,
+.page-width .product-gallery__main-inner,
+.grid .product-gallery__main-inner {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+}
+
+*[class*="product"] .product-gallery__main-image,
+*[class*="media"] .product-gallery__main-image,
+.page-width .product-gallery__main-image,
+.grid .product-gallery__main-image {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+}
