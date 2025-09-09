@@ -181,14 +181,37 @@ document.addEventListener('DOMContentLoaded', function () {
     console.error('❌ Product Gallery: Initialization failed:', error);
   }
   
-  // Add global debug function
+  // Add global debug functions
   window.debugProductGallery = function() {
     debugCurrentState();
-    console.log('🎯 Use setActiveThumbnail(index) to test switching');
+    console.log('🎯 Use window.setActiveThumbnail(index) to test switching');
     return { thumbnails, mainImages, activeIndex, availableVariants };
   };
   
-  console.log('💡 Debug: Type debugProductGallery() in console for details');
+  // Make setActiveThumbnail globally accessible for debugging
+  window.setActiveThumbnail = setActiveThumbnail;
+  
+  // Add quick test functions
+  window.testGallery = function() {
+    console.log('🧪 Testing gallery functionality...');
+    console.log('📊 Current state:', { 
+      thumbnails: thumbnails.length, 
+      mainImages: mainImages.length, 
+      activeIndex 
+    });
+    
+    if (thumbnails.length > 1) {
+      console.log('🔄 Testing thumbnail switching...');
+      setTimeout(() => setActiveThumbnail(1), 500);
+      setTimeout(() => setActiveThumbnail(0), 1500);
+      setTimeout(() => console.log('✅ Test complete'), 2000);
+    }
+  };
+  
+  console.log('💡 Debug Commands:');
+  console.log('  - debugProductGallery() - Show current state');
+  console.log('  - setActiveThumbnail(index) - Switch to thumbnail');
+  console.log('  - testGallery() - Auto test switching');
 });
 
 // Global error handler for gallery
