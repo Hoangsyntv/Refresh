@@ -2,13 +2,17 @@
    Product Thumbnail Gallery - 3-Zone Grid Layout for Desktop
    ========================================================================== */
 
-/* Override Shopify's base grid to make media column wider, info column narrower */
-.product.grid--2-col-tablet .product__media-wrapper {
-  width: calc(70% - var(--grid-desktop-horizontal-spacing) / 2) !important;
+/* Override Shopify's product layout with ultra-specific selectors */
+.page-width .product.grid--2-col-tablet .grid__item.product__media-wrapper {
+  width: 70% !important;
+  max-width: 70% !important;
+  flex: 0 0 70% !important;
 }
 
-.product.grid--2-col-tablet .product__info-wrapper {
-  width: calc(30% - var(--grid-desktop-horizontal-spacing) / 2) !important;
+.page-width .product.grid--2-col-tablet .grid__item.product__info-wrapper {
+  width: 30% !important;
+  max-width: 30% !important;
+  flex: 0 0 30% !important;
 }
 .product-gallery {
   display: grid !important;
@@ -163,11 +167,13 @@
 }
 /* Responsive: Tablet */
 @media (max-width: 1024px) {
-  /* Reset Shopify grid on tablet - stack vertically */
-  .product.grid--2-col-tablet .product__media-wrapper,
-  .product.grid--2-col-tablet .product__info-wrapper {
+  /* Reset compact layout on tablet - stack vertically */
+  [data-compact-layout] {
     width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
   }
+}
   
   .product-gallery {
     grid-template-columns: 75px 1fr !important;
