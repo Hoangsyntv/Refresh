@@ -2,30 +2,79 @@ product-info {
   display: block;
 }
 
-/* Ultra-specific CSS selectors for media wrapper and info wrapper */
-.page-width .product.grid .grid__item.product__media-wrapper[data-compact-layout] {
+/* Force product container to use flexbox */
+.page-width .product.grid.grid--2-col-tablet {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-start !important;
+}
+
+/* Ultra-specific CSS selectors with highest priority to override base.css */
+html body div.page-width div.product.grid.grid--2-col-tablet div.grid__item.product__media-wrapper[data-compact-layout] {
+  width: 75% !important;
+  max-width: 75% !important;
+  flex: 0 0 75% !important;
+  padding-right: 1rem !important;
+  box-sizing: border-box !important;
+}
+
+html body div.page-width div.product.grid.grid--2-col-tablet div.product__info-wrapper.grid__item[data-compact-layout] {
+  width: 25% !important;
+  max-width: 25% !important;
+  flex: 0 0 25% !important;
+  padding-left: 1rem !important;
+  box-sizing: border-box !important;
+}
+
+/* Backup selectors with multiple class combinations */
+.page-width .product.grid.grid--2-col-tablet .grid__item.product__media-wrapper[data-compact-layout] {
   width: 75% !important;
   max-width: 75% !important;
   flex: 0 0 75% !important;
   padding-right: 1rem !important;
 }
 
-.page-width .product.grid .product__info-wrapper.grid__item[data-compact-layout] {
+.page-width .product.grid.grid--2-col-tablet .product__info-wrapper.grid__item[data-compact-layout] {
   width: 25% !important;
   max-width: 25% !important;
   flex: 0 0 25% !important;
   padding-left: 1rem !important;
 }
 
+/* Override specific base.css grid rules */
+.product.grid--2-col-tablet .grid__item.product__media-wrapper[data-compact-layout] {
+  width: 75% !important;
+  max-width: 75% !important;
+  flex: 0 0 75% !important;
+}
+
+.product.grid--2-col-tablet .product__info-wrapper.grid__item[data-compact-layout] {
+  width: 25% !important;
+  max-width: 25% !important;
+  flex: 0 0 25% !important;
+}
+
 /* Additional overrides for responsive behavior */
 @media screen and (min-width: 750px) {
-  .page-width .product.grid .grid__item.product__media-wrapper[data-compact-layout] {
+  html body div.page-width div.product.grid.grid--2-col-tablet div.grid__item.product__media-wrapper[data-compact-layout] {
     width: 75% !important;
     max-width: 75% !important;
     flex: 0 0 75% !important;
   }
   
-  .page-width .product.grid .product__info-wrapper.grid__item[data-compact-layout] {
+  html body div.page-width div.product.grid.grid--2-col-tablet div.product__info-wrapper.grid__item[data-compact-layout] {
+    width: 25% !important;
+    max-width: 25% !important;
+    flex: 0 0 25% !important;
+  }
+  
+  .product.grid--2-col-tablet .grid__item.product__media-wrapper[data-compact-layout] {
+    width: 75% !important;
+    max-width: 75% !important;
+    flex: 0 0 75% !important;
+  }
+  
+  .product.grid--2-col-tablet .product__info-wrapper.grid__item[data-compact-layout] {
     width: 25% !important;
     max-width: 25% !important;
     flex: 0 0 25% !important;

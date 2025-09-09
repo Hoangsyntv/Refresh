@@ -79,7 +79,7 @@
   {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
   <div class="page-width">
     <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
-      <div class="grid__item product__media-wrapper" style="width: 75% !important; max-width: 75% !important; flex: 0 0 75% !important; padding-right: 1rem !important;" data-compact-layout>
+      <div class="grid__item product__media-wrapper" style="width: 75% !important; max-width: 75% !important; flex: 0 0 75% !important; padding-right: 1rem !important; box-sizing: border-box !important; min-width: 75% !important;" data-compact-layout>
         {%- if product.images.size > 1 -%}
           {% render 'product-thumbnail-gallery', 
              product: product, 
@@ -89,7 +89,7 @@
           {% render 'product-media-gallery', variant_images: variant_images %}
         {%- endif -%}
       </div>
-      <div class="product__info-wrapper grid__item{% if settings.page_width > 1400 and section.settings.media_size == "small" %} product__info-wrapper--extra-padding{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}" style="width: 25% !important; max-width: 25% !important; flex: 0 0 25% !important; padding-left: 1rem !important;" data-compact-layout>
+      <div class="product__info-wrapper grid__item{% if settings.page_width > 1400 and section.settings.media_size == "small" %} product__info-wrapper--extra-padding{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}" style="width: 25% !important; max-width: 25% !important; flex: 0 0 25% !important; padding-left: 1rem !important; box-sizing: border-box !important; min-width: 25% !important;" data-compact-layout>
         <section
           id="ProductInfo-{{ section.id }}"
           class="product__info-container{% if section.settings.enable_sticky_info %} product__column-sticky{% endif %}"
