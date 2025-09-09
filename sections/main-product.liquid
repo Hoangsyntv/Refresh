@@ -523,14 +523,13 @@
       setTimeout(runDiagnostics, 200);
       setTimeout(ultraAggressiveFix, 1000);
       
-      // Force height fix after everything fully loaded
+      // Force perfect square container
       setTimeout(function() {
         const main = document.querySelector('.product-gallery__main');
-        const img = document.querySelector('.product-gallery__image');
-        if (main && img && img.complete && img.offsetHeight > 0) {
-          const targetHeight = img.offsetHeight + 20;
-          main.style.setProperty('height', targetHeight + 'px', 'important');
-          console.log('🎯 Window load height fix applied:', targetHeight + 'px');
+        if (main && main.offsetWidth > 0) {
+          const targetWidth = main.offsetWidth;
+          main.style.cssText += 'height: ' + targetWidth + 'px !important; max-height: ' + targetWidth + 'px !important;';
+          console.log('🎯 Perfect square container applied:', targetWidth + 'x' + targetWidth);
         }
       }, 1500);
     });
