@@ -466,7 +466,153 @@
     window.inspectDOM = inspectDOM;
     window.ultraAggressiveFix = ultraAggressiveFix;
     
+    // Advanced debug functions for browser console
+    window.debugImageDimensions = function() {
+      console.log('🔍 === DETAILED IMAGE DIMENSIONS DEBUG ===');
+      
+      const main = document.querySelector('.product-gallery__main');
+      const mainInner = document.querySelector('.product-gallery__main-inner');
+      const mainImage = document.querySelector('.product-gallery__main-image.active') || document.querySelector('.product-gallery__main-image');
+      const actualImg = mainImage ? mainImage.querySelector('img') || mainImage.querySelector('.product-gallery__image') : null;
+      
+      if (!main || !mainInner || !mainImage) {
+        console.log('❌ Missing elements:', { main: !!main, mainInner: !!mainInner, mainImage: !!mainImage });
+        return;
+      }
+      
+      console.log('📊 CONTAINER DIMENSIONS:');
+      console.log('Main container:', {
+        width: main.offsetWidth,
+        height: main.offsetHeight,
+        computedStyle: {
+          width: getComputedStyle(main).width,
+          height: getComputedStyle(main).height,
+          minHeight: getComputedStyle(main).minHeight,
+          maxHeight: getComputedStyle(main).maxHeight,
+          display: getComputedStyle(main).display,
+          position: getComputedStyle(main).position
+        }
+      });
+      
+      console.log('Main inner:', {
+        width: mainInner.offsetWidth,
+        height: mainInner.offsetHeight,
+        computedStyle: {
+          width: getComputedStyle(mainInner).width,
+          height: getComputedStyle(mainInner).height,
+          minHeight: getComputedStyle(mainInner).minHeight,
+          maxHeight: getComputedStyle(mainInner).maxHeight,
+          display: getComputedStyle(mainInner).display,
+          position: getComputedStyle(mainInner).position,
+          overflow: getComputedStyle(mainInner).overflow
+        }
+      });
+      
+      console.log('Main image container:', {
+        width: mainImage.offsetWidth,
+        height: mainImage.offsetHeight,
+        computedStyle: {
+          width: getComputedStyle(mainImage).width,
+          height: getComputedStyle(mainImage).height,
+          position: getComputedStyle(mainImage).position,
+          top: getComputedStyle(mainImage).top,
+          left: getComputedStyle(mainImage).left,
+          display: getComputedStyle(mainImage).display,
+          opacity: getComputedStyle(mainImage).opacity,
+          visibility: getComputedStyle(mainImage).visibility
+        }
+      });
+      
+      if (actualImg) {
+        console.log('📷 ACTUAL IMAGE:');
+        console.log('Image element:', {
+          src: actualImg.src,
+          naturalWidth: actualImg.naturalWidth,
+          naturalHeight: actualImg.naturalHeight,
+          width: actualImg.offsetWidth,
+          height: actualImg.offsetHeight,
+          computedStyle: {
+            width: getComputedStyle(actualImg).width,
+            height: getComputedStyle(actualImg).height,
+            objectFit: getComputedStyle(actualImg).objectFit,
+            objectPosition: getComputedStyle(actualImg).objectPosition,
+            display: getComputedStyle(actualImg).display
+          }
+        });
+        
+        // Calculate aspect ratios
+        const containerRatio = mainInner.offsetWidth / mainInner.offsetHeight;
+        const imageRatio = actualImg.naturalWidth / actualImg.naturalHeight;
+        console.log('📐 ASPECT RATIOS:');
+        console.log('Container ratio:', containerRatio.toFixed(2));
+        console.log('Image ratio:', imageRatio.toFixed(2));
+        console.log('Ratio match:', Math.abs(containerRatio - imageRatio) < 0.1 ? '✅ Good' : '❌ Mismatch');
+      }
+      
+      // Check for conflicting CSS rules
+      console.log('🔧 CSS CONFLICTS CHECK:');
+      const mainStyles = getComputedStyle(main);
+      const innerStyles = getComputedStyle(mainInner);
+      const imageStyles = getComputedStyle(mainImage);
+      
+      const conflicts = [];
+      if (mainStyles.height !== 'auto' && mainStyles.height !== '0px') conflicts.push(`Main height: ${mainStyles.height}`);
+      if (innerStyles.height !== 'auto' && innerStyles.height !== '0px') conflicts.push(`Inner height: ${innerStyles.height}`);
+      if (innerStyles.maxHeight !== 'none') conflicts.push(`Inner max-height: ${innerStyles.maxHeight}`);
+      if (imageStyles.position === 'absolute') conflicts.push(`Image position: absolute`);
+      if (imageStyles.height !== 'auto' && imageStyles.height !== '0px') conflicts.push(`Image height: ${imageStyles.height}`);
+      
+      if (conflicts.length > 0) {
+        console.log('❌ Found conflicts:', conflicts);
+      } else {
+        console.log('✅ No obvious conflicts detected');
+      }
+      
+      return { main, mainInner, mainImage, actualImg };
+    };
+    
+    window.forceImageFitDebug = function() {
+      console.log('🚀 FORCING IMAGE TO FIT CONTAINER WIDTH...');
+      
+      const elements = window.debugImageDimensions();
+      if (!elements.actualImg) return false;
+      
+      const { main, mainInner, mainImage, actualImg } = elements;
+      
+      // Force containers to fit image
+      const imageRatio = actualImg.naturalWidth / actualImg.naturalHeight;
+      const containerWidth = main.offsetWidth;
+      const targetHeight = containerWidth / imageRatio;
+      
+      console.log(`🎯 Target: width=${containerWidth}px, height=${targetHeight}px (ratio=${imageRatio.toFixed(2)})`);
+      
+      // Apply styles
+      main.style.setProperty('height', targetHeight + 'px', 'important');
+      main.style.setProperty('min-height', targetHeight + 'px', 'important');
+      main.style.setProperty('max-height', targetHeight + 'px', 'important');
+      
+      mainInner.style.setProperty('height', targetHeight + 'px', 'important');
+      mainInner.style.setProperty('min-height', targetHeight + 'px', 'important');
+      mainInner.style.setProperty('max-height', targetHeight + 'px', 'important');
+      
+      mainImage.style.setProperty('height', targetHeight + 'px', 'important');
+      mainImage.style.setProperty('min-height', targetHeight + 'px', 'important');
+      mainImage.style.setProperty('max-height', targetHeight + 'px', 'important');
+      
+      actualImg.style.setProperty('width', '100%', 'important');
+      actualImg.style.setProperty('height', '100%', 'important');
+      actualImg.style.setProperty('object-fit', 'cover', 'important');
+      
+      console.log('✅ Applied forced dimensions. Check result.');
+      setTimeout(() => window.debugImageDimensions(), 100);
+      
+      return true;
+    };
+    
     console.log('🎯 DOM Inspector + Ultra-Aggressive Fix loaded');
+    console.log('🔧 Debug functions ready:');
+    console.log('- window.debugImageDimensions() - Detailed dimension analysis');
+    console.log('- window.forceImageFitDebug() - Force image to fit container width');
     console.log('💡 Run inspectDOM() or ultraAggressiveFix() manually in console if needed');
   </script>
 
