@@ -461,11 +461,10 @@
         
         console.log('✅ Ultra-aggressive fixes applied');
         
-        // IMMEDIATE square fix - no delay
+        // AUTO HEIGHT fix - let container adjust to image
         if (main && main.offsetWidth > 0) {
-          const targetWidth = main.offsetWidth;
-          main.style.cssText += 'height: ' + targetWidth + 'px !important; max-height: ' + targetWidth + 'px !important;';
-          console.log('🟦 IMMEDIATE square fix applied:', targetWidth + 'x' + targetWidth);
+          main.style.cssText += 'height: auto !important; max-height: none !important; min-height: auto !important;';
+          console.log('🔄 AUTO HEIGHT fix applied - container will adjust to image');
         }
         
         // Verify results
@@ -475,11 +474,10 @@
           const utilization = Math.round((newWidth / (parentWidth - 75 - 16)) * 100);
           console.log(`📊 New utilization: ${utilization}% (${newWidth}px / ${parentWidth - 75 - 16}px)`);
           
-          // Double-check square fix  
-          if (main && main.offsetWidth > 0 && main.offsetHeight !== main.offsetWidth) {
-            const targetWidth = main.offsetWidth;
-            main.style.cssText += 'height: ' + targetWidth + 'px !important; max-height: ' + targetWidth + 'px !important;';
-            console.log('🔲 Square fix retry applied:', targetWidth + 'x' + targetWidth);
+          // Ensure auto height maintained
+          if (main && main.offsetWidth > 0) {
+            main.style.cssText += 'height: auto !important; max-height: none !important; min-height: auto !important;';
+            console.log('🔄 Auto height maintained:', main.offsetWidth + 'x' + main.offsetHeight);
           }
         }, 100);
         
@@ -518,13 +516,12 @@
       setTimeout(runDiagnostics, 200);
       setTimeout(ultraAggressiveFix, 1000);
       
-      // Force perfect square container
+      // Force auto height container
       setTimeout(function() {
         const main = document.querySelector('.product-gallery__main');
         if (main && main.offsetWidth > 0) {
-          const targetWidth = main.offsetWidth;
-          main.style.cssText += 'height: ' + targetWidth + 'px !important; max-height: ' + targetWidth + 'px !important;';
-          console.log('🎯 Perfect square container applied:', targetWidth + 'x' + targetWidth);
+          main.style.cssText += 'height: auto !important; max-height: none !important; min-height: auto !important;';
+          console.log('🎯 Perfect auto height container applied:', main.offsetWidth + 'x' + main.offsetHeight);
         }
       }, 1500);
     });
