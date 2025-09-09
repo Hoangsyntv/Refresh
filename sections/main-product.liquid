@@ -78,83 +78,225 @@
     }
   </style>
   
-  {%- comment -%} Immediate JavaScript fix to ensure whitespace is eliminated {%- endcomment -%}
+  {%- comment -%} DOM Inspector + Ultra-Aggressive Fix {%- endcomment -%}
   <script>
-    // Immediate fix function
-    function forceMainImageFix() {
-      console.log('🔧 Applying immediate main image fix...');
+    // DOM Inspector Function
+    function inspectDOM() {
+      console.log('🔍 === DOM STRUCTURE INSPECTION ===');
       
-      const gallery = document.querySelector('.product-gallery');
-      const main = document.querySelector('.product-gallery__main');
-      const mainInner = document.querySelector('.product-gallery__main-inner');
-      const mainImages = document.querySelectorAll('.product-gallery__main-image');
-      const images = document.querySelectorAll('.product-gallery__image');
+      // Find all possible gallery containers
+      const possibleGalleries = [
+        '.product-gallery',
+        '[data-product-gallery]',
+        '.product__media-wrapper',
+        '.media-gallery',
+        '.product-media'
+      ];
+      
+      possibleGalleries.forEach(selector => {
+        const el = document.querySelector(selector);
+        if (el) {
+          console.log(`✅ Found: ${selector}`);
+          console.log('Classes:', el.className);
+          console.log('Width:', el.offsetWidth);
+          console.log('Computed styles:', window.getComputedStyle(el));
+          console.log('Parent:', el.parentElement?.className);
+          console.log('Children:', Array.from(el.children).map(c => c.className));
+        } else {
+          console.log(`❌ Not found: ${selector}`);
+        }
+      });
+      
+      // Find all possible main containers
+      const possibleMains = [
+        '.product-gallery__main',
+        '.media-gallery__main',
+        '.product-media__main',
+        '[data-media-wrapper]'
+      ];
+      
+      possibleMains.forEach(selector => {
+        const el = document.querySelector(selector);
+        if (el) {
+          console.log(`✅ Main found: ${selector}`);
+          console.log('Classes:', el.className);
+          console.log('Width:', el.offsetWidth);
+          console.log('Max-width:', window.getComputedStyle(el).maxWidth);
+        }
+      });
+      
+      // Inspect the actual product page structure
+      const productPage = document.querySelector('.product');
+      if (productPage) {
+        console.log('🏷️ Product page structure:');
+        console.log('Product classes:', productPage.className);
+        const mediaWrapper = productPage.querySelector('[class*="media"]');
+        if (mediaWrapper) {
+          console.log('Media wrapper classes:', mediaWrapper.className);
+          console.log('Media wrapper width:', mediaWrapper.offsetWidth);
+        }
+      }
+    }
+    
+    // Ultra-Aggressive Fix Function  
+    function ultraAggressiveFix() {
+      console.log('🚀 === ULTRA-AGGRESSIVE FIX STARTING ===');
+      
+      // Find any element that might be the gallery
+      const selectors = [
+        '.product-gallery',
+        '[data-product-gallery]',
+        '.product__media-wrapper .product-gallery',
+        '.media-gallery',
+        '.product-media'
+      ];
+      
+      let gallery = null;
+      let main = null;
+      
+      for (const selector of selectors) {
+        gallery = document.querySelector(selector);
+        if (gallery) {
+          console.log(`✅ Gallery found with selector: ${selector}`);
+          break;
+        }
+      }
+      
+      if (!gallery) {
+        console.log('❌ No gallery found, trying to create structure');
+        return false;
+      }
+      
+      // Find main container
+      const mainSelectors = [
+        '.product-gallery__main',
+        '.media-gallery__main', 
+        '[data-media-wrapper]',
+        '.product-media__main'
+      ];
+      
+      for (const selector of mainSelectors) {
+        main = document.querySelector(selector);
+        if (main) {
+          console.log(`✅ Main found with selector: ${selector}`);
+          break;
+        }
+      }
+      
+      if (!main) {
+        // Look for any direct child that might be the main area
+        const children = Array.from(gallery.children);
+        main = children.find(child => 
+          child.offsetWidth > 200 || 
+          child.querySelector('img') ||
+          child.className.includes('main') ||
+          child.className.includes('media')
+        );
+        if (main) {
+          console.log('✅ Main found as gallery child:', main.className);
+        }
+      }
       
       if (gallery && main) {
-        // Force grid layout
+        console.log('🔧 Applying ultra-aggressive fixes...');
+        
+        // Get parent containers for ultra-specific targeting
+        let current = gallery;
+        const parents = [];
+        while (current && current !== document.body) {
+          parents.unshift(current);
+          current = current.parentElement;
+        }
+        
+        console.log('DOM path:', parents.map(p => p.tagName + '.' + p.className).join(' > '));
+        
+        // Apply fixes to gallery
         gallery.style.setProperty('display', 'grid', 'important');
         gallery.style.setProperty('grid-template-columns', '75px 1fr', 'important');
         gallery.style.setProperty('gap', '1rem', 'important');
         gallery.style.setProperty('max-width', 'none', 'important');
         gallery.style.setProperty('width', '100%', 'important');
         
-        // Force main container
+        // Apply fixes to main
         main.style.setProperty('max-width', 'none', 'important');
         main.style.setProperty('width', 'calc(100% - 75px - 1rem)', 'important');
         main.style.setProperty('min-width', 'calc(100% - 75px - 1rem)', 'important');
         main.style.setProperty('padding', '0', 'important');
         main.style.setProperty('margin', '0', 'important');
+        main.style.setProperty('flex-basis', 'calc(100% - 75px - 1rem)', 'important');
+        main.style.setProperty('flex-grow', '0', 'important');
+        main.style.setProperty('flex-shrink', '0', 'important');
         
-        if (mainInner) {
-          mainInner.style.setProperty('max-width', 'none', 'important');
-          mainInner.style.setProperty('width', '100%', 'important');
-          mainInner.style.setProperty('min-width', '0', 'important');
-        }
-        
-        mainImages.forEach(img => {
-          img.style.setProperty('max-width', 'none', 'important');
-          img.style.setProperty('width', '100%', 'important');
+        // Apply to all nested elements
+        const allElements = main.querySelectorAll('*');
+        allElements.forEach(el => {
+          if (el.tagName === 'IMG' || el.className.includes('image')) {
+            el.style.setProperty('max-width', 'none', 'important');
+            el.style.setProperty('width', '100%', 'important');
+            el.style.setProperty('height', '100%', 'important');
+            el.style.setProperty('object-fit', 'cover', 'important');
+          } else if (el.className.includes('inner') || el.className.includes('container')) {
+            el.style.setProperty('max-width', 'none', 'important');
+            el.style.setProperty('width', '100%', 'important');
+          }
         });
         
-        images.forEach(img => {
-          img.style.setProperty('max-width', 'none', 'important');
-          img.style.setProperty('width', '100%', 'important');
-          img.style.setProperty('height', '100%', 'important');
-          img.style.setProperty('object-fit', 'cover', 'important');
-          img.style.setProperty('object-position', 'center', 'important');
-        });
+        console.log('✅ Ultra-aggressive fixes applied');
         
-        console.log('✅ Main image fix applied');
+        // Verify results
+        setTimeout(() => {
+          const newWidth = main.offsetWidth;
+          const parentWidth = gallery.offsetWidth;
+          const utilization = Math.round((newWidth / (parentWidth - 75 - 16)) * 100);
+          console.log(`📊 New utilization: ${utilization}% (${newWidth}px / ${parentWidth - 75 - 16}px)`);
+        }, 100);
+        
         return true;
+      } else {
+        console.log('❌ Required elements not found');
+        console.log('Gallery:', gallery);
+        console.log('Main:', main);
+        return false;
       }
-      console.log('⚠️ Gallery elements not found');
-      return false;
     }
     
-    // Apply immediately when script runs
+    // Execute inspection and fix
+    function runDiagnostics() {
+      inspectDOM();
+      setTimeout(() => {
+        ultraAggressiveFix();
+      }, 200);
+    }
+    
+    // Execute on multiple events with delays
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(forceMainImageFix, 100);
-        setTimeout(forceMainImageFix, 500);
-        setTimeout(forceMainImageFix, 1000);
+        setTimeout(runDiagnostics, 100);
+        setTimeout(ultraAggressiveFix, 500);
+        setTimeout(ultraAggressiveFix, 1000);
+        setTimeout(ultraAggressiveFix, 2000);
       });
     } else {
-      forceMainImageFix();
-      setTimeout(forceMainImageFix, 100);
-      setTimeout(forceMainImageFix, 500);
+      runDiagnostics();
+      setTimeout(ultraAggressiveFix, 100);
+      setTimeout(ultraAggressiveFix, 500);
     }
     
-    // Apply on window load
     window.addEventListener('load', function() {
-      setTimeout(forceMainImageFix, 200);
+      setTimeout(runDiagnostics, 200);
+      setTimeout(ultraAggressiveFix, 1000);
     });
     
-    // Apply on window resize
     window.addEventListener('resize', function() {
-      setTimeout(forceMainImageFix, 100);
+      setTimeout(ultraAggressiveFix, 100);
     });
     
-    console.log('🎯 Main image immediate fix script loaded');
+    // Make functions globally available
+    window.inspectDOM = inspectDOM;
+    window.ultraAggressiveFix = ultraAggressiveFix;
+    
+    console.log('🎯 DOM Inspector + Ultra-Aggressive Fix loaded');
+    console.log('💡 Run inspectDOM() or ultraAggressiveFix() manually in console if needed');
   </script>
 
   {% unless product.has_only_default_variant %}
