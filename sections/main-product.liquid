@@ -58,6 +58,33 @@
       display: block !important;
     }
     
+    /* Override all fixed heights from CSS file */
+    .product-gallery__main,
+    .product__media-wrapper .product-gallery__main {
+      height: auto !important;
+      min-height: auto !important; 
+      max-height: none !important;
+    }
+    
+    .product-gallery__main-inner,
+    .product__media-wrapper .product-gallery__main-inner {
+      height: auto !important;
+      min-height: auto !important;
+      max-height: none !important;
+    }
+    
+    @media (min-width: 1025px) {
+      .product-gallery__main-inner,
+      .product__media-wrapper .product-gallery__main-inner {
+        height: auto !important;
+        max-height: none !important;
+      }
+      .product-gallery__main-image.active,
+      .product__media-wrapper .product-gallery__main-image.active {
+        max-height: none !important;
+      }
+    }
+    
     html body div.page-width div.product.grid.grid--2-col-tablet div.grid__item.product__media-wrapper .product-gallery__main-inner {
       max-width: none !important;
       width: 100% !important;
