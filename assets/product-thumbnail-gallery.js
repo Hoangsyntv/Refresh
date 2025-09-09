@@ -168,10 +168,23 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
   
+  // Ensure at least one main image is active on load
+  function ensureActiveMainImage() {
+    let hasActive = false;
+    mainImages.forEach((img, idx) => {
+      if (img.classList.contains('active')) hasActive = true;
+    });
+    if (!hasActive && mainImages.length > 0) {
+      mainImages[0].classList.add('active');
+      thumbnails[0].classList.add('active');
+    }
+  }
+  
   // Initialize everything
   try {
     initializeVariants();
     setActiveThumbnail(0);
+    ensureActiveMainImage();
     
     // Debug after 1 second to see final state
     setTimeout(debugCurrentState, 1000);
