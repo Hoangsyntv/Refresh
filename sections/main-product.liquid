@@ -461,6 +461,13 @@
         
         console.log('✅ Ultra-aggressive fixes applied');
         
+        // IMMEDIATE square fix - no delay
+        if (main && main.offsetWidth > 0) {
+          const targetWidth = main.offsetWidth;
+          main.style.cssText += 'height: ' + targetWidth + 'px !important; max-height: ' + targetWidth + 'px !important;';
+          console.log('🟦 IMMEDIATE square fix applied:', targetWidth + 'x' + targetWidth);
+        }
+        
         // Verify results
         setTimeout(() => {
           const newWidth = main.offsetWidth;
@@ -468,33 +475,12 @@
           const utilization = Math.round((newWidth / (parentWidth - 75 - 16)) * 100);
           console.log(`📊 New utilization: ${utilization}% (${newWidth}px / ${parentWidth - 75 - 16}px)`);
           
-          // Auto-fit container height to image with multiple attempts
-          const autoFitHeight = () => {
-            const img = document.querySelector('.product-gallery__image');
-            if (img && img.complete && img.offsetHeight > 0) {
-              const targetHeight = img.offsetHeight + 20;
-              main.style.setProperty('height', targetHeight + 'px', 'important');
-              console.log(`📐 Container height auto-fitted: ${targetHeight}px`);
-              return true;
-            }
-            return false;
-          };
-          
-          // Try multiple times with increasing delays
-          if (!autoFitHeight()) {
-            setTimeout(autoFitHeight, 300);
-            setTimeout(autoFitHeight, 600);
-            setTimeout(autoFitHeight, 1000);
+          // Double-check square fix  
+          if (main && main.offsetWidth > 0 && main.offsetHeight !== main.offsetWidth) {
+            const targetWidth = main.offsetWidth;
+            main.style.cssText += 'height: ' + targetWidth + 'px !important; max-height: ' + targetWidth + 'px !important;';
+            console.log('🔲 Square fix retry applied:', targetWidth + 'x' + targetWidth);
           }
-          
-          // Force perfect square as backup
-          setTimeout(() => {
-            if (main && main.offsetWidth > 0) {
-              const targetWidth = main.offsetWidth;
-              main.style.cssText += 'height: ' + targetWidth + 'px !important; max-height: ' + targetWidth + 'px !important;';
-              console.log('🔲 Perfect square backup applied:', targetWidth + 'x' + targetWidth);
-            }
-          }, 1200);
         }, 100);
         
         return true;
