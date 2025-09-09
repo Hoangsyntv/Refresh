@@ -389,3 +389,45 @@ body .page-width .product.grid .product__media-wrapper .product-gallery__main-in
   max-width: none !important;
   width: 100% !important;
 }
+
+/* Aggressive override for persistent max-width issues */
+html body div.page-width div.product.grid div.product__media-wrapper div.product-gallery div.product-gallery__main {
+  max-width: none !important;
+  width: calc(100% - 75px - 1rem) !important;
+  min-width: calc(100% - 75px - 1rem) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  flex-basis: calc(100% - 75px - 1rem) !important;
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+html body div.page-width div.product.grid div.product__media-wrapper div.product-gallery div.product-gallery__main-inner {
+  max-width: none !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+html body div.page-width div.product.grid div.product__media-wrapper div.product-gallery div.product-gallery__main-image {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+html body div.page-width div.product.grid div.product__media-wrapper div.product-gallery div.product-gallery__main-image.active {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* Force grid layout with calculated widths */
+html body div.page-width div.product.grid div.product__media-wrapper div.product-gallery {
+  display: grid !important;
+  grid-template-columns: 75px calc(100% - 75px - 1rem) !important;
+  gap: 1rem !important;
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* Remove any width constraints from media wrapper */
+html body div.page-width div.product.grid div.product__media-wrapper {
+  max-width: none !important;
+}

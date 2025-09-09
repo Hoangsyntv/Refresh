@@ -1,0 +1,4 @@
+{
+    "editor.fontFamily": "\"'Fira Code', Consolas\"",
+    "terminal.integrated.shellArgs.windows": ["-NoExit", "-Command", "chcp 65001"]
+}

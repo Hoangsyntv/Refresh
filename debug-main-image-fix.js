@@ -4,44 +4,69 @@
 
 console.log('🔧 MAIN IMAGE WHITESPACE FIX - Debug Script');
 
-// Function to apply main image fix
+// Function to apply aggressive main image fix
 function fixMainImageWhitespace() {
-  console.log('=== APPLYING MAIN IMAGE WHITESPACE FIX ===');
+  console.log('=== APPLYING AGGRESSIVE MAIN IMAGE WHITESPACE FIX ===');
   
-  // Remove all max-width constraints
+  // Get all relevant elements
+  const mediaWrapper = document.querySelector('.product__media-wrapper');
   const mainInner = document.querySelector('.product-gallery__main-inner');
   const main = document.querySelector('.product-gallery__main');  
   const mainImage = document.querySelector('.product-gallery__main-image.active');
   const gallery = document.querySelector('.product-gallery');
   const images = document.querySelectorAll('.product-gallery__image');
+  const thumbnails = document.querySelector('.product-gallery__thumbnails');
   
+  // Calculate optimal widths
+  const mediaWidth = mediaWrapper ? mediaWrapper.offsetWidth : 0;
+  const thumbnailsWidth = thumbnails ? thumbnails.offsetWidth : 75;
+  const gapWidth = 16; // 1rem gap
+  const optimalMainWidth = mediaWidth - thumbnailsWidth - gapWidth;
+  
+  console.log(`📐 Calculated optimal main width: ${optimalMainWidth}px`);
+  
+  // Force gallery layout
+  if (gallery) {
+    gallery.style.setProperty('display', 'grid', 'important');
+    gallery.style.setProperty('grid-template-columns', `${thumbnailsWidth}px 1fr`, 'important');
+    gallery.style.setProperty('gap', '1rem', 'important');
+    gallery.style.setProperty('max-width', 'none', 'important');
+    gallery.style.setProperty('width', '100%', 'important');
+    console.log('✅ Gallery grid layout forced');
+  }
+  
+  // Force main container to use calculated width
+  if (main) {
+    main.style.setProperty('max-width', 'none', 'important');
+    main.style.setProperty('width', `${optimalMainWidth}px`, 'important');
+    main.style.setProperty('min-width', `${optimalMainWidth}px`, 'important');
+    main.style.setProperty('padding', '0', 'important');
+    main.style.setProperty('margin', '0', 'important');
+    main.style.setProperty('flex-basis', `${optimalMainWidth}px`, 'important');
+    main.style.setProperty('flex-grow', '0', 'important');
+    main.style.setProperty('flex-shrink', '0', 'important');
+    console.log(`✅ Main container forced to ${optimalMainWidth}px`);
+  }
+  
+  // Force inner container to fill main
   if (mainInner) {
     mainInner.style.setProperty('max-width', 'none', 'important');
     mainInner.style.setProperty('width', '100%', 'important');
     mainInner.style.setProperty('min-width', '0', 'important');
-    console.log('✅ Main inner max-width removed');
+    mainInner.style.setProperty('height', '900px', 'important');
+    mainInner.style.setProperty('max-height', '900px', 'important');
+    console.log('✅ Main inner container optimized');
   }
   
-  if (main) {
-    main.style.setProperty('max-width', 'none', 'important');
-    main.style.setProperty('width', '100%', 'important');
-    main.style.setProperty('padding', '0', 'important');
-    console.log('✅ Main container max-width removed, padding cleared');
-  }
-  
+  // Force main image containers
   if (mainImage) {
     mainImage.style.setProperty('max-width', 'none', 'important');
     mainImage.style.setProperty('width', '100%', 'important');
-    console.log('✅ Main image max-width removed');
+    mainImage.style.setProperty('height', '100%', 'important');
+    console.log('✅ Main image container optimized');
   }
   
-  if (gallery) {
-    gallery.style.setProperty('max-width', 'none', 'important');
-    gallery.style.setProperty('width', '100%', 'important');
-    gallery.style.setProperty('grid-template-columns', '75px 1fr', 'important');
-    console.log('✅ Gallery max-width removed, grid optimized');
-  }
-  
+  // Optimize actual images
   images.forEach((img, index) => {
     img.style.setProperty('max-width', '100%', 'important');
     img.style.setProperty('width', 'auto', 'important');
@@ -50,7 +75,13 @@ function fixMainImageWhitespace() {
   });
   console.log(`✅ ${images.length} images optimized`);
   
-  console.log('🎯 Main image whitespace fix applied!');
+  // Remove any conflicting styles from parent containers
+  if (mediaWrapper) {
+    mediaWrapper.style.removeProperty('max-width');
+    console.log('✅ Media wrapper constraints removed');
+  }
+  
+  console.log('🎯 Aggressive main image whitespace fix applied!');
 }
 
 // Function to check current state
