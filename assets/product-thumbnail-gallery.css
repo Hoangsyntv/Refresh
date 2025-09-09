@@ -87,36 +87,27 @@
   max-width: none;
   min-width: 0;
   height: auto;
-  min-height: 500px;
   padding: 0 1rem;
   background: rgba(0,0,0,0.02);
   border: 1px dashed rgba(0,0,0,0.1);
 }
 .product-gallery__main-inner {
   width: 100%;
-  aspect-ratio: unset;
   height: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* Khung tự động điều chỉnh chiều cao theo ảnh */
+  display: block;
+  /* Container will auto-adjust height based on image aspect ratio */
 }
 .product-gallery__main-image {
   width: 100%;
   height: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* Đảm bảo ảnh fill width, khung auto height */
+  display: block;
 }
 .product-gallery__image {
   width: 100% !important;
   height: auto !important;
   object-fit: contain !important;
   display: block;
-  aspect-ratio: auto;
   max-width: 100%;
-  max-height: 100vh;
 }
 /* Info column (when present) */
 .product-gallery__info {
@@ -152,18 +143,17 @@
   }
 }
   .product-gallery__main {
-    height: 600px;
+    height: auto;
     width: 100%;
   }
   .product-gallery__main-inner {
-    max-height: 600px;
     max-width: 100%;
+    height: auto;
   }
   .product-gallery__image {
-    width: auto;
+    width: 100%;
     height: auto;
     max-width: 100%;
-    max-height: 100%;
     object-fit: contain;
   }
   .product-gallery__info {
@@ -188,21 +178,19 @@
     gap: 8px;
   }
   .product-gallery__main {
-    height: 450px;
+    height: auto;
     width: 100%;
     padding: 0;
   }
   .product-gallery__main-inner {
     width: 100%;
-    height: 100%;
-    max-width: 100%;
-    max-height: 450px;
-  }
-  .product-gallery__image {
-    width: auto;
     height: auto;
     max-width: 100%;
-    max-height: 100%;
+  }
+  .product-gallery__image {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
     object-fit: contain;
   }
 }
@@ -308,12 +296,12 @@
   width: 100% !important;
 }
 
-/* Force actual images to fill container */
+/* Force actual images to fill width, auto height */
 .product__media-wrapper .product-gallery__image {
   max-width: none !important;
   width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
+  height: auto !important;
+  object-fit: contain !important;
   object-position: center !important;
 }
 
@@ -393,4 +381,66 @@ html body div.page-width div.product.grid div.product__media-wrapper div.product
 /* Remove any width constraints from media wrapper */
 html body div.page-width div.product.grid div.product__media-wrapper {
   max-width: none !important;
+}
+
+/* Ultimate fix for image fill width and container auto-height */
+.product-gallery__main-inner,
+.product__media-wrapper .product-gallery__main-inner,
+html body div.page-width div.product.grid div.product__media-wrapper div.product-gallery div.product-gallery__main-inner {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+}
+
+.product-gallery__main-image,
+.product__media-wrapper .product-gallery__main-image,
+html body div.page-width div.product.grid div.product__media-wrapper div.product-gallery div.product-gallery__main-image {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+}
+
+.product-gallery__image,
+.product__media-wrapper .product-gallery__image,
+html body div.page-width div.product.grid div.product__media-wrapper div.product-gallery div.product-gallery__main-image img {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: none !important;
+  min-height: auto !important;
+  object-fit: fill !important;
+  object-position: center !important;
+  display: block !important;
+  vertical-align: top !important;
+}
+
+/* Final perfect solution for 100% width fill */
+.product-page {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 0 !important;
+  max-width: none !important;
+  width: 100% !important;
+}
+
+.product-page .product-gallery {
+  width: 100% !important;
+  max-width: none !important;
+  grid-template-columns: 75px calc(100% - 75px - 1rem) !important;
+}
+
+/* Force perfect image scaling */
+img.product-gallery__image,
+.product-gallery__image img {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+  object-fit: fill !important;
+  transform: scale(1) !important;
+  flex: none !important;
 }
