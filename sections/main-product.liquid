@@ -62,9 +62,25 @@
     }
     
     /* Override all fixed heights from CSS file with ultra-high specificity */
+    .product-gallery__main {
+      height: auto !important;
+      min-height: 0 !important; 
+      max-height: none !important;
+      background: none !important;
+      border: none !important;
+    }
+    
     html body div.page-width div.product.grid div.product__media-wrapper div.product-gallery div.product-gallery__main {
       height: auto !important;
       min-height: 0 !important; 
+      max-height: none !important;
+      background: none !important;
+      border: none !important;
+    }
+    
+    .product-gallery__main-inner {
+      height: auto !important;
+      min-height: 0 !important;
       max-height: none !important;
       background: none !important;
       border: none !important;
