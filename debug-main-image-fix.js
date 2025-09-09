@@ -220,6 +220,135 @@ window.checkMainImageState = checkMainImageState;
 window.testMainImageFix = testMainImageFix;
 window.scaleImagesToFill = scaleImagesToFill;
 window.scaleImagesToContain = scaleImagesToContain;
+window.debugDOMStructure = debugDOMStructure;
+window.forceWhitespaceFix = forceWhitespaceFix;
+
+// Function to debug DOM structure and CSS
+function debugDOMStructure() {
+  console.log('=== DOM STRUCTURE DEBUG ===');
+  
+  // Check page structure
+  const pageWidth = document.querySelector('.page-width');
+  const product = document.querySelector('.product');
+  const mediaWrapper = document.querySelector('.product__media-wrapper');
+  const gallery = document.querySelector('.product-gallery');
+  const main = document.querySelector('.product-gallery__main');
+  
+  console.log('🔍 DOM ELEMENTS FOUND:');
+  console.log('  .page-width:', !!pageWidth);
+  console.log('  .product:', !!product);
+  console.log('  .product__media-wrapper:', !!mediaWrapper);
+  console.log('  .product-gallery:', !!gallery);
+  console.log('  .product-gallery__main:', !!main);
+  
+  if (product) {
+    console.log('  Product classes:', product.className);
+  }
+  
+  if (mediaWrapper) {
+    console.log('  Media wrapper classes:', mediaWrapper.className);
+  }
+  
+  if (gallery) {
+    console.log('  Gallery classes:', gallery.className);
+  }
+  
+  // Check computed styles
+  if (main) {
+    const mainStyles = window.getComputedStyle(main);
+    console.log('🎨 COMPUTED STYLES:');
+    console.log('  Width:', mainStyles.width);
+    console.log('  Max-width:', mainStyles.maxWidth);
+    console.log('  Flex-basis:', mainStyles.flexBasis);
+    console.log('  Display:', mainStyles.display);
+    console.log('  Padding:', mainStyles.padding);
+  }
+  
+  if (gallery) {
+    const galleryStyles = window.getComputedStyle(gallery);
+    console.log('🎨 GALLERY STYLES:');
+    console.log('  Display:', galleryStyles.display);
+    console.log('  Grid-template-columns:', galleryStyles.gridTemplateColumns);
+    console.log('  Width:', galleryStyles.width);
+    console.log('  Max-width:', galleryStyles.maxWidth);
+  }
+  
+  // Test our CSS selectors
+  console.log('🎯 SELECTOR TESTS:');
+  const selector1 = 'body .page-width .product.grid .product__media-wrapper .product-gallery__main';
+  const selector2 = 'html body div.page-width div.product.grid div.product__media-wrapper div.product-gallery div.product-gallery__main';
+  
+  const element1 = document.querySelector(selector1);
+  const element2 = document.querySelector(selector2);
+  
+  console.log('  Selector 1 matches:', !!element1);
+  console.log('  Selector 2 matches:', !!element2);
+  
+  if (!element1 && !element2) {
+    console.log('⚠️ NO SELECTORS MATCH - CSS rules not being applied!');
+    
+    // Let's find the actual selector path
+    if (main) {
+      let path = '';
+      let current = main;
+      while (current && current !== document.body) {
+        const tag = current.tagName.toLowerCase();
+        const classes = current.className ? '.' + current.className.split(' ').join('.') : '';
+        path = tag + classes + (path ? ' > ' + path : '');
+        current = current.parentElement;
+      }
+      console.log('📍 ACTUAL PATH TO MAIN:', path);
+    }
+  }
+}
+
+// Function to force CSS application with runtime fix
+function forceWhitespaceFix() {
+  console.log('=== FORCING CSS WHITESPACE FIX ===');
+  
+  debugDOMStructure();
+  
+  // Apply manual inline styles as ultimate override
+  const main = document.querySelector('.product-gallery__main');
+  const gallery = document.querySelector('.product-gallery');
+  const mediaWrapper = document.querySelector('.product__media-wrapper');
+  
+  if (mediaWrapper && main) {
+    const mediaWidth = mediaWrapper.offsetWidth;
+    const optimalMainWidth = mediaWidth - 75 - 16; // thumbnails + gap
+    
+    console.log(`💪 FORCING MAIN WIDTH: ${optimalMainWidth}px`);
+    
+    // Ultra-aggressive inline styles
+    main.setAttribute('style', `
+      width: ${optimalMainWidth}px !important;
+      min-width: ${optimalMainWidth}px !important;
+      max-width: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      flex-basis: ${optimalMainWidth}px !important;
+      flex-grow: 0 !important;
+      flex-shrink: 0 !important;
+    `);
+    
+    if (gallery) {
+      gallery.setAttribute('style', `
+        display: grid !important;
+        grid-template-columns: 75px ${optimalMainWidth}px !important;
+        gap: 1rem !important;
+        width: 100% !important;
+        max-width: none !important;
+      `);
+    }
+    
+    console.log('✅ INLINE STYLES FORCED');
+    
+    // Verify after 1 second
+    setTimeout(() => {
+      checkMainImageState();
+    }, 1000);
+  }
+}
 
 console.log('💡 Available Commands:');
 console.log('  - testMainImageFix() - Run complete test');
@@ -227,3 +356,5 @@ console.log('  - checkMainImageState() - Check current state');
 console.log('  - fixMainImageWhitespace() - Apply fix');
 console.log('  - scaleImagesToFill() - Scale images to fill container');
 console.log('  - scaleImagesToContain() - Revert to contain mode');
+console.log('  - debugDOMStructure() - Debug DOM and CSS selectors');
+console.log('  - forceWhitespaceFix() - Force fix with inline styles');
