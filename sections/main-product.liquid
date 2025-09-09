@@ -442,6 +442,14 @@
           const parentWidth = gallery.offsetWidth;
           const utilization = Math.round((newWidth / (parentWidth - 75 - 16)) * 100);
           console.log(`📊 New utilization: ${utilization}% (${newWidth}px / ${parentWidth - 75 - 16}px)`);
+          
+          // Auto-fit container height to image
+          const img = document.querySelector('.product-gallery__image');
+          if (img && img.offsetHeight > 0) {
+            const targetHeight = img.offsetHeight + 20;
+            main.style.setProperty('height', targetHeight + 'px', 'important');
+            console.log(`📐 Container height auto-fitted: ${targetHeight}px`);
+          }
         }, 100);
         
         return true;
