@@ -81,8 +81,8 @@
       </div>
     {%- endif -%}
     
-    <!-- Main Image Display (bên phải) -->
-    <div class="product-gallery__main" data-main-image-container>
+    <!-- Main Image Wrapper -->
+    <div class="product-gallery__main" data-media-wrapper style="width:65% !important;">
       <div class="product-gallery__main-inner">
         {%- for image in product.images -%}
           <div 
@@ -126,6 +126,10 @@
           </div>
         {%- endfor -%}
       </div>
+    </div>
+    <!-- Info Wrapper -->
+    <div class="product-gallery__info" data-info-wrapper style="width:35% !important;">
+      <!-- Add your info content here -->
     </div>
   </div>
 
