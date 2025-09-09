@@ -637,3 +637,36 @@ img.product-gallery__image,
   height: auto !important;
   display: block !important;
 }
+/* === ULTRA-SPECIFIC OVERRIDES FOR INLINE STYLES & ATTRIBUTES === */
+.product__media-wrapper[style*="width"] {
+  width: 100% !important;
+  max-width: 600px !important;
+}
+.product__info-wrapper[style*="width"] {
+  width: 100% !important;
+}
+.product .product__media .product__media-wrapper {
+  width: 100% !important;
+  max-width: 600px !important;
+}
+[data-media-wrapper] {
+  width: 100% !important;
+  max-width: 600px !important;
+}
+[data-gallery-wrapper] {
+  width: auto !important;
+  overflow: hidden !important;
+}
+body .shopify-section .product .product__media-wrapper,
+body .shopify-section .product .product__gallery {
+  width: 100% !important;
+  max-width: 600px !important;
+  margin: 0 auto !important;
+}
+@media (max-width: 768px) {
+  .product__media-wrapper[style],
+  .product__gallery[style] {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
