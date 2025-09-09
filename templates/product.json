@@ -62,12 +62,6 @@
           "settings": {
           }
         },
-        "all_metafields": {
-          "type": "all_metafields",
-          "settings": {
-            "heading": "Thông số kỹ thuật"
-          }
-        },
         "share": {
           "type": "share",
           "settings": {
@@ -86,7 +80,6 @@
         "quantity_selector",
         "buy_buttons",
         "description",
-        "all_metafields",
         "share"
       ],
       "settings": {
@@ -103,11 +96,6 @@
         "enable_video_looping": false,
         "padding_top": 60,
         "padding_bottom": 60
-      }
-    },
-    "test_dmx": {
-      "type": "test-dmx-specs",
-      "settings": {
       }
     },
     "related-products": {
@@ -131,7 +119,6 @@
   },
   "order": [
     "main",
-    "test_dmx",
     "related-products"
   ]
 }
