@@ -276,7 +276,22 @@
   min-width: 0;
   padding-left: 0 !important;
 }
+.product-page .product-gallery__main[data-media-wrapper] {
+  width: 70% !important;
+  max-width: none !important;
+  flex: 0 0 70% !important;
+}
+.product-page .product-info[data-info-wrapper] {
+  width: 30% !important;
+  max-width: none !important;
+  flex: 0 0 30% !important;
+}
 @media (max-width: 1024px) {
+  .product-page .product-gallery__main[data-media-wrapper],
+  .product-page .product-info[data-info-wrapper] {
+    width: 100% !important;
+    flex: 1 1 100% !important;
+  }
   .product-page {
     grid-template-columns: 1fr;
     gap: 0.5rem;
