@@ -443,12 +443,23 @@
           const utilization = Math.round((newWidth / (parentWidth - 75 - 16)) * 100);
           console.log(`📊 New utilization: ${utilization}% (${newWidth}px / ${parentWidth - 75 - 16}px)`);
           
-          // Auto-fit container height to image
-          const img = document.querySelector('.product-gallery__image');
-          if (img && img.offsetHeight > 0) {
-            const targetHeight = img.offsetHeight + 20;
-            main.style.setProperty('height', targetHeight + 'px', 'important');
-            console.log(`📐 Container height auto-fitted: ${targetHeight}px`);
+          // Auto-fit container height to image with multiple attempts
+          const autoFitHeight = () => {
+            const img = document.querySelector('.product-gallery__image');
+            if (img && img.complete && img.offsetHeight > 0) {
+              const targetHeight = img.offsetHeight + 20;
+              main.style.setProperty('height', targetHeight + 'px', 'important');
+              console.log(`📐 Container height auto-fitted: ${targetHeight}px`);
+              return true;
+            }
+            return false;
+          };
+          
+          // Try multiple times with increasing delays
+          if (!autoFitHeight()) {
+            setTimeout(autoFitHeight, 300);
+            setTimeout(autoFitHeight, 600);
+            setTimeout(autoFitHeight, 1000);
           }
         }, 100);
         
