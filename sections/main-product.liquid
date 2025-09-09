@@ -48,7 +48,7 @@
       width: calc(100% - 75px - 1rem) !important;
       min-width: calc(100% - 75px - 1rem) !important;
       height: auto !important;
-      min-height: auto !important;
+      min-height: 0 !important;
       max-height: none !important;
       padding: 0 !important;
       margin: 0 !important;
@@ -56,19 +56,54 @@
       flex-grow: 0 !important;
       flex-shrink: 0 !important;
       display: block !important;
+      /* Remove any background/border that creates fixed dimensions */
+      background: none !important;
+      border: none !important;
     }
     
     /* Override all fixed heights from CSS file with ultra-high specificity */
     html body div.page-width div.product.grid div.product__media-wrapper div.product-gallery div.product-gallery__main {
       height: auto !important;
-      min-height: auto !important; 
+      min-height: 0 !important; 
       max-height: none !important;
+      background: none !important;
+      border: none !important;
     }
     
     html body div.page-width div.product.grid div.product__media-wrapper div.product-gallery div.product-gallery__main-inner {
       height: auto !important;
-      min-height: auto !important;
+      min-height: 0 !important;
       max-height: none !important;
+      background: none !important;
+      border: none !important;
+      border-radius: 0 !important;
+      overflow: visible !important;
+      display: block !important;
+      align-items: stretch !important;
+      justify-content: stretch !important;
+    }
+    
+    /* Override position absolute for main-image */
+    html body div.page-width div.product.grid div.product__media-wrapper div.product-gallery div.product-gallery__main-image {
+      position: static !important;
+      top: auto !important;
+      left: auto !important;
+      width: 100% !important;
+      height: auto !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      display: block !important;
+    }
+    
+    html body div.page-width div.product.grid div.product__media-wrapper div.product-gallery div.product-gallery__main-image.active {
+      position: static !important;
+      top: auto !important;
+      left: auto !important;
+      width: 100% !important;
+      height: auto !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      display: block !important;
     }
     
     /* Force all gallery containers to auto height */
@@ -125,10 +160,18 @@
       width: 100% !important;
       min-width: 0 !important;
       height: auto !important;
-      min-height: auto !important;
+      min-height: 0 !important;
       max-height: none !important;
       display: block !important;
       position: relative !important;
+      /* Remove fixed dimensions */
+      background: none !important;
+      border: none !important;
+      border-radius: 0 !important;
+      overflow: visible !important;
+      /* Make container fit content */
+      align-items: stretch !important;
+      justify-content: stretch !important;
     }
     
     html body div.page-width div.product.grid.grid--2-col-tablet div.grid__item.product__media-wrapper .product-gallery__main-image,
@@ -136,10 +179,16 @@
       max-width: none !important;
       width: 100% !important;
       height: auto !important;
-      min-height: auto !important;
+      min-height: 0 !important;
       max-height: none !important;
-      position: relative !important;
+      /* Remove absolute positioning to allow natural flow */
+      position: static !important;
+      top: auto !important;
+      left: auto !important;
       display: block !important;
+      /* Make sure visible */
+      opacity: 1 !important;
+      visibility: visible !important;
     }
     
     html body div.page-width div.product.grid.grid--2-col-tablet div.grid__item.product__media-wrapper .product-gallery__image {
