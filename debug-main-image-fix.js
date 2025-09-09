@@ -143,25 +143,74 @@ function checkMainImageState() {
   }
 }
 
-// Function to test the fix
+// Function to test the fix with detailed metrics
 function testMainImageFix() {
   console.log('🧪 TESTING MAIN IMAGE FIX');
   
+  // Capture before state
+  const mediaWrapper = document.querySelector('.product__media-wrapper');
+  const main = document.querySelector('.product-gallery__main');
+  const thumbnails = document.querySelector('.product-gallery__thumbnails');
+  
+  if (!mediaWrapper || !main || !thumbnails) {
+    console.log('❌ Required elements not found');
+    return;
+  }
+  
+  const beforeMediaWidth = mediaWrapper.offsetWidth;
+  const beforeThumbnailsWidth = thumbnails.offsetWidth;
+  const beforeAvailable = beforeMediaWidth - beforeThumbnailsWidth;
+  const beforeMainWidth = main.offsetWidth;
+  const beforeUtilization = Math.round((beforeMainWidth / beforeAvailable) * 100);
+  
   console.log('\n--- BEFORE FIX ---');
-  const beforeOptimal = checkMainImageState();
+  console.log('📊 Kết quả TRƯỚC:');
+  console.log(`   Media Container: ${beforeMediaWidth}px`);
+  console.log(`   Thumbnails: ${beforeThumbnailsWidth}px`);
+  console.log(`   Available: ${beforeAvailable}px`);
+  console.log(`   Main Actual: ${beforeMainWidth}px`);
+  console.log(`   Utilization: ${beforeUtilization}%`);
+  
+  const beforeOptimal = beforeUtilization >= 95;
   
   if (!beforeOptimal) {
     console.log('\n--- APPLYING FIX ---');
     fixMainImageWhitespace();
     
     setTimeout(() => {
-      console.log('\n--- AFTER FIX ---');
-      const afterOptimal = checkMainImageState();
+      // Capture after state
+      const afterMediaWidth = mediaWrapper.offsetWidth;
+      const afterThumbnailsWidth = thumbnails.offsetWidth;
+      const afterAvailable = afterMediaWidth - afterThumbnailsWidth;
+      const afterMainWidth = main.offsetWidth;
+      const afterUtilization = Math.round((afterMainWidth / afterAvailable) * 100);
       
-      if (afterOptimal) {
+      console.log('\n--- AFTER FIX ---');
+      console.log('📊 Kết quả SAU:');
+      console.log(`   Media Container: ${afterMediaWidth}px`);
+      console.log(`   Thumbnails: ${afterThumbnailsWidth}px`);
+      console.log(`   Available: ${afterAvailable}px`);
+      console.log(`   Main Actual: ${afterMainWidth}px`);
+      console.log(`   Utilization: ${afterUtilization}%`);
+      
+      // Calculate improvements
+      const widthImprovement = afterMainWidth - beforeMainWidth;
+      const utilizationImprovement = afterUtilization - beforeUtilization;
+      
+      console.log('\n📊 KẾT QUẢ TỔNG KẾT:');
+      console.log(`- Trước fix: ${beforeUtilization}% sử dụng không gian (${beforeMainWidth}px/${beforeAvailable}px)`);
+      console.log(`- Sau fix: ${afterUtilization}% sử dụng không gian (${afterMainWidth}px/${afterAvailable}px)`);
+      console.log(`- Cải thiện: ${utilizationImprovement}% tăng hiệu quả sử dụng không gian`);
+      console.log('');
+      console.log('✅ Các thay đổi đã áp dụng:');
+      console.log(`- Main container: ${beforeMainWidth}px → ${afterMainWidth}px`);
+      console.log(`- Width improvement: +${widthImprovement}px`);
+      console.log(`- Utilization: ${beforeUtilization}% → ${afterUtilization}%`);
+      
+      if (afterUtilization >= 95) {
         console.log('🎉 SUCCESS: Main image whitespace issue fixed!');
       } else {
-        console.log('⚠️ PARTIAL: Some whitespace may still remain');
+        console.log('⚠️ PARTIAL: Some improvement but not optimal yet');
       }
     }, 500);
   } else {
