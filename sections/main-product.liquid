@@ -486,6 +486,15 @@
             setTimeout(autoFitHeight, 600);
             setTimeout(autoFitHeight, 1000);
           }
+          
+          // Force perfect square as backup
+          setTimeout(() => {
+            if (main && main.offsetWidth > 0) {
+              const targetWidth = main.offsetWidth;
+              main.style.cssText += 'height: ' + targetWidth + 'px !important; max-height: ' + targetWidth + 'px !important;';
+              console.log('🔲 Perfect square backup applied:', targetWidth + 'x' + targetWidth);
+            }
+          }, 1200);
         }, 100);
         
         return true;
