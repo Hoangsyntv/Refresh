@@ -1,0 +1,9 @@
+[environments.staging]
+store = "refresh-2024"
+theme_id = "159236587875"
+password = "shpat-bfbe1ad2e43ce69eb83c3efb0b1e5dd4"
+
+[environments.production]
+store = "refresh-2024"
+theme_id = "154999750883"
+password = "shpat-bfbe1ad2e43ce69eb83c3efb0b1e5dd4"
