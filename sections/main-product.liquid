@@ -68,17 +68,29 @@
       max-height: none !important;
     }
     
-    /* Force main container to fit content instead of fixed height */
+    /* Nuclear option: Force main container height with aspect ratio */
     .product-gallery__main {
       height: fit-content !important;
       min-height: fit-content !important;
       max-height: fit-content !important;
+      aspect-ratio: 1 / 1 !important;
+      width: 100% !important;
+      max-width: 700px !important;
     }
     
     .product-gallery__main-inner {
-      height: fit-content !important;
-      min-height: fit-content !important;
-      max-height: fit-content !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      max-height: 100% !important;
+      aspect-ratio: inherit !important;
+    }
+    
+    /* Force image to fill container completely */
+    .product-gallery__image {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      aspect-ratio: 1 / 1 !important;
     }
     
     .product-gallery__main {
