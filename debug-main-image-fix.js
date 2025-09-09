@@ -66,14 +66,15 @@ function fixMainImageWhitespace() {
     console.log('✅ Main image container optimized');
   }
   
-  // Optimize actual images
+  // Optimize actual images - scale to fill container
   images.forEach((img, index) => {
-    img.style.setProperty('max-width', '100%', 'important');
-    img.style.setProperty('width', 'auto', 'important');
-    img.style.setProperty('height', 'auto', 'important');
-    img.style.setProperty('object-fit', 'contain', 'important');
+    img.style.setProperty('max-width', 'none', 'important');
+    img.style.setProperty('width', '100%', 'important');
+    img.style.setProperty('height', '100%', 'important');
+    img.style.setProperty('object-fit', 'cover', 'important');
+    img.style.setProperty('object-position', 'center', 'important');
   });
-  console.log(`✅ ${images.length} images optimized`);
+  console.log(`✅ ${images.length} images scaled to fill container`);
   
   // Remove any conflicting styles from parent containers
   if (mediaWrapper) {
@@ -168,12 +169,61 @@ function testMainImageFix() {
   }
 }
 
+// Function to scale images to fill container
+function scaleImagesToFill() {
+  console.log('=== SCALING IMAGES TO FILL CONTAINER ===');
+  
+  const images = document.querySelectorAll('.product-gallery__image');
+  const mainInner = document.querySelector('.product-gallery__main-inner');
+  
+  if (mainInner) {
+    console.log(`📐 Container size: ${mainInner.offsetWidth}x${mainInner.offsetHeight}px`);
+  }
+  
+  images.forEach((img, index) => {
+    const originalFit = img.style.objectFit || window.getComputedStyle(img).objectFit;
+    
+    img.style.setProperty('width', '100%', 'important');
+    img.style.setProperty('height', '100%', 'important');
+    img.style.setProperty('object-fit', 'cover', 'important');
+    img.style.setProperty('object-position', 'center', 'important');
+    
+    console.log(`✅ Image ${index + 1}: ${originalFit} → cover`);
+  });
+  
+  console.log('🎯 Images scaled to fill container!');
+}
+
+// Function to revert to original contain mode
+function scaleImagesToContain() {
+  console.log('=== SCALING IMAGES TO CONTAIN (ORIGINAL) ===');
+  
+  const images = document.querySelectorAll('.product-gallery__image');
+  
+  images.forEach((img, index) => {
+    img.style.setProperty('width', 'auto', 'important');
+    img.style.setProperty('height', 'auto', 'important');
+    img.style.setProperty('max-width', '100%', 'important');
+    img.style.setProperty('max-height', '100%', 'important');
+    img.style.setProperty('object-fit', 'contain', 'important');
+    img.style.setProperty('object-position', 'center', 'important');
+    
+    console.log(`✅ Image ${index + 1}: cover → contain`);
+  });
+  
+  console.log('🎯 Images reverted to contain mode!');
+}
+
 // Export functions for console use
 window.fixMainImageWhitespace = fixMainImageWhitespace;
 window.checkMainImageState = checkMainImageState;  
 window.testMainImageFix = testMainImageFix;
+window.scaleImagesToFill = scaleImagesToFill;
+window.scaleImagesToContain = scaleImagesToContain;
 
 console.log('💡 Available Commands:');
 console.log('  - testMainImageFix() - Run complete test');
 console.log('  - checkMainImageState() - Check current state');
 console.log('  - fixMainImageWhitespace() - Apply fix');
+console.log('  - scaleImagesToFill() - Scale images to fill container');
+console.log('  - scaleImagesToContain() - Revert to contain mode');

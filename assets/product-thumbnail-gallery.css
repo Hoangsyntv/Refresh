@@ -346,12 +346,13 @@
   width: 100% !important;
 }
 
-/* Force actual images to be responsive */
+/* Force actual images to fill container */
 .product__media-wrapper .product-gallery__image {
-  max-width: 100% !important;
-  width: auto !important;
-  height: auto !important;
-  object-fit: contain !important;
+  max-width: none !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
 }
 
 /* Ensure gallery with info class doesn't override */
