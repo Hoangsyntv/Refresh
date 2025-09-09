@@ -18,41 +18,144 @@
   
   {{ 'product-thumbnail-gallery.css' | asset_url | stylesheet_tag }}
 
-  {%- comment -%} Inline CSS fix for main image whitespace issue {%- endcomment -%}
+  {%- comment -%} Ultra-aggressive inline fix for main image whitespace issue {%- endcomment -%}
   <style>
-    /* Force main image area to use full available width */
-    .product__media-wrapper .product-gallery {
+    /* Ultra-specific selectors to force main image area to use full width */
+    html body div.page-width div.product.grid.grid--2-col-tablet div.grid__item.product__media-wrapper .product-gallery {
       display: grid !important;
       grid-template-columns: 75px 1fr !important;
       gap: 1rem !important;
       max-width: none !important;
       width: 100% !important;
     }
-    .product__media-wrapper .product-gallery__main {
+    
+    html body div.page-width div.product.grid.grid--2-col-tablet div.grid__item.product__media-wrapper .product-gallery__main {
       max-width: none !important;
       width: calc(100% - 75px - 1rem) !important;
       min-width: calc(100% - 75px - 1rem) !important;
       padding: 0 !important;
       margin: 0 !important;
+      flex-basis: calc(100% - 75px - 1rem) !important;
+      flex-grow: 0 !important;
+      flex-shrink: 0 !important;
     }
-    .product__media-wrapper .product-gallery__main-inner {
+    
+    html body div.page-width div.product.grid.grid--2-col-tablet div.grid__item.product__media-wrapper .product-gallery__main-inner {
       max-width: none !important;
       width: 100% !important;
       min-width: 0 !important;
     }
-    .product__media-wrapper .product-gallery__main-image,
-    .product__media-wrapper .product-gallery__main-image.active {
+    
+    html body div.page-width div.product.grid.grid--2-col-tablet div.grid__item.product__media-wrapper .product-gallery__main-image,
+    html body div.page-width div.product.grid.grid--2-col-tablet div.grid__item.product__media-wrapper .product-gallery__main-image.active {
       max-width: none !important;
       width: 100% !important;
     }
-    .product__media-wrapper .product-gallery__image {
+    
+    html body div.page-width div.product.grid.grid--2-col-tablet div.grid__item.product__media-wrapper .product-gallery__image {
       max-width: none !important;
       width: 100% !important;
       height: 100% !important;
       object-fit: cover !important;
       object-position: center !important;
     }
+    
+    /* Fallback with shorter selectors */
+    div.product__media-wrapper div.product-gallery {
+      display: grid !important;
+      grid-template-columns: 75px 1fr !important;
+      gap: 1rem !important;
+      max-width: none !important;
+      width: 100% !important;
+    }
+    
+    div.product__media-wrapper div.product-gallery__main {
+      max-width: none !important;
+      width: calc(100% - 75px - 1rem) !important;
+      min-width: calc(100% - 75px - 1rem) !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
   </style>
+  
+  {%- comment -%} Immediate JavaScript fix to ensure whitespace is eliminated {%- endcomment -%}
+  <script>
+    // Immediate fix function
+    function forceMainImageFix() {
+      console.log('🔧 Applying immediate main image fix...');
+      
+      const gallery = document.querySelector('.product-gallery');
+      const main = document.querySelector('.product-gallery__main');
+      const mainInner = document.querySelector('.product-gallery__main-inner');
+      const mainImages = document.querySelectorAll('.product-gallery__main-image');
+      const images = document.querySelectorAll('.product-gallery__image');
+      
+      if (gallery && main) {
+        // Force grid layout
+        gallery.style.setProperty('display', 'grid', 'important');
+        gallery.style.setProperty('grid-template-columns', '75px 1fr', 'important');
+        gallery.style.setProperty('gap', '1rem', 'important');
+        gallery.style.setProperty('max-width', 'none', 'important');
+        gallery.style.setProperty('width', '100%', 'important');
+        
+        // Force main container
+        main.style.setProperty('max-width', 'none', 'important');
+        main.style.setProperty('width', 'calc(100% - 75px - 1rem)', 'important');
+        main.style.setProperty('min-width', 'calc(100% - 75px - 1rem)', 'important');
+        main.style.setProperty('padding', '0', 'important');
+        main.style.setProperty('margin', '0', 'important');
+        
+        if (mainInner) {
+          mainInner.style.setProperty('max-width', 'none', 'important');
+          mainInner.style.setProperty('width', '100%', 'important');
+          mainInner.style.setProperty('min-width', '0', 'important');
+        }
+        
+        mainImages.forEach(img => {
+          img.style.setProperty('max-width', 'none', 'important');
+          img.style.setProperty('width', '100%', 'important');
+        });
+        
+        images.forEach(img => {
+          img.style.setProperty('max-width', 'none', 'important');
+          img.style.setProperty('width', '100%', 'important');
+          img.style.setProperty('height', '100%', 'important');
+          img.style.setProperty('object-fit', 'cover', 'important');
+          img.style.setProperty('object-position', 'center', 'important');
+        });
+        
+        console.log('✅ Main image fix applied');
+        return true;
+      }
+      console.log('⚠️ Gallery elements not found');
+      return false;
+    }
+    
+    // Apply immediately when script runs
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(forceMainImageFix, 100);
+        setTimeout(forceMainImageFix, 500);
+        setTimeout(forceMainImageFix, 1000);
+      });
+    } else {
+      forceMainImageFix();
+      setTimeout(forceMainImageFix, 100);
+      setTimeout(forceMainImageFix, 500);
+    }
+    
+    // Apply on window load
+    window.addEventListener('load', function() {
+      setTimeout(forceMainImageFix, 200);
+    });
+    
+    // Apply on window resize
+    window.addEventListener('resize', function() {
+      setTimeout(forceMainImageFix, 100);
+    });
+    
+    console.log('🎯 Main image immediate fix script loaded');
+  </script>
 
   {% unless product.has_only_default_variant %}
     {{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
