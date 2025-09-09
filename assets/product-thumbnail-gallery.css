@@ -531,6 +531,7 @@ img.product-gallery__image,
   padding: 0 !important;
   margin: 0 !important;
   overflow: visible !important;
+  border: 2px solid blue !important; /* Debug: container border */
 }
 
 .product-gallery__main-inner {
@@ -541,6 +542,7 @@ img.product-gallery__image,
   max-height: none !important;
   padding: 0 !important;
   margin: 0 !important;
+  border: 2px solid green !important; /* Debug: inner border */
 }
 
 .product-gallery__main-image {
@@ -551,6 +553,7 @@ img.product-gallery__image,
   max-height: none !important;
   padding: 0 !important;
   margin: 0 !important;
+  border: 2px solid orange !important; /* Debug: main-image border */
 }
 
 .product-gallery__image {
@@ -564,6 +567,7 @@ img.product-gallery__image,
   object-position: center !important;
   display: block !important;
   vertical-align: top !important;
+  border: 2px solid red !important; /* Debug: image border */
 }
 
 /* Override ALL possible container constraints */
