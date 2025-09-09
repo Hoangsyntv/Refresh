@@ -3,12 +3,18 @@
    ========================================================================== */
 .product-gallery {
   display: grid;
-  grid-template-columns: 75px 1fr 400px;
+  grid-template-columns: 75px 1fr;
   gap: 2rem;
-  max-width: 1600px;
+  max-width: 1200px;
   width: 100%;
   position: relative;
   align-items: stretch;
+}
+
+/* When info column is present */
+.product-gallery--with-info {
+  grid-template-columns: 75px 1fr 400px;
+  max-width: 1600px;
 }
 .product-gallery__thumbnails {
   grid-column: 1;
@@ -63,7 +69,10 @@
   width: 100%;
   min-width: 0;
   height: 900px;
+  min-height: 500px;
   padding: 0 1rem;
+  background: rgba(0,0,0,0.02);
+  border: 1px dashed rgba(0,0,0,0.1);
 }
 .product-gallery__main-inner {
   width: 100%;
@@ -121,6 +130,7 @@
   border-radius: 4px;
   display: block;
 }
+/* Info column (when present) */
 .product-gallery__info {
   grid-column: 3;
   padding-left: 2rem;
@@ -128,6 +138,11 @@
   flex-direction: column;
   justify-content: flex-start;
   min-width: 0;
+}
+
+/* Hide info column if not present */
+.product-gallery:not(.product-gallery--with-info) .product-gallery__info {
+  display: none;
 }
 /* Responsive: Tablet */
 @media (max-width: 1024px) {
