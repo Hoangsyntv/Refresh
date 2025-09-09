@@ -1,11 +1,11 @@
 /* ==========================================================================
-   Product Thumbnail Gallery - Optimized 2-Zone Layout for Shopify
+   Product Thumbnail Gallery - 3-Zone Grid Layout for Desktop
    ========================================================================== */
 .product-gallery {
   display: grid !important;
-  grid-template-columns: 80px 1fr !important;
-  gap: 1.5rem;
-  max-width: 100%;
+  grid-template-columns: 75px 1fr !important;
+  gap: 2rem;
+  max-width: 1200px;
   width: 100%;
   position: relative;
   align-items: stretch;
@@ -14,22 +14,22 @@
   grid-auto-flow: initial !important;
 }
 
-/* Legacy class for 3-zone - now same as base */
+/* Desktop 3-zone with compact info column */
 .product-gallery--with-info {
-  grid-template-columns: 80px 1fr !important;
-  max-width: 100%;
+  grid-template-columns: 75px 1fr 160px !important;
+  max-width: 1300px;
 }
 .product-gallery__thumbnails {
   grid-column: 1;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 80px;
+  width: 75px;
   z-index: 2;
 }
 .product-gallery__thumbnail {
-  width: 80px;
-  height: 80px;
+  width: 75px;
+  height: 75px;
   border: 2px solid transparent;
   border-radius: 8px;
   background: none;
@@ -155,11 +155,11 @@
 /* Responsive: Tablet */
 @media (max-width: 1024px) {
   .product-gallery {
-    grid-template-columns: 80px 1fr !important;
+    grid-template-columns: 75px 1fr !important;
     max-width: 100vw;
   }
   .product-gallery--with-info {
-    grid-template-columns: 80px 1fr !important;
+    grid-template-columns: 75px 1fr !important;
     max-width: 100vw;
   }
 }
