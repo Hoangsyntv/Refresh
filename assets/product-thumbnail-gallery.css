@@ -1,32 +1,35 @@
 /* ==========================================================================
-   Product Thumbnail Gallery - Refactored DMX 3-Zone Grid
+   Product Thumbnail Gallery - Optimized 2-Zone Layout for Shopify
    ========================================================================== */
 .product-gallery {
-  display: grid;
-  grid-template-columns: 75px 1fr;
-  gap: 2rem;
-  max-width: 1200px;
+  display: grid !important;
+  grid-template-columns: 80px 1fr !important;
+  gap: 1.5rem;
+  max-width: 100%;
   width: 100%;
   position: relative;
   align-items: stretch;
+  /* Override Shopify base grid styles */
+  grid-template-areas: none !important;
+  grid-auto-flow: initial !important;
 }
 
-/* When info column is present - Ultra compact proportions */
+/* Legacy class for 3-zone - now same as base */
 .product-gallery--with-info {
-  grid-template-columns: 75px 1fr 180px;
-  max-width: 1300px;
+  grid-template-columns: 80px 1fr !important;
+  max-width: 100%;
 }
 .product-gallery__thumbnails {
   grid-column: 1;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 75px;
+  width: 80px;
   z-index: 2;
 }
 .product-gallery__thumbnail {
-  width: 75px;
-  height: 75px;
+  width: 80px;
+  height: 80px;
   border: 2px solid transparent;
   border-radius: 8px;
   background: none;
@@ -152,11 +155,11 @@
 /* Responsive: Tablet */
 @media (max-width: 1024px) {
   .product-gallery {
-    grid-template-columns: 75px 1fr;
+    grid-template-columns: 80px 1fr !important;
     max-width: 100vw;
   }
   .product-gallery--with-info {
-    grid-template-columns: 75px 1fr 160px;
+    grid-template-columns: 80px 1fr !important;
     max-width: 100vw;
   }
 }
