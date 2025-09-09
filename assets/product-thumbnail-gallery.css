@@ -452,6 +452,7 @@ img.product-gallery__image,
   width: 100% !important;
   max-width: none !important;
   min-width: 100% !important;
+  height: auto !important;
   padding: 0 !important;
   margin: 0 !important;
   box-sizing: border-box !important;
@@ -581,7 +582,7 @@ img.product-gallery__image,
 }
 
 .product-gallery__main-image.active {
-  display: block !important; /* Only show active image */
+  display: flex !important; /* Only show active image */
 }
 
 /* Ensure only one image controls container height */
