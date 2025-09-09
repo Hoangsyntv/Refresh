@@ -309,77 +309,83 @@
 }
 
 /* ==========================================================================
-   MAIN IMAGE WHITESPACE FIX - Remove all max-width constraints
+   MAIN IMAGE WHITESPACE FIX - Simplified selectors that actually work
    ========================================================================== */
 
-/* Force main image container to use full available space */
-html body .page-width .product.grid .product__media-wrapper .product-gallery__main-inner {
+/* Force gallery container to use full space */
+.product__media-wrapper .product-gallery {
   max-width: none !important;
   width: 100% !important;
-  min-width: 0 !important;
-}
-
-html body .page-width .product.grid .product__media-wrapper .product-gallery__main {
-  max-width: none !important;
-  width: 100% !important;
-  min-width: 0 !important;
-}
-
-html body .page-width .product.grid .product__media-wrapper .product-gallery__main-image {
-  max-width: none !important;
-  width: 100% !important;
-}
-
-html body .page-width .product.grid .product__media-wrapper .product-gallery__main-image.active {
-  max-width: none !important;
-  width: 100% !important;
-}
-
-/* Remove conflicting max-width from gallery container */
-html body .page-width .product.grid .product__media-wrapper .product-gallery--with-info {
-  max-width: none !important;
-  width: 100% !important;
-}
-
-html body .page-width .product.grid .product__media-wrapper .product-gallery {
-  max-width: none !important;
-  width: 100% !important;
-}
-
-/* Ensure grid columns use available space efficiently */
-html body .page-width .product.grid .product__media-wrapper .product-gallery--with-info {
   grid-template-columns: 75px 1fr !important;
+  gap: 1rem !important;
 }
 
-/* Remove padding that creates unnecessary gaps */
-html body .page-width .product.grid .product__media-wrapper .product-gallery__main {
-  padding: 0 !important;
+/* Force main container to use calculated available width */
+.product__media-wrapper .product-gallery__main {
   max-width: none !important;
+  width: calc(100% - 75px - 1rem) !important;
+  padding: 0 !important;
+  min-width: 0 !important;
 }
 
-/* Force images to utilize full container width */
-html body .page-width .product.grid .product__media-wrapper .product-gallery__image {
+/* Force main inner to fill container */
+.product__media-wrapper .product-gallery__main-inner {
+  max-width: none !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* Force main images to fill container */
+.product__media-wrapper .product-gallery__main-image {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+.product__media-wrapper .product-gallery__main-image.active {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* Force actual images to be responsive */
+.product__media-wrapper .product-gallery__image {
   max-width: 100% !important;
   width: auto !important;
   height: auto !important;
   object-fit: contain !important;
 }
 
+/* Ensure gallery with info class doesn't override */
+.product__media-wrapper .product-gallery--with-info {
+  max-width: none !important;
+  width: 100% !important;
+  grid-template-columns: 75px 1fr !important;
+}
+
+/* Desktop specific improvements */
 @media screen and (min-width: 750px) {
-  /* Desktop specific fixes */
-  html body .page-width .product.grid .product__media-wrapper .product-gallery__main-inner {
+  .product__media-wrapper .product-gallery__main {
+    width: calc(100% - 75px - 1rem) !important;
+  }
+  
+  .product__media-wrapper .product-gallery__main-inner {
     max-width: none !important;
     width: 100% !important;
   }
   
-  html body .page-width .product.grid .product__media-wrapper .product-gallery__main-image.active {
+  .product__media-wrapper .product-gallery__main-image.active {
     max-width: none !important;
     width: 100% !important;
   }
-  
-  /* Remove 1100px constraints on desktop */
-  html body .page-width .product.grid .product__media-wrapper .product-gallery--with-info .product-gallery__main-inner {
-    max-width: none !important;
-    width: 100% !important;
-  }
+}
+
+/* Ultra-high specificity backup rules */
+body .page-width .product.grid .product__media-wrapper .product-gallery__main {
+  max-width: none !important;
+  width: calc(100% - 75px - 1rem) !important;
+  padding: 0 !important;
+}
+
+body .page-width .product.grid .product__media-wrapper .product-gallery__main-inner {
+  max-width: none !important;
+  width: 100% !important;
 }
