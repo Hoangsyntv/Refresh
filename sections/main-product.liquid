@@ -1713,6 +1713,101 @@
                 </product-recommendations>
               {%- when 'icon-with-text' -%}
                 {% render 'icon-with-text', block: block %}
+              {%- when 'bullet_point_benefits' -%}
+                <div class="product__bullet-benefits" {{ block.shopify_attributes }}>
+                  <style>
+                    .bullet-benefits {
+                      list-style: none;
+                      padding: 0;
+                      margin: 1.5rem 0;
+                    }
+                    .bullet-benefits__item {
+                      display: flex;
+                      align-items: center;
+                      margin: 0.8rem 0;
+                      font-size: 1.4rem;
+                    }
+                    .bullet-benefits--checkmark .bullet-benefits__item:before {
+                      content: "✓";
+                      color: #22c55e;
+                      font-weight: bold;
+                      margin-right: 1rem;
+                      font-size: 1.6rem;
+                    }
+                    .bullet-benefits--bullet .bullet-benefits__item:before {
+                      content: "•";
+                      color: rgb(var(--color-foreground));
+                      font-weight: bold;
+                      margin-right: 1rem;
+                      font-size: 1.6rem;
+                    }
+                    .bullet-benefits--star .bullet-benefits__item:before {
+                      content: "⭐";
+                      margin-right: 1rem;
+                      font-size: 1.4rem;
+                    }
+                  </style>
+                  <ul class="bullet-benefits bullet-benefits--{{ block.settings.style }}">
+                    {%- for i in (1..6) -%}
+                      {%- assign benefit_key = 'benefit_' | append: i -%}
+                      {%- assign benefit = block.settings[benefit_key] -%}
+                      {%- if benefit != blank -%}
+                        <li class="bullet-benefits__item">{{ benefit }}</li>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </ul>
+                </div>
+              {%- when 'estimated_arrival_date' -%}
+                <div class="product__delivery-estimate" {{ block.shopify_attributes }}>
+                  <style>
+                    .delivery-estimate {
+                      display: flex;
+                      align-items: center;
+                      padding: 1.2rem 1.6rem;
+                      background: rgba(var(--color-foreground), 0.04);
+                      border-radius: 0.6rem;
+                      margin: 1.5rem 0;
+                      font-size: 1.4rem;
+                    }
+                    .delivery-estimate__icon {
+                      margin-right: 1rem;
+                      color: #22c55e;
+                      flex-shrink: 0;
+                    }
+                    .delivery-estimate--subtitle {
+                      font-size: 1.6rem;
+                      font-weight: 500;
+                    }
+                    .delivery-estimate--uppercase {
+                      text-transform: uppercase;
+                      font-size: 1.2rem;
+                      font-weight: 600;
+                      letter-spacing: 0.1rem;
+                    }
+                    .delivery-estimate__date {
+                      font-weight: 600;
+                      color: #22c55e;
+                    }
+                  </style>
+                  <div class="delivery-estimate delivery-estimate--{{ block.settings.text_style }}">
+                    {%- if block.settings.show_shipping_icon -%}
+                      <svg class="delivery-estimate__icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    {%- endif -%}
+                    <span class="delivery-estimate__text">
+                      {{ block.settings.delivery_text }}:
+                      <span class="delivery-estimate__date">
+                        {%- assign current_timestamp = 'now' | date: '%s' | plus: 0 -%}
+                        {%- assign min_timestamp = current_timestamp | plus: 86400 | times: block.settings.min_days -%}
+                        {%- assign max_timestamp = current_timestamp | plus: 86400 | times: block.settings.max_days -%}
+                        {%- assign min_date = min_timestamp | date: '%B %d' -%}
+                        {%- assign max_date = max_timestamp | date: '%B %d' -%}
+                        {{ min_date }} - {{ max_date }}
+                      </span>
+                    </span>
+                  </div>
+                </div>
             {%- endcase -%}
           {%- endfor -%}
           <a href="{{ product.url }}" class="link product__view-details animate-arrow">
@@ -3185,6 +3280,104 @@
           "default": "t:sections.main-product.blocks.icon_with_text.settings.heading_3.default",
           "label": "t:sections.main-product.blocks.icon_with_text.settings.heading_3.label",
           "info": "t:sections.main-product.blocks.icon_with_text.settings.heading.info"
+        }
+      ]
+    },
+    {
+      "type": "bullet_point_benefits",
+      "name": "Bullet Point Benefits",
+      "settings": [
+        {
+          "type": "text",
+          "id": "benefit_1",
+          "label": "Benefit 1",
+          "default": "High-quality materials"
+        },
+        {
+          "type": "text",
+          "id": "benefit_2", 
+          "label": "Benefit 2",
+          "default": "Fast shipping worldwide"
+        },
+        {
+          "type": "text",
+          "id": "benefit_3",
+          "label": "Benefit 3",
+          "default": "30-day money-back guarantee"
+        },
+        {
+          "type": "text",
+          "id": "benefit_4",
+          "label": "Benefit 4"
+        },
+        {
+          "type": "text",
+          "id": "benefit_5",
+          "label": "Benefit 5"
+        },
+        {
+          "type": "text",
+          "id": "benefit_6",
+          "label": "Benefit 6"
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Display Style",
+          "options": [
+            {"value": "checkmark", "label": "Checkmark"},
+            {"value": "bullet", "label": "Bullet Points"},
+            {"value": "star", "label": "Star Icons"}
+          ],
+          "default": "checkmark"
+        }
+      ]
+    },
+    {
+      "type": "estimated_arrival_date", 
+      "name": "Estimated Arrival Date",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "delivery_text",
+          "label": "Delivery Text",
+          "default": "Estimated delivery"
+        },
+        {
+          "type": "range",
+          "id": "min_days",
+          "label": "Minimum Days",
+          "min": 1,
+          "max": 30,
+          "step": 1,
+          "default": 3
+        },
+        {
+          "type": "range", 
+          "id": "max_days",
+          "label": "Maximum Days",
+          "min": 1,
+          "max": 30,
+          "step": 1,
+          "default": 7
+        },
+        {
+          "type": "checkbox",
+          "id": "show_shipping_icon",
+          "label": "Show shipping icon",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "text_style",
+          "options": [
+            {"value": "body", "label": "Body"},
+            {"value": "subtitle", "label": "Subtitle"},
+            {"value": "uppercase", "label": "Uppercase"}
+          ],
+          "default": "body",
+          "label": "Text Style"
         }
       ]
     }

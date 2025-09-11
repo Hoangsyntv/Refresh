@@ -1,5 +1,13 @@
 {
   "sections": {
+    "breadcrumbs": {
+      "type": "breadcrumbs",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "padding_top": 16,
+        "padding_bottom": 16
+      }
+    },
     "main": {
       "type": "main-product",
       "blocks": {
@@ -62,6 +70,25 @@
           "settings": {
           }
         },
+        "bullet_benefits": {
+          "type": "bullet_point_benefits",
+          "settings": {
+            "benefit_1": "High-quality materials",
+            "benefit_2": "Fast worldwide shipping", 
+            "benefit_3": "30-day money-back guarantee",
+            "style": "checkmark"
+          }
+        },
+        "delivery_estimate": {
+          "type": "estimated_arrival_date",
+          "settings": {
+            "delivery_text": "Estimated delivery",
+            "min_days": 3,
+            "max_days": 7,
+            "show_shipping_icon": true,
+            "text_style": "body"
+          }
+        },
         "share": {
           "type": "share",
           "settings": {
@@ -72,13 +99,15 @@
       "block_order": [
         "title",
         "meta_description",
-        "sku",
+        "sku", 
         "vendor",
         "rating",
         "price",
+        "bullet_benefits",
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
+        "delivery_estimate",
         "description",
         "share"
       ],
@@ -115,10 +144,17 @@
         "padding_top": 0,
         "padding_bottom": 60
       }
+    },
+    "sticky-atc": {
+      "type": "sticky-add-to-cart",
+      "settings": {
+      }
     }
   },
   "order": [
-    "main",
-    "related-products"
+    "breadcrumbs",
+    "main", 
+    "related-products",
+    "sticky-atc"
   ]
 }

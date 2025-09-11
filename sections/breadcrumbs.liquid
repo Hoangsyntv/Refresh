@@ -1,0 +1,123 @@
+{{ 'component-breadcrumb.css' | asset_url | stylesheet_tag }}
+
+<nav class="breadcrumb" role="navigation" aria-label="breadcrumbs">
+  <div class="page-width">
+    <ol class="breadcrumb__list">
+      <li class="breadcrumb__item">
+        <a class="breadcrumb__link" href="{{ routes.root_url }}">
+          {{ 'general.breadcrumbs.home' | t }}
+        </a>
+      </li>
+
+      {%- if collection -%}
+        <li class="breadcrumb__item">
+          <a class="breadcrumb__link" href="{{ collection.url }}">
+            {{ collection.title }}
+          </a>
+        </li>
+      {%- elsif product.collections.size > 0 -%}
+        <li class="breadcrumb__item">
+          <a class="breadcrumb__link" href="{{ product.collections.first.url }}">
+            {{ product.collections.first.title }}
+          </a>
+        </li>
+      {%- endif -%}
+
+      <li class="breadcrumb__item">
+        <span class="breadcrumb__text" aria-current="page">
+          {{ product.title | truncate: 50 }}
+        </span>
+      </li>
+    </ol>
+  </div>
+</nav>
+
+<style>
+.breadcrumb {
+  background-color: rgb(var(--color-background));
+  padding: 1rem 0;
+  border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.08);
+}
+
+.breadcrumb__list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 1.4rem;
+}
+
+.breadcrumb__item:not(:last-child):after {
+  content: '›';
+  margin: 0 1rem;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.breadcrumb__link {
+  color: rgba(var(--color-foreground), 0.75);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb__link:hover {
+  color: rgb(var(--color-foreground));
+  text-decoration: underline;
+}
+
+.breadcrumb__text {
+  color: rgb(var(--color-foreground));
+  font-weight: 500;
+}
+
+@media screen and (max-width: 749px) {
+  .breadcrumb__list {
+    font-size: 1.2rem;
+  }
+  
+  .breadcrumb__item:not(:last-child):after {
+    margin: 0 0.8rem;
+  }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Breadcrumbs",
+  "tag": "section", 
+  "class": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom", 
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 16
+    }
+  ]
+}
+{% endschema %}
