@@ -285,8 +285,8 @@
             {%- assign level_url = level_url_raw | strip -%}
             
             <!-- 🎯 DIRECT MAPPING: Level {{ forloop.index }} "{{ level }}" → RAW: "{{ level_url_raw }}" CLEAN: "{{ level_url }}" -->
-            <!-- 🔬 CONDITIONS: level_url='{{ level_url }}' | blank={{ level_url == blank }} | hash={{ level_url == '#' }} | length={{ level_url.size }} -->
-            <!-- 🧪 EXACT CHECK: not_blank={{ level_url != blank }} | not_hash={{ level_url != '#' }} | combined={{ level_url != blank and level_url != '#' }} -->
+            <!-- 🔬 CONDITIONS: level_url='{{ level_url }}' | blank={{ level_url }} | hash={{ level_url }} | length={{ level_url.size }} -->
+            <!-- 🧪 EXACT CHECK: not_blank={{ level_url }} | not_hash={{ level_url }} | combined={{ level_url }} -->
             
             {%- comment -%} Render breadcrumb item {%- endcomment -%}
             {%- comment -%} Check if this level represents the current page {%- endcomment -%}
@@ -425,4 +425,25 @@
       {%- endif -%}
     {%- endif -%}
   </ol>
-</nav>
+</nav>{%- comment -%}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{{ level_url == blank }}"
+  to: "{{ level_url }}"
+  position: 10773..10788
+- from: "{{ level_url == '#' }}"
+  to: "{{ level_url }}"
+  position: 10796..10811
+- from: "{{ level_url != blank }}"
+  to: "{{ level_url }}"
+  position: 10888..10903
+- from: "{{ level_url != '#' }}"
+  to: "{{ level_url }}"
+  position: 10915..10930
+- from: "{{ level_url != blank and level_url != '#' }}"
+  to: "{{ level_url }}"
+  position: 10942..10957
+{%- endcomment -%}
